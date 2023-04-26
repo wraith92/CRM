@@ -1,0 +1,58 @@
+[
+
+
+                        
+    {
+      "TYPE": "Investissement productif",
+      "NOM": "Renouvellement d’équipements usagés ou obsolètes"
+    },
+    {
+      "TYPE": "Investissement productif",
+      "NOM": "Extension de la capacité de production"
+    },
+    {
+      "TYPE": "Investissement productif",
+      "NOM": "Modernisation des équipements et installations"
+    },
+    {
+      "TYPE": "Investissement productif",
+      "NOM": "Décarbonation, Economie d’Energie, Environnement"
+    },
+    {
+      "TYPE": "Investissement productif",
+      "NOM": "Mise aux normes, sécurité"
+    },
+    {
+      "TYPE": "Investissement non productif",
+      "NOM": "Assurance-crédit"
+    },
+    {
+      "TYPE": "Investissement non productif",
+      "NOM": "BFR"
+    },
+    {
+      "TYPE": "Investissement non productif",
+      "NOM": "Factor"
+    },
+    {
+      "TYPE": "Investissement non productif",
+      "NOM": "Investissement non productif"
+    },
+    {
+      "TYPE": "Innovation matérielle",
+      "NOM": "Innovation matérielle"
+    },
+    {
+      "TYPE": "Innovation immatérielle",
+      "NOM": "Innovation immatérielle"
+    },
+    {
+      "TYPE": "Rachat de part, Croissance Externe",
+      "NOM": "Rachat de part, Croissance Externe"
+    },
+    {
+      "TYPE": "Immobilier",
+      "NOM": "Immobilier"
+    }
+
+    ]

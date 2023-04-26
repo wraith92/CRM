@@ -1,0 +1,194 @@
+[
+  {
+    "TYPE": "UIMM",
+    "NOM": "UIMM"
+  },
+  {
+    "TYPE": "GIM",
+    "NOM": "GIM"
+  },
+  {
+    "TYPE": "France CHIMIE",
+    "NOM": "France CHIMIE"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "ARTEMA"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "AXEMA"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "EVOLIS"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "FABRILABO"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "FEDERATION FORGE FONDERIE"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "FFMI"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "FIM-AC"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "FIM METAUX EN FEUILLES"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "FIM RESSORTS"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "PHOTONICS"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "SIBCO"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "SM"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "SNCT"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "SNDEC"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "SNITEM"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "SYMOP"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "SYNEG"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "UITS"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "UNICLIMA"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "UNIQ"
+  },
+  {
+    "TYPE": "FIM",
+    "NOM": "UNITAM"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "ACN"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "ACR"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "ACSIEL"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "AFNUM"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "E-VISIONS"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "FGME"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "GIFAM"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "GIL"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "FFGME"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "IGNES"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "SER"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "SIRMELEC"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "SNESE"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "SPAP"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "SPDEI"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "SYCABEL"
+  },
+  {
+    "TYPE": "FIEEC",
+    "NOM": "Syndicat de l'éclairage"
+  },
+  {
+    "TYPE": "GIFAS",
+    "NOM": "GIFAS"
+  },
+  {
+    "TYPE": "AMICS-EPI",
+    "NOM": "AMICS-EPI"
+  },
+  {
+    "TYPE": "POLYVIA",
+    "NOM": "POLYVIA"
+  },
+  {
+    "TYPE": "FEDEREC",
+    "NOM": "FEDEREC"
+  },
+  {
+    "TYPE": "Fondeurs de France",
+    "NOM": "Fondeurs de France"
+  },
+  {
+    "TYPE": "MEDEF",
+    "NOM": "MEDEF"
+  },
+  {
+    "TYPE": "AUTRE",
+    "NOM": "Autre"
+  }
+]

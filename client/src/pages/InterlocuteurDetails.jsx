@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -8,22 +7,14 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import UserService from "../services/user.service";
 import AuthInterlocuteur from "../services/Interlocuteur";
-import AuthService from "../services/auth.service";
-import { useParams } from "react-router-dom";
-import moment from "moment";
 import 'moment/locale/fr';
 import Societe from '../controllers/Societe';
 
 
 function InterlocuteurDetails() {
 
-  // Get ID from URL
-  const params = useParams();
-  var nb = parseInt(params.id);
 
-  //GET USER INFO
-  const user = AuthService.getCurrentUser()
-  //GET interlocuteur 
+  //GET interlocuteur
   const [Inter, SetInter] = useState([]);
   const [search, setSearch] = useState('');
   const [listuser, setListeUser] = useState([]);
@@ -63,7 +54,7 @@ function InterlocuteurDetails() {
 
 console.log(listuser,"liste user")
 console.log(listSoc,"les societes")
-  //CARD TABLE 
+  //CARD TABLE
   const card = (
     <React.Fragment>
       {Inter.filter((e) => {
@@ -81,18 +72,18 @@ console.log(listSoc,"les societes")
             <Typography variant="body2">
               Fonction : {e.fonction_inter}
             </Typography>
-           
+
             {(listuser.filter(task => task.id === e.id_utili)).map((c)=>
              <Typography variant="body2">
              nom commercial : {c.username}
               </Typography>
-            
+
             )}
              {(listSoc.filter(task => task.siret === e.id_soc)).map((c)=>
              <Typography variant="body2">
              nom commercial : {c.nom_soc}
               </Typography>
-            
+
             )}
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
               Telephone :  {e.tel}

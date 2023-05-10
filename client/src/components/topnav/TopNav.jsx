@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from 'react'
-
 import AuthService from "../../services/auth.service";
-
 import './topnav.css'
-
 import { Link } from 'react-router-dom'
-
 import Dropdown from '../dropdown/Dropdown'
-
 import ThemeMenu from '../thememenu/ThemeMenu'
-
 import user_menu from '../../assets/JsonData/user_menus.json'
-
 import AuthAction from '../../services/Action'
-
 import Moment from 'react-moment';
-
 import 'moment/locale/fr';
 
 import RoleUser from "../../controllers/Role";
 const curr_user = {
-    username: 'Tuat Tran',
+    username: 'pas de user',
 
 }
 const user = AuthService.getCurrentUser();
@@ -61,7 +52,7 @@ const Topnav = props => {
     useEffect(() => {
         const user = AuthService.getCurrentUser();
         if (user) {
-            //ACTION 
+            //ACTION
             AuthAction.findAll().then((response) => {
                 SetAction(response.data)
             })
@@ -75,13 +66,11 @@ const Topnav = props => {
 
 
     }, [])
-    const Action_util = Action.filter(task => task.id_utili === currentUser.id)
     let date = new Date()
     const mysn = 1000 * 3600 * 24
     const fltr_date = Action.filter(task => (((new Date(task.date_rdv) - date) / mysn) < 7) && ((new Date(task.date_rdv) - date) / mysn) > 0)
 
     const Action_util1 = fltr_date.filter(task => task.id_utili === currentUser.id)
-    console.log(mysofitech,'top nav sofitech role')
     return (
         <div>
             {user && mysofitech  ? (
@@ -99,7 +88,7 @@ const Topnav = props => {
                             {/* dropdown here */}
                             {currentUser  ? (
 
-                               
+
                                     <div className="sidebar__item">
                                         <div className={`sidebar__item-inner`}>
                                             <i className='bx bxs-user-check' ></i>
@@ -109,7 +98,7 @@ const Topnav = props => {
                                         </div>
 
                                     </div>
-                               
+
                             ) : (
                                 <Dropdown
                                     customToggle={() => renderUserToggle(curr_user)}
@@ -124,7 +113,7 @@ const Topnav = props => {
                                 badge={Action_util1.length}
                                 contentData={Action_util1}
                                 renderItems={(item, index) => renderNotificationItem(item, index)}
-                              
+
                             />
                             {/* dropdown here */}
                         </div>

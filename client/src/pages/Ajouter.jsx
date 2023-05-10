@@ -6,9 +6,7 @@ import CheckButton from "react-validation/build/button";
 import AuthSociete from "../services/societe";
 import "react-datepicker/dist/react-datepicker.css";
 import checkForm from '../common/Ajouter/checkedForm'
-import Typography from '@mui/material/Typography';
 import { useHistory } from 'react-router-dom';
-import Loader_cherche from "../components/search";
 import './../assets/css/picklist.css'
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
@@ -16,11 +14,9 @@ import liste from "../assets/JsonData/liste_syndicat.json"
 import origine_prospect from "../assets/JsonData/origine_prospect.json"
 import Button from '@mui/material/Button';
 import UserService from "../services/user.service";
-import dotenv from 'dotenv'
 import AuthService from "../services/auth.service";
 import Soc from '../controllers/Societe';
 import RoleUser from "../controllers/Role";
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -33,19 +29,13 @@ const AddTutorial = () => {
   let history = useHistory();
   //GET societer
   const [societeListe, SetsocieteListe] = useState([])
-  //variable checked from 
+  //variable checked from
   const required = checkForm.required;
   const vsiret = checkForm.vsiret;
   const vsiren = checkForm.vsiren;
-  const vnom_soc = checkForm.vnom_soc;
-  const vnom_responsable = checkForm.vnom_responsable;
-  const vdate_creation_soc = checkForm.vdate_creation_soc;
-  const vid_role = checkForm.vid_role;
   const vcode_postal = checkForm.vcode_postal;
-  const vobservation = checkForm.vopportunité;
   const cville = checkForm.cville;
   const vsyndicat = checkForm.vobservation;
-  const vactivité = checkForm.vactivité;
   const vtel = checkForm.vtel;
   const vpays = checkForm.vpays;
   const vadresse = checkForm.vadresse;
@@ -86,13 +76,10 @@ const AddTutorial = () => {
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
   const [messagesiret, setMessagesiret] = useState("");
-
   const [myJSON, setactive] = useState([]);
   const [myJSON2, setactive2] = useState([]);
   const [role, setrole] = useState("")
   const [rolesofitech, setrolesofitech] = useState("")
-  const [Sofitech, setSofitech] = useState([])
-  const [Admin, setAdmin] = useState()
   const form = useRef();
   const checkBtn = useRef();
   const mysofitech = RoleUser.SofitechRole();
@@ -100,22 +87,11 @@ const AddTutorial = () => {
   const mycemeca = RoleUser.CemecaRole();
 
   useEffect(() => {
-
-    if (user) {
-
-
-      //afficher cemca           
+      //afficher cemca
       if (mycemeca) Soc.CemecaListe().then(data => SetsocieteListe(data))
-        ;
-      //afficher sofitech           
+      //afficher sofitech
       if (mysofitech) Soc.AllSociete().then(data => SetsocieteListe(data))
-        ;
-
-
-
-    }
   }, [mycemeca, mysofitech])
-  console.log(societeListe, 'liste des societe')
   const land = (e) => {
     setactive(Array.isArray(e) ? e.map(x => x.NOM) : [])
   }
@@ -124,15 +100,11 @@ const AddTutorial = () => {
   }
 
   const Retriverole = () => {
-
     //sofitech Role
-    UserService.getSofitechBoard().then((response) => {
-      setSofitech(response.data)
+    UserService.getSofitechBoard().then(() => {
       setrole(2)
-      console.log(response.data)
     })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setrole(1)
       });
 
@@ -168,7 +140,7 @@ const AddTutorial = () => {
 
     e.preventDefault();
     form.current.validateAll();
-    if (checkBtn.current.context._errors.length === 0 && messagesiret.length == 0) {
+    if (checkBtn.current.context._errors.length === 0 && messagesiret.length === 0) {
       AuthSociete.create(data)
         .then(response => {
           setSociete({
@@ -200,7 +172,6 @@ const AddTutorial = () => {
 
         },
           error => {
-            const resMessage =
               (error.response &&
                 error.response.data &&
                 error.response.data.message) ||
@@ -235,7 +206,7 @@ const AddTutorial = () => {
     return () => {
       active = false;
     };
-  }, [loading]);
+  }, [loading,societeListe]);
   useEffect(() => {
     if (!open) {
       setOptions([]);
@@ -280,14 +251,13 @@ const AddTutorial = () => {
   };
   const result = Object.entries(SIRETAPI)
   const result2 = Object.entries(Etablissement)
-  console.log(result)
-  const Siren = result.filter(([key, value]) => key === 'siren');
-  const Nom = result.filter(([key, value]) => key === "nom_entreprise");
-  const Code_naf = result.filter(([key, value]) => key === "code_naf");
-  const adresse = result2.filter(([key, value]) => key === "adresse_ligne_1");
-  const paye = result2.filter(([key, value]) => key === "pays");
-  const ville = result2.filter(([key, value]) => key === "ville");
-  const code_postal = result2.filter(([key, value]) => key === "code_postal");
+  const Siren = result.filter(([key]) => key === 'siren');
+  const Nom = result.filter(([key]) => key === "nom_entreprise");
+  const Code_naf = result.filter(([key]) => key === "code_naf");
+  const adresse = result2.filter(([key]) => key === "adresse_ligne_1");
+  const paye = result2.filter(([key]) => key === "pays");
+  const ville = result2.filter(([key]) => key === "ville");
+  const code_postal = result2.filter(([key]) => key === "code_postal");
 
 
   const SIREN = () => {
@@ -425,7 +395,7 @@ const AddTutorial = () => {
   useEffect(() => {
     Retriverole()
 
-    if (role == 2) {
+    if (role === 2) {
       setrolesofitech(1)
     }
 
@@ -499,7 +469,7 @@ const AddTutorial = () => {
 
 
             <CheckButton style={{ display: "none" }} ref={checkBtn} />
-         
+
           </Form>
         </div>
       </div>

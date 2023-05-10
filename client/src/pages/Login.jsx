@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useHistory } from 'react-router-dom';
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service";
 import ReactLoading from 'react-loading';
@@ -9,8 +8,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -19,9 +16,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Loader from "../components/LoadingPage";
-const Example = ({ type, color }) => (
-  <ReactLoading type={type} color={color} height={667} width={375} />
-);
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -36,15 +31,7 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
-const required = (value) => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
+
 const Login = () => {
   let history = useHistory();
   const form = useRef();
@@ -53,7 +40,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(undefined);
   const [message, setMessage] = useState("");
-  const [historique_auth, sethistorique_auth] = useState("");
   const onChangeUsername = (e) => {
     const username = e.target.value;
     setUsername(username);
@@ -65,21 +51,20 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     setMessage("");
-    
+
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
       AuthService.login(username, password).then(
         () => {
           const message = 'connection etablie !';
-          const password = '********'  
+          const password = '********'
           setLoading(true)
           setTimeout(() => {
                 setLoading(false)
                 history.push("/");
-                window.location.reload();
               }, 1000)
-        
-          
+
+
           AuthService.create_historique_auth(username, password, message).then(
             () => {
             },
@@ -91,7 +76,7 @@ const Login = () => {
                 error.message ||
                 error.toString();
               setMessage(resMessage);
-             
+
             }
           );
         },
@@ -116,13 +101,13 @@ const Login = () => {
               error.response.data.message) ||
             error.message ||
             error.toString();
-          
+
           setMessage(resMessage);
           console.log(message)
         }
       );
     } else {
-      
+
     }
   };
   return (
@@ -144,14 +129,14 @@ const Login = () => {
             >
               <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                 <LockOutlinedIcon />
-                
+
               </Avatar>
               <Typography component="h1" variant="h5">
                 Sign in
                 <br></br>
                 <Loader />
               </Typography>
-              
+
             </Box>
             <Copyright sx={{ mt: 8, mb: 4 }} />
           </Container>
@@ -206,7 +191,7 @@ const Login = () => {
                     id="password"
                     autoComplete="current-password"
                   />
-               
+
                   <Button
                     type="submit"
                     fullWidth
@@ -224,10 +209,10 @@ const Login = () => {
                   )}
                   <Grid container>
                     <Grid item xs>
-  
+
                     </Grid>
                     <Grid item>
-  
+
                     </Grid>
                   </Grid>
                 </Box>
@@ -235,14 +220,14 @@ const Login = () => {
               <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
           </ThemeProvider>
-  
+
           <Form onSubmit={handleLogin} ref={form}>
-  
+
             <CheckButton style={{ display: "none" }} ref={checkBtn} />
           </Form>
         </div>
         )}
-    
+
     </div>
   );
 };

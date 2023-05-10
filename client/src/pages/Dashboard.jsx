@@ -1,58 +1,57 @@
 import React, { useEffect, useState } from 'react'
-import Chart from 'react-apexcharts'
-import { useSelector } from 'react-redux'
 import StatusCard from '../components/status-card/StatusCard'
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import TextField from '@mui/material/TextField';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import 'moment/locale/fr';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import AuthAction from "../controllers/Action";
 import AuthService from "../services/auth.service";
 import RoleUser from "../controllers/Role";
 import Societe from '../controllers/Societe';
-//components 
+//components
 import ListeSociete from '../components/societe/ListeDashbord'
 import ListeAction from '../components/action/ListeDashboard'
 import ChartDateAction from '../components/chart/chartAction';
 import ChartDateSociete from '../components/chart/chartSociete';
+import InputDateDebut from '../components/Date/inputDate';
+import InputDateFin from '../components/Date/inputDate2';
+import { getStatusCardAdmin } from '../components/card/statuscardadmin';
+import { fncardadmin } from '../components/card/statuscard';
+
 
 const Dashboard = () => {
-    //GET user 
+    //GET user
     const user = AuthService.getCurrentUser();
     //GET role admin
     const myadmin = RoleUser.AdminRole();
     //GET role sofitech
     const mysofitech = RoleUser.SofitechRole();
     //GET role cemece
-    const mycemeca = RoleUser.CemecaRole();
+    const mycemeca = RoleUser.CemecaRole()
+
     //GET societer
     const [societeListe, Setsociete] = useState([])
-    //GET actions 
+    //GET actions
     const [Action, SetAction] = useState([]);
     const Action_util = Action.filter(task => task.id_utili === user.id)
     Action.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
-    //GET societes 
+    //GET societes
     const societe_util = societeListe.filter(task => task.id_utili === user.id)
     societeListe.sort((b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     console.log(societe_util)
-    //refrech data
+    //refreh data
     useEffect(() => {
-
         if (user) {
-
-            //ACTION 
-            AuthAction.ActionListe().then(data => SetAction(data))
-            //afficher cemca           
+            //ACTION
+            AuthAction.ActionListe()
+            .then(data => SetAction(data))
+            .catch(error => {
+                console.log('Error fetching data:', error);
+                SetAction(null); // set the data to null to indicate an error
+              });
+            //afficher cemeca
             if (mycemeca) Societe.CemecaListe().then(data => Setsociete(data))
-                ;
-            //afficher sofitech           
+
+            //afficher sofitech
             if (mysofitech) Societe.AllSociete().then(data => Setsociete(data))
-                ;
-
-
 
         }
     }, [mycemeca, mysofitech])
@@ -67,41 +66,18 @@ const Dashboard = () => {
     const handleChangeDate2 = (newValue) => {
         setValueDate2(newValue);
     };
-
-
-    const mysn = 1000 * 3600 * 24
-    const fltr_date = Action.filter(task => (((new Date(task.date_rdv) - valueDate2) / mysn) < 0) && ((new Date(task.date_rdv) - valueDate1) / mysn) > 0)
-    const filtre_date_Action_util1 = fltr_date.filter(task => task.id_utili === user.id)
-    //filter Month action
-    //month jan 
-
+    //filter Month action chart
     const tableau_action = []
     const tableau_societe = []
     for (let index = 0; index < 12; index++) {
         tableau_action.push(Action.filter(task => (((new Date(task.date_action)).getMonth() === index))).length)
         tableau_societe.push(societeListe.filter(task => (((new Date(task.createdAt)).getMonth() === index))).length)
-
     }
-  
-    //carde action user
-    const statusCard = [
-        {
-            "icon": "bx bx-bar-chart-alt",
-            "count": filtre_date_Action_util1.length,
-            "title": "Vos Activités "
-        }
-    ]
-    //card acrion admin
-    const statusCardAdmin = [
 
-        {
-            "icon": "bx bxs-user-detail",
-            "count": fltr_date.length,
-            "title": "Activités commerciales"
-        }
-    ]
-
-    //contrats
+    const mysn = 1000 * 3600 * 24
+    const fltr_date = Action.filter(task => (((new Date(task.date_rdv) - valueDate2) / mysn) < 0) && ((new Date(task.date_rdv) - valueDate1) / mysn) > 0)
+    const filtre_date_Action_util1 = fltr_date.filter(task => task.id_utili === user.id)
+    //card contrat
     const StatusContrat = [
         {
             "icon": "bx bxs-contact",
@@ -109,6 +85,14 @@ const Dashboard = () => {
             "title": "Sociétaire SOFITECH "
         }
     ]
+    //card acrion admin
+    const statusCardAdmin = getStatusCardAdmin({fltr_date})
+      //carde action user
+      const statusCard = fncardadmin({filtre_date_Action_util1})
+    //contrats
+    console.log(statusCard)
+    console.log(statusCardAdmin)
+
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [page, setPage] = React.useState(0);
     const handleChangePage = (event, newPage) => {
@@ -145,33 +129,19 @@ const Dashboard = () => {
                         autoComplete="off"
                     >
                         <div className="row">
-
                             <div className="col-6">
                                 <div className="row">
                                     <div className="col-6">
-                                        <p>Date début d'action</p>
-                                        <LocalizationProvider dateAdapter={AdapterMoment} >
-
-                                            <Stack spacing={5}>
-                                                <DesktopDatePicker
-                                                    value={valueDate1}
-                                                    onChange={handleChangeDate1}
-                                                    renderInput={(params) => <TextField {...params} />}
-                                                />
-                                            </Stack>
-                                        </LocalizationProvider>
+                                    <InputDateDebut
+                                         valueDate1={valueDate1}
+                                         handleChangeDate1={handleChangeDate1}
+                                       />
                                     </div>
                                     <div className="col-6">
-                                        <p>Date fin d'action</p>
-                                        <LocalizationProvider dateAdapter={AdapterMoment}>
-                                            <Stack spacing={5}>
-                                                <DesktopDatePicker
-                                                    value={valueDate2}
-                                                    onChange={handleChangeDate2}
-                                                    renderInput={(params) => <TextField {...params} />}
-                                                />
-                                            </Stack>
-                                        </LocalizationProvider>
+                                    <InputDateFin
+                                         valueDate2={valueDate2}
+                                         handleChangeDate2={handleChangeDate2}
+                                       />
                                     </div>
                                 </div>
                             </div>
@@ -212,14 +182,10 @@ const Dashboard = () => {
                                             }
 
                                         </div>
-
-
-
                                     ) : (
                                         <div>
                                             {
                                                 statusCard.map((item, index) => (
-
                                                     <div className="row justify-content-md-center">
                                                         <div className="col-6" key={index}>
                                                             <a href="#">
@@ -231,17 +197,11 @@ const Dashboard = () => {
                                                             </a>
                                                         </div>
                                                     </div>
-
-
                                                 ))
                                             }
                                         </div>
-
                                     )}
                                 </div>
-
-
-
                             </div>
                         </div>
                         {/* chart graphique des clients  */}

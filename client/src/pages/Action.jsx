@@ -1,53 +1,33 @@
 
-//sidebar data json 
+//sidebar data json
 import sidebar_items from '../assets/JsonData/sidebar_routes.json'
 import Grid from '@mui/material/Grid';
-//require React 
-import React, { useState, useRef, useEffect ,useContext } from "react";
+//require React
+import React, { useState, useRef, useEffect  } from "react";
 import { useParams } from "react-router-dom";
 import Button from '@mui/material/Button';
-//React validation 
+//React validation
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-
 //require page Action
 import AuthAction from "../services/Action";
-
-//require page Interlocuteur 
+//require page Interlocuteur
 import AuthInter from "../services/Interlocuteur";
-
 //controlleur service
 import AuthService from "../services/auth.service";
-import UserService from "../services/user.service";
-
-//require exios from request 
-import axios from 'axios';
-
-//import mui 
+//import mui
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
-
 //import checkbox from multiselect-react-dropdown'
 import Multiselect from 'multiselect-react-dropdown';
-
-// centre d'affaire json data 
+// centre d'affaire json data
 import liste from "../assets/JsonData/centre-affaire.json";
 import besoinliste from "../assets/JsonData/besoin.json";
 import RoleUser from "../controllers/Role";
 import Societe from '../controllers/Societe';
-import ListeInterlocuteur from '../Liste/ListeInterlocuteur';
-import DataArrayContext from "../Liste/DataContext";
 
 
 const Action = (props) => {
@@ -59,7 +39,6 @@ const Action = (props) => {
   const form = useRef();
   const checkBtn = useRef();
   const [ID_societe, setID_societe] = useState([]);
-  const [ListeAction, SetAction] = useState([]);
   const [new_sidbar, setSidbar] = useState(sidebar_items)
   const [interlocuteur, setInterlocuteur] = useState([])
   const [Credit, setCredit] = useState(false);
@@ -74,25 +53,21 @@ const Action = (props) => {
       AuthInter.findAll().then((response) => {
         setInterlocuteur(response.data)
       })
-      //ACTION 
-      AuthAction.findAll().then((response) => {
-        SetAction(response.data)
-        console.log(response.data)
-      })
+
         .catch((e) => {
           console.log(e);
         });
     }
- 
+
   }, [])
   useEffect(() => {
 
     if (user) {
 
-        //afficher cemca           
+        //afficher cemca
         if (cemeca) Societe.CemecaListe().then(data => setID_societe(data))
             ;
-        //afficher sofitech           
+        //afficher sofitech
         if (sofitech) Societe.AllSociete().then(data => setID_societe(data))
             ;
 
@@ -117,7 +92,6 @@ console.log(ID_societe)
   }
 
 
-  const listeActUser = ListeAction.filter(task => task.id_utili === user.id)
 
   const land = (e) => {
     setactive(Array.isArray(e) ? e.map(x => x.NOM) : [])
@@ -129,6 +103,7 @@ console.log(ID_societe)
   const land3 = (e) => {
     setactive3(Array.isArray(e) ? e.map(x => x.nom) : [])
   }
+
   //filter action where siret
   const actItem = ID_societe.filter(task => task.siret === nb)
   //filter interlocuteur where siret
@@ -136,7 +111,7 @@ console.log(ID_societe)
   console.log(filterInter)
 
 
-  //intitial Action 
+  //intitial Action
   const initial1ctionState = {
     id_utili: "",
     nom_interlocuteur: "",
@@ -155,14 +130,12 @@ console.log(ID_societe)
 
   };
 
-  //ajouter l'action      
+  //ajouter l'action
   const [Action, setAction] = useState({ initial1ctionState });
   const saveAction = (e) => {
     const credit_cop = myJSON.join();
     const besoin = myJSON2.join();
     const interl = myJSON3.join();
-
-
     var data = {
       nom_interlocuteur: interl,
       nom_societe: actItem[0].nom_soc,
@@ -178,10 +151,6 @@ console.log(ID_societe)
       besoin: besoin,
       credit_cop: credit_cop,
       validation: "non realiser"
-
-
-
-
     };
     e.preventDefault();
     form.current.validateAll();
@@ -254,6 +223,25 @@ console.log(ID_societe)
               </div>
 
               <div className="form-group">
+              <label htmlFor="title">interlocuteur</label>
+                            {filterInter.map((e) =>
+                                <Multiselect
+                                    displayValue="nom"
+                                    value="4"
+                                    isObject={true}
+                                    onChange={console.log}
+                                    id={console.log}
+                                    onNOMPressFn={function noRefCheck() { }}
+                                    onRemove={function noRefCheck() { }}
+                                    onSearch={function noRefCheck() { }}
+                                    onSelect={land3}
+                                    options={filterInter}
+                                    showCheckbox
+                                />
+                            )}
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="username">Date de l'action</label>
                 <input
                   type="datetime-local"
@@ -280,17 +268,8 @@ console.log(ID_societe)
                 </FormControl>
               </div>
 
-
-
-            
-             
-
-
-
-
               <div className="form-group">
                 <label htmlFor="password">type d'action</label>
-
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">type_action</InputLabel>
                   <Select
@@ -312,8 +291,6 @@ console.log(ID_societe)
               {sofitech && (
                 <div className="form-group">
                   <label htmlFor="password">besoin</label>
-
-
                   <Multiselect
                     displayValue="NOM"
                     groupBy="TYPE"
@@ -329,10 +306,6 @@ console.log(ID_societe)
                     options={besoinliste}
                     showCheckbox
                   />
-
-
-
-
                 </div>
               )}
               <br />
@@ -369,8 +342,6 @@ console.log(ID_societe)
                   />
                   <br />
                   <label htmlFor="password">préciser la date d’échéance du crédit </label>
-
-
                   <input
                     type="datetime-local"
                     className="form-control"
@@ -379,8 +350,6 @@ console.log(ID_societe)
                     onChange={handleInputChange}
 
                   />
-
-
                 </div>
               )}
               <br />
@@ -402,18 +371,11 @@ console.log(ID_societe)
 
                     </Grid>
                   </Grid>
-
-
-
-
                 </div>
-
               )}
               <br />
               {cemeca && Factor && (
                 <div>
-
-
                   <div className="form-group">
                     <TextField
                       id="outlined-multiline-static"
@@ -424,28 +386,20 @@ console.log(ID_societe)
                       onChange={handleInputChange}
                     />
                   </div>
-
                   <div className="form-group">
-
                     <label htmlFor="password">Préciser la date d’échéance du Factor </label>
-
                     <input
                       type="datetime-local"
                       className="form-control"
                       name="date_factor"
                       value={Action.date_factor}
                       onChange={handleInputChange}
-
                     />
-
-
                   </div>
                 </div>
               )}
               <br />
-
               <div className="form-group">
-
                 <label htmlFor="title">Centre d'affaires CREDIT COOPERATIF</label>
                 <Multiselect
                   displayValue="NOM"
@@ -462,15 +416,12 @@ console.log(ID_societe)
                   options={liste}
                   showCheckbox
                 />
-
               </div>
               <div className="form-group">
                 <button className="btn btn-primary btn-block">Valider l'action</button>
               </div>
-
             </div>
           )}
-
           {message && (
             <div className="form-group">
               <div
@@ -490,7 +441,6 @@ console.log(ID_societe)
       </div>
     </div>
   );
-
 }
 
 export default Action;

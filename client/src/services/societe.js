@@ -27,11 +27,12 @@ const update = (id, data) => {
 const remove = id => {
   return http.delete(`/tutorials/${id}`);
 };
-
-*/
 const removeAll = () => {
   return axios.delete(`/tutorials`);
 };
+
+*/
+
 const findByTitle = siret => {
   return axios.get(`/Societes?siret=${siret}`);
 };

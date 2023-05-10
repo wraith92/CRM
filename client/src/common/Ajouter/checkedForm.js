@@ -15,7 +15,7 @@ class checkedForm{
 
  
    vsiret = value => {
-    if (isNaN(value) || (value.length !=14)) {
+    if (isNaN(value) || (value.length !== 14)) {
       return (
         <div className="alert alert-danger" role="alert">
           siret invalide :(.

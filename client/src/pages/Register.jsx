@@ -1,4 +1,4 @@
-import React, { useState, useRef ,useEffect,useMemo} from "react";
+import React, { useState, useRef ,useEffect} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
@@ -6,13 +6,12 @@ import checkForm from "../common/Register/checkedForm"
 import AuthService from "../services/auth.service";
 import UserService from "../services/user.service";
 //react table
-import { useTable } from "react-table";
-//material ui table 
+//material ui table
 import { makeStyles } from '@material-ui/core/styles';
 import moment from "moment";
 import 'moment/locale/fr';
 
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -25,12 +24,11 @@ import {
   Typography,
   TablePagination,
   TableFooter,
-  Divider
 } from '@material-ui/core';
 
 
 const Register = (props) => {
-  //css style 
+  //css style
   //css
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -65,9 +63,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
     //variable liste des UserService
-  const [searchTitle, setSearchTitle] = useState("");
   const [listuser,setListeUser] = useState([]);
-   //variable liste authetification 
+   //variable liste authetification
    const [listauth, setListeAuth] = useState([]);
    const listauthRef = useRef();
    listauthRef.current = listauth;
@@ -79,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   const vpassword = checkForm.vpassword;
   const vemail = checkForm.vemail;
   const required = checkForm.required;
-//les status des variable 
+//les status des variable
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [roles, setRoles] = useState([]);
@@ -91,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     retrieveTutorials();
     retrieveUsers();
   }, []);
-  
+
 
 
  //afficher la liste des users
@@ -99,35 +96,26 @@ const useStyles = makeStyles((theme) => ({
     UserService.getListe_User()
       .then((response) => {
         setListeUser(response.data);
-        
+
       })
   };
   console.log(UserService.getListe_User())
 
-  
+
    //afficher la liste des hauthentification
   const retrieveTutorials = () => {
     AuthService.get_historique_auth()
       .then((response) => {
         setListeAuth(response.data);
       })
-    
+
   };
   listauth.sort((b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-  const refreshList = () => {
+ /* const refreshList = () => {
     retrieveTutorials();
   };
-  const removeAllTutorials = () => {
-    AuthService.removeAll_historique_auth()
-      .then((response) => {
-        console.log(response.data);
-        refreshList();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
- 
+
+
   const deleteTutorial = (rowIndex) => {
     const id = listauthRef.current[rowIndex].id;
     console.log(id)
@@ -145,24 +133,22 @@ const useStyles = makeStyles((theme) => ({
         console.log('tets');
       });
   };
-  const openTutorial = (rowIndex) => {
+    const openTutorial = (rowIndex) => {
     const id = listauthRef.current[rowIndex].id;
 
     props.history.push("/tutorials/" + id);
   };
-  
-  
-  
-// liste des auths  
+  */
 
 
 
-  //liste des users 
+
+  //liste des users
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = ( newPage) => {
     setPage(newPage);
   };
 
@@ -212,7 +198,7 @@ const useStyles = makeStyles((theme) => ({
   } = useTable({
     columns,
     data: listauth,
-  }); 
+  });
   */
     //crud ajouter un user
   const onChangeUsername = (e) => {
@@ -230,7 +216,7 @@ const useStyles = makeStyles((theme) => ({
   const onChangeRoles = (e) => {
     const role = e.target.value;
     setRoles([...roles,role]);
-  
+
   };
 
   const handleRegister = (e) => {
@@ -260,7 +246,7 @@ const useStyles = makeStyles((theme) => ({
     }
   };
 
-  
+
     return (
       <div className="col-md-12">
 
@@ -293,7 +279,7 @@ const useStyles = makeStyles((theme) => ({
                                     <Grid item lg={10}>
                                         <Typography className={classes.name}>{row.name}</Typography>
                                         <Typography color="textSecondary" variant="body2">{row.username}</Typography>
-          
+
                                     </Grid>
                                 </Grid>
                               </TableCell>
@@ -303,10 +289,10 @@ const useStyles = makeStyles((theme) => ({
                               </TableCell>
                             <TableCell>*********</TableCell>
                             <TableCell>
-                                <Typography 
+                                <Typography
                                   className={classes.status}
                                   style={{
-                                      backgroundColor: 
+                                      backgroundColor:
                                       ((row.status === 'Active' && 'green') ||
                                       (row.status === 'Pending' && 'blue') ||
                                       (row.status === 'Blocked' && 'orange'))
@@ -329,15 +315,15 @@ const useStyles = makeStyles((theme) => ({
                       </TableFooter>
                     </Table>
                   </TableContainer>
-            </div> 
+            </div>
           </div>
         </div>
     {/* liste des connections */}
         <div className="card card-container">
           <div className="list row">
             <div className="col-md-12 list">
-              <h3>Historique des Authentifications</h3> 
-          
+              <h3>Historique des Authentifications</h3>
+
                 <TableContainer component={Paper} className={classes.tableContainer}>
                     <Table className={classes.table} aria-label="simple table">
                       <TableHead>
@@ -359,17 +345,17 @@ const useStyles = makeStyles((theme) => ({
                                     <Grid item lg={10}>
                                         <Typography className={classes.name}>{row.name}</Typography>
                                         <Typography color="textSecondary" variant="body2">{row.username}</Typography>
-          
+
                                     </Grid>
                                 </Grid>
                               </TableCell>
-                            
-                            <TableCell>{row.password}</TableCell>                 
+
+                            <TableCell>{row.password}</TableCell>
                             <TableCell>
-                                <Typography 
+                                <Typography
                                   className={classes.status}
                                   style={{
-                                      backgroundColor: 
+                                      backgroundColor:
                                       ((row.message === 'Connexion établie  !' && 'green') ||
                                       (row.message === 'Connexion échouée  !' && 'red'))
                                   }}
@@ -377,7 +363,7 @@ const useStyles = makeStyles((theme) => ({
                               </TableCell>
                               <TableCell>
                                 <Typography color="primary" variant="subtitle2">{moment(row.date_connection).format("DD  MMMM YYYY HH:mm")}</Typography>
-              
+
                               </TableCell>
                           </TableRow>
                         ))}
@@ -415,7 +401,7 @@ const useStyles = makeStyles((theme) => ({
                           validations={[required, vusername]}
                         />
                       </div>
-      
+
                       <div className="form-group">
                         <label htmlFor="email">Email</label>
                         <Input
@@ -426,7 +412,7 @@ const useStyles = makeStyles((theme) => ({
                           onChange={onChangeEmail}
                           validations={[required, vemail]}
                         />
-                      </div>          
+                      </div>
                       <div className="form-group">
                         <label htmlFor="password">Password</label>
                         <Input
@@ -442,7 +428,7 @@ const useStyles = makeStyles((theme) => ({
                       <div className="form-check container">
                         <div className="row">
                         <label className="form-check-label" htmlFor="role">cemeca</label>
-                        <Input 
+                        <Input
                           type="checkbox"
                           className="form-check"
                           name="cemeca"
@@ -504,7 +490,7 @@ const useStyles = makeStyles((theme) => ({
                           value="7"
                           onChange={onChangeRoles}
                           validations={[required, vrole]}
-                        /> 
+                        />
                         <label className="form-check-label" htmlFor="role">super_admin2</label>
                         <Input
                         type="checkbox"
@@ -515,7 +501,7 @@ const useStyles = makeStyles((theme) => ({
                         validations={[required, vrole]}
                       />
                       </div>
-          
+
                       <div className="form-group">
                         <button className="btn btn-primary btn-block">Ajouter</button>
                       </div>
@@ -538,7 +524,7 @@ const useStyles = makeStyles((theme) => ({
                   )}
                     <CheckButton style={{ display: "none" }} ref={checkBtn} />
               </Form>
-          </div> 
+          </div>
         </div>
     );
   }

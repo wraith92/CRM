@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react'
-import axios from 'axios';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Stack from '@mui/material/Stack';
@@ -14,7 +13,6 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AuthAction from '../services/Action';
 import AuthService from "../services/auth.service";
-import { useParams } from "react-router-dom";
 import RoleUser from "../controllers/Role";
 import moment from "moment";
 import UserService from "../services/user.service";
@@ -40,13 +38,11 @@ function ActionDetails() {
   const myadmin = RoleUser.AdminRole();
 
 
-  // Get ID from URL
-  const params = useParams();
-  var nb = parseInt(params.id);
+
 
   //GET USER INFO
   const user = AuthService.getCurrentUser()
-  //GET Action 
+  //GET Action
   const [Vali, setVali] = useState({ initialSocieteState });
   const [Action, SetAction] = useState([]);
   const [ACtionFilter, SetActionFilter] = useState([]);
@@ -61,12 +57,12 @@ function ActionDetails() {
   const [listuser, setListeUser] = useState([]);
   const [rowsPerPage2, setRowsPerPage2] = React.useState(10);
   const [page2, setPage2] = React.useState(0);
-  const handleChangePage2 = (event, newPage) => {
-      setPage2(newPage);
+  const handleChangePage2 = (newPage) => {
+    setPage2(newPage);
   };
   const handleChangeRowsPerPage2 = (event) => {
-      setRowsPerPage2(+event.target.value);
-      setPage2(0);
+    setRowsPerPage2(+event.target.value);
+    setPage2(0);
   };
 
   //SELECT ALL SOCIETES WHERE AUTH
@@ -147,16 +143,11 @@ function ActionDetails() {
       SetActionFilter(data)
       ACtionFilter.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
     }
-
-
   }, [myadmin, Action]);
-  console.log(Action, 'Action')
-  console.log(ACtionFilter, 'filter Action')
-  console.log(myadmin, 'admin')
-  //CARD TABLE 
+  //CARD TABLE
   const card = (
     <React.Fragment>
-      {Etat == "realiser" ? (
+      {Etat === "realiser" ? (
         <div className="form-group">
           <div
             className={
@@ -214,7 +205,7 @@ function ActionDetails() {
                 <Card variant="outlined" >
                   <CardContent>
 
-                    {e.validation == 'realiser' &&
+                    {e.validation === 'realiser' &&
                       <Typography variant="h5" component="div">
                         <Stack spacing={1} alignItems="center">
                           <Stack direction="row" spacing={1}>
@@ -226,7 +217,7 @@ function ActionDetails() {
                         </Stack>
                       </Typography>
                     }
-                    {e.validation == 'non realiser' &&
+                    {e.validation === 'non realiser' &&
                       <Typography variant="h5" component="div">
                         <Stack spacing={1} alignItems="center">
                           <Stack direction="row" spacing={1}>
@@ -249,26 +240,27 @@ function ActionDetails() {
                           commerciale :{index.username}
                         </Typography>
                       ))}
-
-                    <Typography sx={{ fontSize: 10 }}>
-                      Date d'ajout dans le CRM : {moment(e.createdAt).format("DD  MMMM YYYY  HH:mm")}
+                    <Typography sx={{ fontSize: 10 }} >
+                      Date activité commerciale : {moment(e.date_rdv).format("DD  MMMM YYYY  HH:mm")}
                     </Typography>
+
                     <Typography sx={{ fontSize: 10 }}>
                       Besoin : {e.besoin}
                     </Typography>
                     <Typography sx={{ fontSize: 10 }}>
                       decription : {e.description}
                     </Typography>
+
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                      Date activité commerciale : {moment(e.date_rdv).format("DD  MMMM YYYY  HH:mm")}
+                      Date d'ajout dans le CRM : {moment(e.createdAt).format("DD  MMMM YYYY  HH:mm")}
                     </Typography>
-                    {e.nom_assur == 'non realiser' &&
+                    {e.nom_assur === 'non realiser' &&
                       <Typography variant="body2">
                         Déscription : {e.nom_assur} {e.date_assur}
                       </Typography>
                     }
 
-                    {e.nom_factor == 'non realiser' &&
+                    {e.nom_factor === 'non realiser' &&
                       <Typography variant="body2">
                         Déscription : {e.nom_factor} {e.date_factor}
                       </Typography>
@@ -325,78 +317,7 @@ function ActionDetails() {
     <Box sx={{ minWidth: 275 }}>
       <div className="row">
         <div variant="outlined">{card}</div>
-        <div>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">Nom société</TableCell>
-                  <TableCell align="center">Date du RDV</TableCell>
-                  <TableCell align="center">Nom interlocuteur</TableCell>
-                  <TableCell align="center">Crédit_cop</TableCell>
-                  <TableCell align="center">compte rendu </TableCell>
-                  <TableCell align="center">besoin</TableCell>
-                  <TableCell align="center">Etat</TableCell>
-                  
-                </TableRow>
-              </TableHead>
-              <TableBody>
 
-              </TableBody>
-              <TableBody>
-                {
-
-                  ACtionFilter.slice(page2 * rowsPerPage2, page2 * rowsPerPage2 + rowsPerPage2).map((row, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        <a href={`/modifier/${row.id}`}>{row.nom_societe}</a>
-                      </TableCell>
-                      <TableCell align="center">{moment(row.date_rdv).format("DD  MMMM YYYY HH:mm")}</TableCell>
-                      <TableCell align="center">{row.nom_interlocuteur}</TableCell>
-                      <TableCell align="center"> {row.credit_cop}</TableCell>
-                      <TableCell align="center"> {row.description}</TableCell>
-                      <TableCell align="center"> {row.besoin}</TableCell>
-                      {row.validation === 'realiser' && (
-                        <TableCell align="center">
-
-                          <Chip label="réalisé" color="success" />
-
-
-                        </TableCell>
-
-                      )}
-                      {row.validation === 'non realiser' && (
-                        <TableCell align="center">
-                          <Chip label="Non réalisé" color="error" />
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                  ))
-
-
-
-                }
-
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[2, 5, 10]}
-            labelRowsPerPage='lignes par page'
-            component="div"
-            count={ACtionFilter.length}
-            rowsPerPage={rowsPerPage2}
-            page={page2}
-            onPageChange={handleChangePage2}
-            onRowsPerPageChange={handleChangeRowsPerPage2}
-            labelDisplayedRows={({ from, to, count }) => `Affichage des pages ${from}-${to}`}
-          />
-
-        </div>
       </div>
     </Box>
   );

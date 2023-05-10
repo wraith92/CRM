@@ -17,7 +17,6 @@ import UsersInfo from '../pages/User'
 import CustomerModify from '../pages/societeMod'
 import ActionMod from '../pages/ActionMod'
 import InterlocuteurMod from '../pages/InterlocuteurMod'
-import { Redirect } from 'react-router-dom';
 import PageError from '../pages/Error-page';
 import RoleUser from "../controllers/Role";
 

@@ -2,24 +2,18 @@
 const express = require("express");
 const cors = require("cors");
 const path =require('path')
-const proxy = require('express-http-proxy');
 const app = express();
 const PORT = process.env.PORT || 8080 ;
-const axios = require("axios")
 const db = require("./models");
-const { user } = require("./models");
-const { hostname } = require("os");
 const Role = db.role;
-const User = db.user;
-const Societe = db.societe;
 var corsOptions = {
-  origin: "https://sofcem.mtech.dev"
+  origin: "http://localhost:3000"
 };
 
 app.use(cors(corsOptions));
 console.log(cors(corsOptions))
 app.use(express.static(path.join(__dirname , "client","build")))
-//all path in front end 
+//all path in front end
 app.get('/register', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
@@ -84,18 +78,18 @@ require('./routes/interlocuteur')(app);
 
 
 
-//role insert data en dure 
+//role insert data en dure
 function initial() {
   Role.create({
     id: 1,
     name: "cemeca"
   });
- 
+
   Role.create({
     id: 2,
     name: "sofitech"
   });
- 
+
   Role.create({
     id: 3,
     name: "admin_cemaca"
@@ -127,8 +121,8 @@ let mysql = require('mysql2');
 let connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Adminsqlsofcem3/',
-  database: 'sofcem_base_crm'
+  password: '',
+  database: 'testdb'
 });
 
 connection.connect(function(err) {
@@ -139,7 +133,7 @@ connection.connect(function(err) {
   console.log('Connected to the MySQL server.');
 });
 
-//syncroniser la base de donner 
+//syncroniser la base de donner
 
 /*
 db.sequelize.sync({force: true}).then(() => {
@@ -148,8 +142,8 @@ db.sequelize.sync({force: true}).then(() => {
 });
 */
 
-//listen port 
-app.listen(PORT,'144.91.97.91', () => {
+//listen port
+app.listen(PORT, () => {
   console.log(`Server is running `);
 });
 

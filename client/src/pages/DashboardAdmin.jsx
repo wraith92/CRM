@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
-import AuthService from "../services/auth.service";
-import { Link } from 'react-router-dom'
-import Chart from 'react-apexcharts'
+
 import { useSelector } from 'react-redux'
-import StatusCard from '../components/status-card/StatusCard'
-import Moment from 'react-moment';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import 'moment/locale/fr';
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import moment from "moment";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 //table class
 import Table from '@mui/material/Table';
@@ -24,21 +17,17 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@material-ui/core/TablePagination';
 import IconButton from '@mui/material/IconButton';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-solid-svg-icons/faFile';
 import SvgIcon from '@mui/material/SvgIcon';
 import PropTypes from 'prop-types';
-import Chip from '@mui/material/Chip';
-import { purple, red } from '@mui/material/colors';
-//controlleurs 
+//controlleurs
 import UserService from "../services/user.service";
 import RoleUser from "../controllers/Role";
 import Societe from '../controllers/Societe';
-//require page Societe
-import Autsociete from "../services/user.service";
+
 //require page Action
 import AuthAction from "../services/Action";
-//require page Interlocuteur 
+//require page Interlocuteur
 import AuthInter from "../services/Interlocuteur";
 
 const FontAwesomeSvgIcon = React.forwardRef((props, ref) => {
@@ -83,14 +72,13 @@ const DashboardAdmin = () => {
     const [valueDate1, setValueDate1] = React.useState("");
     const [valueDate2, setValueDate2] = React.useState("");
     const [search, setSearch] = useState('');
-       //GET role sofitech
-       const mysofitech = RoleUser.SofitechRole();
-       //GET role cemece
-       const mycemeca = RoleUser.CemecaRole();
-       //GET societer
-    console.log(listuser, 'liste des users ')
-    //SELECT WHERE SEARCH INPUT 
- 
+    //GET role sofitech
+    const mysofitech = RoleUser.SofitechRole();
+    //GET role cemece
+    const mycemeca = RoleUser.CemecaRole();
+    //GET societer
+    //SELECT WHERE SEARCH INPUT
+
     //Date change Action
     const mysn = 1000 * 3600 * 24
     const fltr_date = ListeAction.filter(task => (
@@ -102,13 +90,11 @@ const DashboardAdmin = () => {
     const handleChangeDate2 = (newValue) => {
         setValueDate2(newValue);
     };
-    console.log(fltr_date);
     //afficher la liste des users
     const retrieveUsers = () => {
         UserService.getListe_User()
             .then((response) => {
                 setListeUser(response.data);
-                console.log(response.data);
             })
             .catch((e) => {
                 console.log(e);
@@ -119,7 +105,6 @@ const DashboardAdmin = () => {
     const retrieveActions = () => {
         AuthAction.findAll().then((response) => {
             SetAction(response.data)
-            console.log(response.data)
         })
             .catch((e) => {
                 console.log(e);
@@ -127,24 +112,23 @@ const DashboardAdmin = () => {
     };
 
 
-    //afficher la liste des interlocuteur 
+    //afficher la liste des interlocuteur
     const retrieveInter = () => {
         AuthInter.findAll().then((response) => {
             setInterlocuteur(response.data)
-            console.log(response.data)
         })
             .catch((e) => {
                 console.log(e);
             });
     };
-    //afficher la liste des societes 
+    //afficher la liste des societes
     const retrieveSociete = () => {
-          //afficher cemca           
-          if (mycemeca) Societe.CemecaListe().then(data => setsociete(data))
-          ;
-      //afficher sofitech           
-      if (mysofitech) Societe.AllSociete().then(data => setsociete(data))
-          ;
+        //afficher cemca
+        if (mycemeca) Societe.CemecaListe().then(data => setsociete(data))
+            ;
+        //afficher sofitech
+        if (mysofitech) Societe.AllSociete().then(data => setsociete(data))
+            ;
     };
 
 
@@ -156,16 +140,11 @@ const DashboardAdmin = () => {
         retrieveActions()
         retrieveInter()
         retrieveSociete()
-    }, [mysofitech,mycemeca])
+    }, [mysofitech, mycemeca])
 
-    console.log(societe, 'societe')
-
-
-
-    const themeReducer = useSelector(state => state.ThemeReducer.mode)
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [page, setPage] = React.useState(0);
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (newPage) => {
         setPage(newPage);
     };
     const handleChangeRowsPerPage = (event) => {
@@ -181,24 +160,16 @@ const DashboardAdmin = () => {
                 <div>
                     <h2 className="page-header">Tableau de bord Admin
                     </h2>
-
                     <div className="row">
                         {/* SEARCH INPUT */}
-
-
-
-
                         {/* activiter commercial cree */}
                         <div className="col-12">
                             <div className="card">
-
                                 <div className="card__body">
                                     <div className="row">
-
                                         <div className="col-3">
                                             <p>Date début d'action</p>
                                             <LocalizationProvider dateAdapter={AdapterMoment} >
-
                                                 <Stack spacing={5}>
                                                     <DesktopDatePicker
                                                         value={valueDate1}
@@ -226,15 +197,12 @@ const DashboardAdmin = () => {
                                                 <input type="text"
                                                     className="form-control"
                                                     placeholder="Recherche "
-                                                 
                                                     onChange={(e) => setSearch(e.target.value)}
                                                 />
                                                 <i className='bx bx-search'></i>
                                             </div>
                                         </div>
                                     </div>
-
-
                                     <TableContainer component={Paper}>
                                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                             <TableHead>
@@ -244,7 +212,6 @@ const DashboardAdmin = () => {
                                                     <TableCell align="center">Interlocuteur</TableCell>
                                                     <TableCell align="center">Societes</TableCell>
                                                     <TableCell align="center">info</TableCell>
-
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
@@ -258,23 +225,15 @@ const DashboardAdmin = () => {
                                                             key={index}
                                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                         >
-
-
-
                                                             <TableCell align="center">{row.username}</TableCell>
-
                                                             <TableCell align="center">{(fltr_date.filter(task => task.id_utili === row.id)).length}</TableCell>
-
                                                             <TableCell align="center">{(interlocuteur.filter(task => task.id_utili === row.id)).length}</TableCell>
-
                                                             <TableCell align="center">{(societe.filter(task => task.id_utili === row.id)).length}</TableCell>
-
                                                             <TableCell align='center' style={{ minWidth: 50 }}>
                                                                 <IconButton aria-label="Example" href={`/user/${row.id}`} >
                                                                     <FontAwesomeSvgIcon icon={faFile} />
                                                                 </IconButton>
                                                             </TableCell>
-
                                                         </TableRow>
                                                     ))}
                                             </TableBody>
@@ -291,16 +250,11 @@ const DashboardAdmin = () => {
                                         onRowsPerPageChange={handleChangeRowsPerPage}
                                         labelDisplayedRows={({ from, to, count }) => `Affichage des pages ${from}-${to} sur un total de  ${count} pages`}
                                     />
-
-
                                 </div>
 
                             </div>
                         </div>
-
-
                     </div>
-
                 </div>
 
             ) :

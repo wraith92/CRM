@@ -42,7 +42,7 @@ const ListeDashboard = (props) => {
                                         <TableCell align="center">{row.observation}</TableCell>
                                         <TableCell align="center">{row.adresse_local}</TableCell>
                                         <TableCell align="center"> <Moment fromNow>{row.createdAt}</Moment></TableCell>
-                                        {row.app_cemeca == 1 && (
+                                        {row.app_cemeca === 1 && (
                                             <TableCell align="right">
 
                                                 <Chip label=" Adhérent Cemeca" color="primary" />
@@ -51,7 +51,7 @@ const ListeDashboard = (props) => {
                                             </TableCell>
 
                                         )}
-                                        {row.app_sofitech == 1 && (
+                                        {row.app_sofitech === 1 && (
                                             <TableCell align="center">
                                                 <Chip label=" Prospect Sofitech" color="warning" />
                                             </TableCell>
@@ -73,7 +73,7 @@ const ListeDashboard = (props) => {
                                         <TableCell align="center">{row.observation}</TableCell>
                                         <TableCell align="center">{row.adresse_local}</TableCell>
                                         <TableCell align="center"> <Moment fromNow>{row.createdAt}</Moment></TableCell>
-                                        {row.app_cemeca == 1 && (
+                                        {row.app_cemeca === 1 && (
                                             <TableCell align="right">
 
                                                 <Chip label=" Adhérent Cemeca" color="primary" />
@@ -82,7 +82,7 @@ const ListeDashboard = (props) => {
                                             </TableCell>
 
                                         )}
-                                        {row.app_sofitech == 1 && (
+                                        {row.app_sofitech === 1 && (
                                             <TableCell align="center">
                                                 <Chip label=" Prospect Sofitech" color="warning" />
                                             </TableCell>
@@ -112,8 +112,8 @@ const ListeDashboard = (props) => {
                 <Link to='Societes'>Voir plus</Link>
             </div>
         </div>
-    
+
       );
 }
- 
+
 export default ListeDashboard;

@@ -12,7 +12,7 @@ class AuthService {
       .then(response => {
         if (response.data.accessToken) {
           sessionStorage.setItem("user", JSON.stringify(response.data));
-        
+
         }
 
         return response.data;
@@ -22,7 +22,7 @@ class AuthService {
   logout() {
     sessionStorage.removeItem("user");
   }
-  runLogoutTimer(timer) {
+  runLogoutTimer() {
     setTimeout(() => {
         this.logout();
     }, 5000);
@@ -34,7 +34,7 @@ class AuthService {
       username,
       password,
       message
-      
+
     });
 
   }
@@ -55,7 +55,7 @@ class AuthService {
       email,
       roles,
       password,
-      
+
     });
   }
 

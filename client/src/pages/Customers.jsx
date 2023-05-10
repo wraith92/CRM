@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 import SvgIcon from '@mui/material/SvgIcon';
 import PropTypes from 'prop-types';
-import UserService from "../services/user.service";
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
-import { faInfo } from '@fortawesome/free-solid-svg-icons/faInfo';
 import { faFile } from '@fortawesome/free-solid-svg-icons/faFile';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import AuthService from "../services/auth.service";
@@ -15,9 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../components/topnav/topnav.css'
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-//material ui table 
-import EditIcon from '@mui/icons-material/Edit';
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+//material ui table
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Table,
@@ -30,9 +25,6 @@ import {
   Grid,
   Typography,
   TablePagination,
-  TableFooter,
-  Divider,
-  Fab,
 } from '@material-ui/core';
 import RoleUser from "../controllers/Role";
 import Societe from '../controllers/Societe';
@@ -112,7 +104,7 @@ function Customers() {
 
 
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (newPage) => {
     setPage(newPage);
   };
 
@@ -121,7 +113,7 @@ function Customers() {
     setPage(0);
   };
 
-  //liste des users 
+  //liste des users
   const classes = useStyles();
   const user = AuthService.getCurrentUser()
   const [page, setPage] = React.useState(0);
@@ -134,7 +126,7 @@ const mycemeca = RoleUser.CemecaRole();
 //GET societer
   const [searchAll, setSearchAll] = useState("");
 
-  //SELECT WHERE SEARCH INPUT 
+  //SELECT WHERE SEARCH INPUT
   const onChangeSearchAll = (e) => {
     const searchAll = e.target.value;
     setSearchAll(searchAll);
@@ -180,17 +172,17 @@ const mycemeca = RoleUser.CemecaRole();
   //SELECT ALL SOCIETES (CEMECA/SOFITECH)
   const retrieveTutorials = () => {
     if (user) {
-    //afficher cemca           
+    //afficher cemca
     if (mycemeca) Societe.CemecaListe().then(data => SetTest(data))
     ;
-  //afficher sofitech           
+  //afficher sofitech
     if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
     ;
     }
 
   };
 
-  //USE_EFFECT 
+  //USE_EFFECT
   useEffect(() => {
     retrieveTutorials()
   }, [mysofitech,mycemeca]);
@@ -275,7 +267,7 @@ const mycemeca = RoleUser.CemecaRole();
                         </TableCell>
                       }
 
-              
+
 
                       <TableCell align='left' style={{ minWidth: 50 }}>
                         <Button startIcon={<FontAwesomeIcon icon={faUser} />} href={`/Interlocuteur/${row.siret}`} variant="outlined" size="small"> +
@@ -328,7 +320,7 @@ const mycemeca = RoleUser.CemecaRole();
                         </TableCell>
                       }
 
-            
+
 
                       <TableCell align='left' style={{ minWidth: 50 }}>
                         <Button startIcon={<FontAwesomeIcon icon={faUser} />} href={`/Interlocuteur/${row.siret}`} variant="outlined" size="small"> +

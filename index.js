@@ -4,10 +4,12 @@ const cors = require("cors");
 const path =require('path')
 const app = express();
 const PORT = process.env.PORT || 8080 ;
+require('dotenv').config();
 const db = require("./models");
 const Role = db.role;
+const ADRESSE=process.env.ADRESSE
 var corsOptions = {
-  origin: "http://localhost:3000"
+  origin: process.env.HOST
 };
 
 app.use(cors(corsOptions));
@@ -117,12 +119,12 @@ function initial() {
 }
 /* Get hostname of os in Node.js */
 let mysql = require('mysql2');
-
-let connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'testdb'
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT
 });
 
 connection.connect(function(err) {
@@ -143,7 +145,9 @@ db.sequelize.sync({force: true}).then(() => {
 */
 
 //listen port
-app.listen(PORT, () => {
-  console.log(`Server is running `);
+app.listen(PORT, ADRESSE, () => {
+  console.log(`Server is running `,PORT,"cors",process.env.HOST);
+  console.log()
 });
+
 

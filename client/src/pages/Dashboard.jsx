@@ -95,7 +95,7 @@ const Dashboard = () => {
 
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [page, setPage] = React.useState(0);
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = ( newPage) => {
         setPage(newPage);
     };
     const handleChangeRowsPerPage = (event) => {

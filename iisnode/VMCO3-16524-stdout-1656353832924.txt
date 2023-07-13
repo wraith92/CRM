@@ -1,0 +1,2 @@
+[Function: corsMiddleware]
+Server is running on port \\.\pipe\ecb49b54-6a3b-4823-bc18-04ba57de1ce2. [object Object]

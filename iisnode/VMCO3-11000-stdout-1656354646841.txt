@@ -1,0 +1,3 @@
+[Function: corsMiddleware]
+[Function: proxy]
+Server is running on port \\.\pipe\bc198800-7923-4b10-8e20-35d72794a559. [object Object]

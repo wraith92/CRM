@@ -1,0 +1,87 @@
+<html>
+<head>
+    <title>iisnode logs</title>
+    <style type="text/css">
+        body
+        {
+            font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
+        }
+        table
+        {
+            border-collapse: collapse;
+        }
+        td, th
+        {
+            border: 1px solid lightgray;
+            padding: 3px 7px 2px 7px;
+        }
+        th
+        {
+            text-align: left;
+            padding-top: 5px;
+            padding-bottom: 4px;
+            background-color: Gray;
+            color: #ffffff;
+        }
+        td.stderr
+        {
+            color: Red;
+        }
+    </style>
+</head>
+<body>
+    <table id="logFilesTable">
+        <tr>
+            <th>
+                Computer name
+            </th>
+            <th>
+                PID
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Created
+            </th>
+            <th>
+                Link
+            </th>
+        </tr>
+    </table>
+    <p id="lastUpdated"></p>
+    <script type="text/javascript">
+
+        // this is replaced with actual data at runtime by code in interceptor.js
+        var logFiles = [{"file":"VMCO3-10312-stderr-1656353413830.txt","computername":"VMCO3","pid":10312,"type":"stderr","created":1656353413830},{"file":"VMCO3-10312-stdout-1656353413823.txt","computername":"VMCO3","pid":10312,"type":"stdout","created":1656353413823},{"file":"VMCO3-10484-stderr-1656353777689.txt","computername":"VMCO3","pid":10484,"type":"stderr","created":1656353777689},{"file":"VMCO3-10484-stdout-1656353777680.txt","computername":"VMCO3","pid":10484,"type":"stdout","created":1656353777680},{"file":"VMCO3-11000-stderr-1656354646851.txt","computername":"VMCO3","pid":11000,"type":"stderr","created":1656354646851},{"file":"VMCO3-11000-stdout-1656354646841.txt","computername":"VMCO3","pid":11000,"type":"stdout","created":1656354646841},{"file":"VMCO3-11940-stderr-1656352534625.txt","computername":"VMCO3","pid":11940,"type":"stderr","created":1656352534625},{"file":"VMCO3-11940-stdout-1656352534616.txt","computername":"VMCO3","pid":11940,"type":"stdout","created":1656352534616},{"file":"VMCO3-12004-stderr-1656353355541.txt","computername":"VMCO3","pid":12004,"type":"stderr","created":1656353355541},{"file":"VMCO3-12004-stdout-1656353355532.txt","computername":"VMCO3","pid":12004,"type":"stdout","created":1656353355532},{"file":"VMCO3-12772-stderr-1656352556158.txt","computername":"VMCO3","pid":12772,"type":"stderr","created":1656352556158},{"file":"VMCO3-12772-stdout-1656352556152.txt","computername":"VMCO3","pid":12772,"type":"stdout","created":1656352556152},{"file":"VMCO3-13032-stderr-1656352530849.txt","computername":"VMCO3","pid":13032,"type":"stderr","created":1656352530849},{"file":"VMCO3-13032-stdout-1656352530841.txt","computername":"VMCO3","pid":13032,"type":"stdout","created":1656352530841},{"file":"VMCO3-14708-stderr-1689241903439.txt","computername":"VMCO3","pid":14708,"type":"stderr","created":1689241903439},{"file":"VMCO3-14708-stdout-1689241903392.txt","computername":"VMCO3","pid":14708,"type":"stdout","created":1689241903392},{"file":"VMCO3-15308-stderr-1656353353809.txt","computername":"VMCO3","pid":15308,"type":"stderr","created":1656353353809},{"file":"VMCO3-15308-stdout-1656353353800.txt","computername":"VMCO3","pid":15308,"type":"stdout","created":1656353353800},{"file":"VMCO3-15692-stderr-1656353552194.txt","computername":"VMCO3","pid":15692,"type":"stderr","created":1656353552194},{"file":"VMCO3-15692-stdout-1656353552186.txt","computername":"VMCO3","pid":15692,"type":"stdout","created":1656353552186},{"file":"VMCO3-15976-stderr-1656354218252.txt","computername":"VMCO3","pid":15976,"type":"stderr","created":1656354218252},{"file":"VMCO3-15976-stdout-1656354218243.txt","computername":"VMCO3","pid":15976,"type":"stdout","created":1656354218243},{"file":"VMCO3-16524-stderr-1656353832933.txt","computername":"VMCO3","pid":16524,"type":"stderr","created":1656353832933},{"file":"VMCO3-16524-stdout-1656353832924.txt","computername":"VMCO3","pid":16524,"type":"stdout","created":1656353832924}];
+        var lastUpdated = 1689241905719;
+        var date = new Date();
+
+        date.setTime(lastUpdated);
+        document.getElementById('lastUpdated').innerHTML = 'Index was last updated ' + date;
+
+        logFiles.sort(function (a, b) {
+            return b.created - a.created;
+        });
+
+        var logFilesTable = document.getElementById("logFilesTable");
+        for (var i = 0; i < logFiles.length; i++) {
+            var logFile = logFiles[i];
+            date.setTime(logFile.created);
+            var row = logFilesTable.insertRow(-1);
+            var computerNameCell = row.insertCell(0);
+            var pidCell = row.insertCell(1);
+            var typeCell = row.insertCell(2);
+            var dateCell = row.insertCell(3);
+            var logCell = row.insertCell(4);
+            computerNameCell.innerHTML = logFile.computername;
+            pidCell.innerHTML = logFile.pid.toString();
+            typeCell.innerHTML = logFile.type;
+            typeCell.setAttribute('class', logFile.type);
+            dateCell.innerHTML = date.toString();
+            logCell.innerHTML = '<a href="' + logFile.file + '">log</a>';
+        };
+
+    </script>
+</body>
+</html>

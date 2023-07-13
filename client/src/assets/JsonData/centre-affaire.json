@@ -1,0 +1,311 @@
+
+ [
+ 
+    {
+      "TYPE": "DGB",
+      "NOM": "AGEN"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "BAYONNE"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "BORDEAUX GARONNE"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "BORDEAUX MERIGNIAC"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "BRIVE LA GAILLARDE"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "DAX"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "LA ROCHELLE"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "LIMOGES"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "NIORT"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "PAU"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "POITIERS"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "SARLATE LA CANEDA"
+    },
+    {
+      "TYPE": "DGB",
+      "NOM": "E-AGENCE DE BORDEAUX "
+    },
+                        
+  
+    {
+      "TYPE": "DGL",
+      "NOM": "ANNECY"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "BESANCON"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "CHAMELIERES"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "DIJON"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "GRENOBLE"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "GRENOBLE MINISTRAL"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "ISLE D'ABEAU"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "LE PUYE EN VELAY "
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "LYON LYAUTEY"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "LYON PAR DIEU"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "LYONN SAXE"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "SAINT ETIENNNE"
+    },
+    {
+      "TYPE": "DGL",
+      "NOM": "VALENCE"
+    },
+    
+    {
+      "TYPE": "DGM",
+      "NOM": "AIX EN PROVENCE "
+    },
+    {
+      "TYPE": "DGM",
+      "NOM": "AVIGNON"
+    },
+    {
+      "TYPE": "DGM",
+      "NOM": "CARCASSONNE"
+    },
+    {
+      "TYPE": "DGM",
+      "NOM": "MARSEILLE PRADO"
+    },
+    {
+      "TYPE": "DGM",
+      "NOM": "MONTPELLIER"
+    },
+    {
+      "TYPE": "DGM",
+      "NOM": "NICE"
+    },
+    {
+      "TYPE": "DGM",
+      "NOM": "NIMES"
+    },
+    {
+      "TYPE": "DGM",
+      "NOM": "TOULON"
+    },
+    {
+      "TYPE": "DGM",
+      "NOM": "TOULOUSE"
+    },
+    
+    {
+      "TYPE": "DGNEC",
+      "NOM": "AMIENS"
+    },
+    {
+      "TYPE": "DGNEC",
+      "NOM": "ARRAS"
+    },
+
+    {
+      "TYPE": "DGNEC",
+      "NOM": "DUNKERQUE"
+    },
+    {
+      "TYPE": "DGNEC",
+      "NOM": "LILLE CENTRE"
+    },
+    {
+      "TYPE": "DGNEC",
+      "NOM": "METZE"
+    },
+    {
+      "TYPE": "DGNEC",
+      "NOM": "NANCY"
+    },
+    {
+      "TYPE": "DGNEC",
+      "NOM": "ORLEANS"
+    },
+    {
+      "TYPE": "DGNEC",
+      "NOM": "REIMS"
+    },
+    {
+      "TYPE": "DGNEC",
+      "NOM": "STARBOURG"
+    },
+    {
+      "TYPE": "DGNEC",
+      "NOM": "TOURS"
+    },
+    
+    {
+      "TYPE": "DGO",
+      "NOM": " ANGERS"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "CAEN"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "LE HAVRE"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "LE MANS"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "LORIENT"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "NANTES"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "QUIMPER"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "BREST"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "RENNES"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "ROUEN"
+    },
+    {
+      "TYPE": "DGO",
+      "NOM": "E-AGENCE DE ROUEN"
+    },
+  
+    {
+      "TYPE": "DGP",
+      "NOM": "CERGY"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "EVRY"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "MAISON-ALFORT"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "MASSY"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "MELUN"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "NANTERRE LA DEFENSE"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "LOGNES"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "PARIS ALESIA"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "PARIC CONVENTION"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "PARIS COURCELLES"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "PARIS NATION"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "PARIS GARE DE L'EST"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "PARIS ODEON"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "PARIS OPERA"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "SAINT DENIS"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "VERSAILLES"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "CENTRE D'AFFAIRES PESARO"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "E-AGENCE DE PARIS"
+    },
+    {
+      "TYPE": "DGP",
+      "NOM": "E-AGENCE DU PERSONNEL"
+    }
+    ]

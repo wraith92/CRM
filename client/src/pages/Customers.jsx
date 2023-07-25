@@ -104,14 +104,7 @@ function Customers() {
 
 
 
-  const handleChangePage = (newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+ 
 
   //liste des users
   const classes = useStyles();
@@ -125,7 +118,14 @@ const mysofitech = RoleUser.SofitechRole();
 const mycemeca = RoleUser.CemecaRole();
 //GET societer
   const [searchAll, setSearchAll] = useState("");
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0); // Reset the page to the first one when changing rows per page
+  };
   //SELECT WHERE SEARCH INPUT
   const onChangeSearchAll = (e) => {
     const searchAll = e.target.value;
@@ -182,15 +182,15 @@ const mycemeca = RoleUser.CemecaRole();
 
   };
 
-  //USE_EFFECT
-  useEffect(() => {
-    retrieveTutorials()
-  }, [mysofitech,mycemeca]);
-  useEffect(() => {
-    ListTest.sort((b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-  }, [ListTest]);
+  
   const [Filter, SetFilter] = useState(ListTest);
-
+//USE_EFFECT
+useEffect(() => {
+  retrieveTutorials()
+}, [mysofitech,mycemeca,searchAll]);
+useEffect(() => {
+  ListTest.sort((b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+}, [Filter]);
 
 
 
@@ -349,14 +349,15 @@ const mycemeca = RoleUser.CemecaRole();
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={ListTest.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+  rowsPerPageOptions={[10, 25, 100]}
+  component="div"
+  count={ListTest.length}
+  rowsPerPage={rowsPerPage}
+  page={page}
+  onPageChange={handleChangePage}
+  onRowsPerPageChange={handleChangeRowsPerPage}
+/>
+
         </Paper>
 
       </div>

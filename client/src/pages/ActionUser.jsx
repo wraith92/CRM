@@ -1,95 +1,104 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import Stack from '@mui/material/Stack';
 import Form from "react-validation/build/form";
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import Grid from '@mui/material/Grid';
-import CardContent from '@mui/material/CardContent';
+import ExportToExcel from 'react-export-table-to-excel';
 import CheckButton from "react-validation/build/button";
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import AuthAction from '../services/Action';
 import AuthService from "../services/auth.service";
 import RoleUser from "../controllers/Role";
 import moment from "moment";
-import UserService from "../services/user.service";
 import 'moment/locale/fr';
-//table class
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
-import Chip from '@mui/material/Chip';
+import Switch from '@mui/material/Switch';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid,
+  Typography,
+  TablePagination,
+} from '@material-ui/core';
+import UserService from '../services/user.service';
 
-const initialSocieteState = {
-  id: "",
-  validation: "",
-};
-
-function ActionDetails() {
-  //GET role admin
+const ActionDetails = () => {
+  const [showFullDescription, setFullDescription] = useState(false);
   const myadmin = RoleUser.AdminRole();
+  const ReadMore = ({ children }) => {
+    const text = children;
+    const [isReadMore, setIsReadMore] = useState(true);
+    const toggleReadMore = () => {
+      setIsReadMore(!isReadMore);
+    };
 
+    if (!text) {
+      return null;
+    }
 
+    return (
+      <p className="text">
+        {isReadMore ? text.slice(0, 30) : text}
+        <span onClick={toggleReadMore} className="read-or-hide">
+          {isReadMore ? "...read more" : " show less"}
+        </span>
+      </p>
+    );
+  };
 
-
-  //GET USER INFO
-  const user = AuthService.getCurrentUser()
-  //GET Action
-  const [Vali, setVali] = useState({ initialSocieteState });
+  const user = AuthService.getCurrentUser();
+  const [Vali, setVali] = useState({});
   const [Action, SetAction] = useState([]);
   const [ACtionFilter, SetActionFilter] = useState([]);
   const [Etat, setEtat] = useState([]);
   const [Test, setTest] = useState([]);
-
+  const [checked, setChecked] = useState(false);
+  const label = { inputProps: { 'aria-label': 'Color switch demo' } };
+  const [realiserFilter, setRealiserFilter] = useState(false);
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
   const form = useRef();
   const checkBtn = useRef();
-  const [search, setSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [listuser, setListeUser] = useState([]);
-  const [rowsPerPage2, setRowsPerPage2] = React.useState(10);
-  const [page2, setPage2] = React.useState(0);
-  const handleChangePage2 = (newPage) => {
-    setPage2(newPage);
-  };
-  const handleChangeRowsPerPage2 = (event) => {
-    setRowsPerPage2(+event.target.value);
-    setPage2(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  //SELECT ALL SOCIETES WHERE AUTH
-  const retrieveActions = (e) => {
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const retrieveActions = () => {
     if (user) {
       AuthAction.findAll()
         .then((response) => {
           SetAction(response.data);
-
         })
         .catch((e) => {
           console.log(e);
         });
-
     }
   };
-  //afficher la liste des users
+
   const retrieveUsers = () => {
     UserService.getListe_User()
       .then((response) => {
         setListeUser(response.data);
-        console.log(response.data);
       })
       .catch((e) => {
         console.log(e);
       });
   };
+
   const valideAction = (e) => {
     var data = {
       id: Test,
@@ -98,235 +107,224 @@ function ActionDetails() {
 
     e.preventDefault();
     form.current.validateAll();
-    if (checkBtn.current.context._errors.length === 0) {
+    if (checkBtn.current && checkBtn.current.context && checkBtn.current.context._errors.length === 0) {
       AuthAction.update(Test, data)
         .then(response => {
           setVali({
             id: response.data.id,
-            validation: response.data.validation
-
-          }
-          );
+            validation: response.data.validation,
+          });
           setSuccessful(true);
-          window.location.reload()
-        },
-          error => {
-            const resMessage =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString();
-            setMessage(resMessage);
-          }
-        )
+          window.location.reload();
+        })
         .catch(e => {
           console.log(e);
-
         });
     }
-
-  }
+  };
 
   useEffect(() => {
-    retrieveActions()
-    retrieveUsers()
-
+    retrieveActions();
+    retrieveUsers();
   }, []);
+
   useEffect(() => {
+    console.log("ACtionFilter:", ACtionFilter);
+    console.log("page:", page);
+    console.log("rowsPerPage:", rowsPerPage);
+
     if (myadmin) {
-      SetActionFilter(Action)
+      SetActionFilter(Action);
       Action.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
+    } else {
+      const data = Action.filter((task) => task.id_utili === user.id);
+      data.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
+      SetActionFilter(data);
     }
-    else {
-      const data = Action.filter(task => task.id_utili === user.id)
-      SetActionFilter(data)
-      ACtionFilter.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
+
+    // Apply the filter based on "Etat" (Status)
+    if (realiserFilter) {
+      SetActionFilter((prevFilter) => prevFilter.filter((task) => task.validation === 'realiser'));
+    } else {
+      SetActionFilter((prevFilter) => prevFilter.filter((task) => task.validation === 'non realiser'));
     }
-  }, [myadmin, Action]);
-  //CARD TABLE
-  const card = (
-    <React.Fragment>
-      {Etat === "realiser" ? (
-        <div className="form-group">
-          <div
-            className={
-              successful
-                ? "alert alert-success"
-                : ""
-            }
-            role="alert"
-          >
-            {message}
-          </div>
-        </div>
-      ) : (
-        <div className="form-group">
-          <div
-            className={
-              successful
-                ? "alert alert-danger"
-                : ""
-            }
-            role="alert"
-          >
-            {message}
-          </div>
-        </div>
-      )}
 
-      <div className="row">
-        <div className="col-12 list">
-          <div className="input-group mb-3">
-            <div className="topnav">
-              <div className="topnav__search">
-                <input type="text"
-                  className="form-control"
-                  placeholder="Recherche "
+    // Apply the filter based on the search term
+    if (searchTerm !== '') {
+      SetActionFilter((prevFilter) =>
+        prevFilter.filter((task) => task.nom_societe.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
 
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <i className='bx bx-search'></i>
-              </div>
-            </div>
-          </div>
-        </div>
+    // Update the page when filters change
+    setPage(0);
+  }, [myadmin, Action, searchTerm, realiserFilter, page, rowsPerPage]);
 
-        {
-          ACtionFilter
-            .filter((e) => {
-              return search.toLowerCase() === ''
-                ? e
-                : e.nom_societe.toLowerCase().includes(search.toLowerCase());
+  const handleSearchChange = (event) => {
+    const searchTerm = event.target.value || '';
+    setSearchTerm(searchTerm);
+  };
 
-
-            }).map((e) =>
-              <div className="col-4">
-                <Card variant="outlined" >
-                  <CardContent>
-
-                    {e.validation === 'realiser' &&
-                      <Typography variant="h5" component="div">
-                        <Stack spacing={1} alignItems="center">
-                          <Stack direction="row" spacing={1}>
-                            <Alert severity="success">
-                              <AlertTitle>Etat : réalisé </AlertTitle>
-                            </Alert>
-                          </Stack>
-
-                        </Stack>
-                      </Typography>
-                    }
-                    {e.validation === 'non realiser' &&
-                      <Typography variant="h5" component="div">
-                        <Stack spacing={1} alignItems="center">
-                          <Stack direction="row" spacing={1}>
-                            <Alert severity="warning">
-                              <AlertTitle>Etat : Non réalisé </AlertTitle>
-                            </Alert>
-                          </Stack>
-
-                        </Stack>
-                      </Typography>
-                    }
-
-                    <Typography variant="body2">
-                      Société : {e.nom_societe}
-                    </Typography>
-
-                    {myadmin &&
-                      (listuser.filter(task => task.id === e.id_utili)).map((index) => (
-                        <Typography variant="body2">
-                          commerciale :{index.username}
-                        </Typography>
-                      ))}
-                    <Typography sx={{ fontSize: 10 }} >
-                      Date activité commerciale : {moment(e.date_rdv).format("DD  MMMM YYYY  HH:mm")}
-                    </Typography>
-
-                    <Typography sx={{ fontSize: 10 }}>
-                      Besoin : {e.besoin}
-                    </Typography>
-                    <Typography sx={{ fontSize: 10 }}>
-                      decription : {e.description}
-                    </Typography>
-
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                      Date d'ajout dans le CRM : {moment(e.createdAt).format("DD  MMMM YYYY  HH:mm")}
-                    </Typography>
-                    {e.nom_assur === 'non realiser' &&
-                      <Typography variant="body2">
-                        Déscription : {e.nom_assur} {e.date_assur}
-                      </Typography>
-                    }
-
-                    {e.nom_factor === 'non realiser' &&
-                      <Typography variant="body2">
-                        Déscription : {e.nom_factor} {e.date_factor}
-                      </Typography>
-                    }
-                  </CardContent>
-                  <Grid container spacing={3}>
-                    <Grid item xs="auto">
-                      <Form onSubmit={valideAction} ref={form}>
-
-                        <button className="btn btn-success"
-                          onClick={() => (setTest(e.id), setMessage('Activité commerciale Réalisé'), setEtat('realiser'))}
-                          value={Vali.id = e.id}
-                          name="id"
-                        >
-                          Réalisé
-                        </button>
-
-                        <CheckButton style={{ display: "none" }} ref={checkBtn} />
-                      </Form>
-                    </Grid>
-                    <Grid item xs='auto'>
-
-                      <Form onSubmit={valideAction} ref={form}>
-
-                        <button className="btn btn-danger"
-                          onClick={() => (setTest(e.id), setMessage('Activité  commerciale Réalisé Annulé'), setEtat('non realiser'))}
-                          value={Vali.id = e.id}
-                          name="id"
-                        >
-                          Non Réalisé
-                        </button>
-                        <CheckButton style={{ display: "none" }} ref={checkBtn} />
-                      </Form>
-                    </Grid>
-                    <Grid item xs='auto'>
-                      <Button href={`/Actions/modifier/${e.id}`} color="warning"> Modifier</Button>
-                    </Grid>
-                  </Grid>
-                </Card>
-                <br />
-              </div>
-            )
-        }
-
-      </div>
-      <CardActions>
-        <Button href={`/`} size="small">Retour</Button>
-      </CardActions>
-
-    </React.Fragment>
-
-  );
+  const renderCardRow = (e) => {
+    return (
+      <TableRow key={e.id} style={{ fontSize: '10px' }}>
+        <TableCell style={{ fontSize: '6px' }}>
+          {e.validation === 'realiser' ? (
+            <Alert severity="success">
+              <AlertTitle></AlertTitle>
+            </Alert>
+          ) : (
+            <Alert severity="warning">
+              <AlertTitle></AlertTitle>
+            </Alert>
+          )}
+        </TableCell>
+        <TableCell style={{ fontSize: '8px' }}>{e.nom_societe}</TableCell>
+        {myadmin &&
+          (listuser.filter((task) => task.id === e.id_utili)).map((index) => (
+            <TableCell style={{ fontSize: '8px' }}>
+              <Typography variant="body2" key={index.id} style={{ fontSize: '8px' }}>
+                {index.username}
+              </Typography>
+            </TableCell>
+          ))}
+        <TableCell style={{ fontSize: '10px' }}>
+          {moment(e.date_rdv).format('DD MMMM YYYY HH:mm')}
+        </TableCell>
+        <TableCell style={{ fontSize: '8px' }}>{e.nom_interlocuteur}</TableCell>
+        <TableCell style={{ fontSize: '8px' }}>{e.besoin}</TableCell>
+        <TableCell style={{ fontSize: '8px' }}><ReadMore>{e.description}</ReadMore></TableCell>
+        <TableCell style={{ fontSize: '8px' }}>
+          {moment(e.createdAt).format('DD MMMM YYYY HH:mm')}
+        </TableCell>
+        <TableCell style={{ fontSize: '8px' }}>
+          <Form onSubmit={valideAction} ref={form}>
+            <button
+              className="btn btn-success"
+              onClick={() =>
+                (setTest(e.id),
+                  setMessage('Activité commerciale Réalisée'),
+                  setEtat('realiser'))
+              }
+              value={Vali.id = e.id}
+              name="id"
+              style={{ fontSize: '8px', padding: '4px' }}
+            >
+              Réalisé
+            </button>
+            <CheckButton style={{ display: 'none' }} ref={checkBtn} />
+          </Form>
+        </TableCell>
+        <TableCell style={{ fontSize: '8px' }}>
+          <Form onSubmit={valideAction} ref={form}>
+            <button
+              className="btn btn-danger"
+              onClick={() =>
+                (setTest(e.id),
+                  setMessage('Activité commerciale Réalisée Annulée'),
+                  setEtat('non realiser'))
+              }
+              value={Vali.id = e.id}
+              name="id"
+              style={{ fontSize: '8px', padding: '4px' }}
+            >
+              Non Réalisé
+            </button>
+            <CheckButton style={{ display: 'none' }} ref={checkBtn} />
+          </Form>
+        </TableCell>
+        <TableCell>
+          <Button href={`/Actions/modifier/${e.id}`} color="warning" size="small" style={{ fontSize: '8px' }}>
+            Modifier
+          </Button>
+        </TableCell>
+      </TableRow>
+    );
+  };
+  const getTableDataForExcel = () => {
+    // Extracting data for Excel export
+    const data = ACtionFilter.map((item) => ({
+      Etat: item.validation === 'realiser' ? 'Réalisé' : 'Non Réalisé',
+      Société: item.nom_societe,
+      Commerciale: item.id_utili, // Replace with the appropriate user data
+      DateActivitéCommerciale: moment(item.date_rdv).format('DD MMMM YYYY HH:mm'),
+      INTERLOCUTEUR: item.nom_interlocuteur,
+      Besoin: item.besoin,
+      Description: item.description,
+      DateAjout: moment(item.createdAt).format('DD MMMM YYYY HH:mm'),
+    }));
+  
+    console.log(data); // Add this line to check if the data is correct
+  
+    // Pass data and filename to ExportToExcel component
+    return <ExportToExcel data={data} fileName="action_data" />;
+  };
   return (
     <Box sx={{ minWidth: 275 }}>
       <div className="row">
-        <div variant="outlined">{card}</div>
+        <Grid container alignItems="center">
+          <Grid item xs={12} md={4}>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="recherche par Société"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Switch
+              {...label}
+              onChange={() => setRealiserFilter(!realiserFilter)}
+              checked={realiserFilter}
+            />
+          </Grid>
+          <Grid item xs={12} md={6} container justifyContent="flex-end">
+            {/* Add the Download Button */}
+            <Button variant="contained" color="primary" onClick={() => getTableDataForExcel}>
+  Download Excel
+</Button>
+          </Grid>
+        </Grid>
 
+        <div variant="outlined">
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: '40px', fontSize: '10px' }}>Etat</TableCell>
+                  <TableCell style={{ width: '60px', fontSize: '10px' }}>Société</TableCell>
+                  <TableCell style={{ width: '80px', fontSize: '10px' }}>Commerciale</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Date activité commerciale</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>INTERLOCUTEUR</TableCell>
+                  <TableCell style={{ width: '100px', fontSize: '10px' }}>Besoin</TableCell>
+                  <TableCell style={{ width: '100px', fontSize: '10px' }}>Description</TableCell>
+                  <TableCell style={{ width: '100px', fontSize: '10px' }}>Date d'ajout</TableCell>
+                  <TableCell style={{ width: '70px', fontSize: '10px' }}>Réalisé</TableCell>
+                  <TableCell style={{ width: '80px', fontSize: '10px' }}>Non Réalisé</TableCell>
+                  <TableCell style={{ width: '70px', fontSize: '10px' }}>Modifier</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {ACtionFilter
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(renderCardRow)}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={Action.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </div>
       </div>
     </Box>
   );
+};
 
-}
-
-export default ActionDetails
-
-
-
-
-
+export default ActionDetails;

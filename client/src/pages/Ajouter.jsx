@@ -39,6 +39,7 @@ const AddTutorial = () => {
   const vtel = checkForm.vtel;
   const vpays = checkForm.vpays;
   const vadresse = checkForm.vadresse;
+  const montant = checkForm.montant;
   const user = AuthService.getCurrentUser();
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
@@ -384,7 +385,7 @@ const AddTutorial = () => {
             id="title"
             value={Societe.code_postal = e[1]}
             onChange={handleInputChange}
-            validations={[required, vcode_postal]}
+            validations={[required]}
             name="code_postal"
           />
         )}

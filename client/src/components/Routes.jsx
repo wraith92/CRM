@@ -19,6 +19,7 @@ import ActionMod from '../pages/ActionMod'
 import InterlocuteurMod from '../pages/InterlocuteurMod'
 import PageError from '../pages/Error-page';
 import RoleUser from "../controllers/Role";
+import Evolis from '../pages/Evolis'
 
 const CRMRoutes = () => {
     const user = AuthService.getCurrentUser();
@@ -33,6 +34,7 @@ const CRMRoutes = () => {
                     <Route path='/admin'  component={DashboardAdmin} />
                     <Route path='/register' component={Register} />
                     <Route path='/Action/:id' component={Action} />
+                    <Route path='/Evolis' component={Evolis} />
                     <Route path='/AllAction' component={ActionDetails}  />
                     <Route path='/Societes' component={Customers} />
                     <Route path='/Societe/:id' component={CustomerInfo} />

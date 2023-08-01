@@ -14,10 +14,13 @@ import ChartDateSociete from '../components/chart/chartSociete';
 import InputDateDebut from '../components/Date/inputDate';
 import InputDateFin from '../components/Date/inputDate2';
 import { getStatusCardAdmin } from '../components/card/statuscardadmin';
+import  { getStatusCardEvolis } from '../components/card/statuscardEvolis';
 import { fncardadmin } from '../components/card/statuscard';
+import { useHistory } from 'react-router-dom';
 
 
 const Dashboard = () => {
+    const history = useHistory();
     //GET user
     const user = AuthService.getCurrentUser();
     //GET role admin
@@ -26,6 +29,8 @@ const Dashboard = () => {
     const mysofitech = RoleUser.SofitechRole();
     //GET role cemece
     const mycemeca = RoleUser.CemecaRole()
+
+    
 
     //GET societer
     const [societeListe, Setsociete] = useState([])
@@ -87,11 +92,10 @@ const Dashboard = () => {
     ]
     //card acrion admin
     const statusCardAdmin = getStatusCardAdmin({fltr_date})
+    const statusCardEvolis = getStatusCardEvolis({fltr_date})
       //carde action user
       const statusCard = fncardadmin({filtre_date_Action_util1})
-    //contrats
-    console.log(statusCard)
-    console.log(statusCardAdmin)
+   
 
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [page, setPage] = React.useState(0);
@@ -111,7 +115,17 @@ const Dashboard = () => {
         setRowsPerPage2(+event.target.value);
         setPage2(0);
     };
-
+    const navigateToEvolis = (fltr_date) => {
+        // Use the useHistory hook to get access to the history object
+        history.push({
+          pathname: '/Evolis',
+          state: { fltr_date }, // Pass the filterObject in the state property
+        });
+      };
+      const handleClickGoToEvolis = () => {
+        navigateToEvolis(fltr_date);
+      };
+      console.log(fltr_date)
     return (
 
         <div>
@@ -183,10 +197,10 @@ const Dashboard = () => {
 
                                         </div>
                                     ) : (
-                                        <div>
-                                            {
-                                                statusCard.map((item, index) => (
-                                                    <div className="row justify-content-md-center">
+                                         <div className='row'>
+                                           
+                                               {
+                                                statusCard.map((item, index) => (             
                                                         <div className="col-6" key={index}>
                                                             <a href="#">
                                                                 <StatusCard
@@ -195,8 +209,7 @@ const Dashboard = () => {
                                                                     title={item.title}
                                                                 />
                                                             </a>
-                                                        </div>
-                                                    </div>
+                                                        </div>                               
                                                 ))
                                             }
                                         </div>
@@ -212,23 +225,22 @@ const Dashboard = () => {
                         </div>
                         {/* cart des societe clientes  */}
                         {
-                            StatusContrat.map((item, index) => (
+                            statusCardEvolis.map((item, index) => (
                                 <div className="col-6" key={index}>
                                     <div className="row justify-content-md-center">
-                                        <div className="col-6" key={index}>
-                                            <a href="#">
-                                                <StatusCard
-                                                    icon={item.icon}
-                                                    count={item.count}
-                                                    title={item.title}
-                                                />
-                                            </a>
+                                        <div className="col-4" key={index}>
+                                        <button onClick={handleClickGoToEvolis}>
+            {/* Pass the props to the StatusCard component */}
+            <StatusCard icon={item.icon}  title={item.title} />
+          </button>
                                         </div>
                                     </div>
 
                                 </div>
                             ))
                         }
+                        
+                        
                         <div className="col-6">
                             <ChartDateSociete
                                 tableau_societe={tableau_societe}

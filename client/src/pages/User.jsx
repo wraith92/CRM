@@ -3,7 +3,6 @@ import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import UserService from "../services/user.service";
-import interService from "../services/Interlocuteur"
 import AuthService from "../services/auth.service";
 import AuthAction from "../services/Action"
 import { useParams } from "react-router-dom";
@@ -19,7 +18,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
 import Chip from '@mui/material/Chip';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import TextField from '@mui/material/TextField';

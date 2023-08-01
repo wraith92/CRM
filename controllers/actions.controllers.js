@@ -13,6 +13,7 @@ exports.create_action = (req, res) => {
     type_action: req.body.type_action,
     id_utili: req.body.id_utili,
     besoin: req.body.besoin,
+    montant: req.body.montant,
     credit_cop: req.body.credit_cop,
     validation: req.body.validation
 

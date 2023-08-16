@@ -29,13 +29,15 @@ import liste from "../assets/JsonData/centre-affaire.json";
 import besoinliste from "../assets/JsonData/besoin.json";
 import RoleUser from "../controllers/Role";
 import Societe from '../controllers/Societe';
-
+import Evolis from '../assets/JsonData/Evolis.json';
+import Modal from 'react-modal';
 
 const Action = (props) => {
   let history = useHistory();
   const [myJSON, setactive] = useState([]);
   const [myJSON2, setactive2] = useState([]);
   const [myJSON3, setactive3] = useState([]);
+  const [EvolisJson, setEvolisjSon] = useState([]);
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
   const form = useRef();
@@ -46,35 +48,36 @@ const Action = (props) => {
   const [Credit, setCredit] = useState(false);
   const [Factor, setFactor] = useState(false);
   const sofitech = RoleUser.SofitechRole();
+  const [showInvestissementProductif, setShowInvestissementProductif] = useState(false);
   //GET role cemece
   const cemeca = RoleUser.CemecaRole();
   const user = AuthService.getCurrentUser();
+  myJSON2.join()
   useEffect(() => {
     if (user) {
-      //INTERLOCUTEUR
-      AuthInter.findAll().then((response) => {
-        setInterlocuteur(response.data)
-      })
-
+      // INTERLOCUTEUR
+      AuthInter.findAll()
+        .then((response) => {
+          setInterlocuteur(response.data);
+        })
         .catch((e) => {
           console.log(e);
         });
+
+      // Check if "Investissement productif" is in the selected besoin
+      if (myJSON2.join().includes("Investissement productif")) {
+        setShowInvestissementProductif(true);
+      }
     }
-
-  }, [])
+  }, [myJSON2.join()]);
   useEffect(() => {
-
     if (user) {
-
       //afficher cemca
       if (cemeca) Societe.CemecaListe().then(data => setID_societe(data))
         ;
       //afficher sofitech
       if (sofitech) Societe.AllSociete().then(data => setID_societe(data))
         ;
-
-
-
     }
   }, [sofitech, cemeca])
   console.log(ID_societe)
@@ -105,6 +108,9 @@ const Action = (props) => {
   const land3 = (e) => {
     setactive3(Array.isArray(e) ? e.map(x => x.nom) : [])
   }
+  const land4 = (e) => {
+    setEvolisjSon(Array.isArray(e) ? e.map(x => x.NOM) : [])
+  }
 
   //filter action where siret
   const actItem = ID_societe.filter(task => task.siret === nb)
@@ -127,18 +133,23 @@ const Action = (props) => {
     nom_assur: "",
     nom_factor: "",
     besoin: "",
+    investissement: "",
     montant: "",
     credit_cop: "",
     validation: "non realiser"
 
   };
 
+
   //ajouter l'action
   const [Action, setAction] = useState({ initial1ctionState });
+ 
   const saveAction = (e) => {
     const credit_cop = myJSON.join();
     const besoin = myJSON2.join();
     const interl = myJSON3.join();
+    const investissement = EvolisJson.join();
+ 
     var data = {
       nom_interlocuteur: interl,
       nom_societe: actItem[0].nom_soc,
@@ -153,6 +164,7 @@ const Action = (props) => {
       type_action: Action.type_action,
       description: Action.description,
       besoin: besoin,
+      investissement: investissement,
       credit_cop: credit_cop,
       validation: "non realiser"
     };
@@ -166,6 +178,7 @@ const Action = (props) => {
             nom_societe: response.data.nom_societe,
             date_rdv: response.data.date_rdv,
             date_action: response.data.date_action,
+            investissement: response.data.investissement,
             besoin: response.data.besoin,
             montant: response.data.montant,
             id_utili: response.data.id_utili,
@@ -194,11 +207,13 @@ const Action = (props) => {
 
     }
   };
+  
   const handleInputChange = event => {
     const { name, value } = event.target;
     setAction({ ...Action, [name]: value });
 
   };
+     
 
   return (
     <div className="col-md-12">
@@ -313,6 +328,26 @@ const Action = (props) => {
                   />
                 </div>
               )}
+              {sofitech && showInvestissementProductif && (
+        <div className="form-group">
+          <label htmlFor="password">Investissement productif</label>
+          <Multiselect
+            displayValue="NOM"
+            groupBy="TYPE"
+            value="4"
+            isObject={true}
+            selectedValues={console.log}
+            onChange={console.log}
+            id={console.log}
+            onNOMPressFn={function noRefCheck() { }}
+            onRemove={function noRefCheck() { }}
+            onSearch={function noRefCheck() { }}
+            onSelect={land4}
+            options={Evolis}
+            showCheckbox
+          />
+        </div>
+      )}
                  <div className="form-group">
                 <label htmlFor="password">Montant</label>
                 <FormControl fullWidth>

@@ -14,7 +14,7 @@ import moment from "moment";
 import 'moment/locale/fr';
 import RoleUser from "../controllers/Role";
 import Societe from '../controllers/Societe';
-
+import UserService from "../services/user.service";
 
 function Customersinfo() {
   //GET role admin
@@ -48,14 +48,26 @@ function Customersinfo() {
   const [ListSociete, SetSociete] = useState([]);
   //les interlocuteur de la societes selon l'id 
   const [listInter, SetInter] = useState([]);
+   //GET USER INFO
+ const user = AuthService.getCurrentUser()
+  const [Liste_User, SetListe_User] = useState([]);
+  const retrieveUsers = () => {
+    UserService.getListe_User()
+      .then((response) => {
+        SetListe_User(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // Get ID from URL
   const params = useParams();
   var nb = parseInt(params.id);
+
   //FILTER  INTERLOCUTEUR WHERE ID SOCIETES 
   const id_soc = listInter.filter(task => task.id_soc === nb)
-  //GET USER INFO
-  const user = AuthService.getCurrentUser()
+ 
   //GET role sofitech
   const mysofitech = RoleUser.SofitechRole();
   //GET role cemece
@@ -103,9 +115,16 @@ function Customersinfo() {
 
   useEffect(() => {
     retrieveTutorials()
+    retrieveUsers()
     //ACTION 
   }, []);
-
+  console.log(Liste_User)
+// Function to get the responsible user name
+const getResponsibleName = (responsibleId) => {
+  const responsibleUser = Liste_User.find((user) => user.id === responsibleId);
+  return responsibleUser ? responsibleUser.username : 'Unknown';
+};
+console.log(getResponsibleName(1))
 
   //CARD TABLE 
   const card = (
@@ -125,6 +144,9 @@ function Customersinfo() {
           <Typography variant="body2">
             siren : {e.siren}
           </Typography>
+          <Typography variant="body2">
+            Résponsable : {getResponsibleName(e.id_utili)}
+          </Typography>
 
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
             date de creation : {moment(e.createdAt).format("DD  MMMM YYYY  HH:mm")}
@@ -136,7 +158,10 @@ function Customersinfo() {
 )}
 
           <Typography variant="body2">
-            code naf : {e.activite_soc}
+            Code naf : {e.activite_soc}
+          </Typography>
+          <Typography variant="body2">
+            Libelle naf : {e.libelle_naf}
           </Typography>
 
           <Typography variant="body2">

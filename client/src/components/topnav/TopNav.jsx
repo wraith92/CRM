@@ -66,6 +66,43 @@ const Topnav = props => {
 
 
     }, [])
+    console.log(currentUser)
+     // Calculate the number of days left until password expiration
+   
+    // Rendre l'alerte d'expiration du mot de passe
+    const renderPasswordExpirationAlert = () => {
+        if (user && user.passwordLastChanged) {
+            const passwordExpirationDate = new Date(currentUser.passwordLastChanged);
+            
+            const daysUntilExpiration = Math.ceil(
+                (new Date() - passwordExpirationDate  ) / (1000 * 3600 * 24)
+            );
+    
+            if (30 - daysUntilExpiration <= 7 && daysUntilExpiration > 0) {
+                if (daysUntilExpiration === 0) {
+                    return (
+                        <a href="/change-password" className="alert alert-warning" role="alert">
+                            Votre mot de passe expire demain.
+                        </a>
+                    );
+                }
+                return (
+                    <a href="/change-password" className="alert alert-warning" role="alert">
+                        Votre mot de passe expirera dans {30- daysUntilExpiration} jours. 
+                    </a>
+                );
+            } else if (daysUntilExpiration > 7) {
+                return (
+                    <a href="/change-password" className="alert alert-success" role="alert">
+                        Votre mot de passe expirera dans {daysUntilExpiration} jours.
+                    </a>
+                );
+            }
+        }
+        return null;
+    };
+    
+ 
     let date = new Date()
     const mysn = 1000 * 3600 * 24
     const fltr_date = Action.filter(task => (((new Date(task.date_rdv) - date) / mysn) < 7) && ((new Date(task.date_rdv) - date) / mysn) > 0)
@@ -78,9 +115,10 @@ const Topnav = props => {
                 <div className='topnav'>
                     <div className="input-group mb-3">
                         <div className="topnav">
-                            <div className="topnav__search">
-
+                            <div className=''>
+                            {renderPasswordExpirationAlert()}
                             </div>
+                            
                         </div>
                     </div>
                     <div className="topnav__right">
@@ -91,11 +129,13 @@ const Topnav = props => {
 
                                     <div className="sidebar__item">
                                         <div className={`sidebar__item-inner`}>
+                                        
                                             <i className='bx bxs-user-check' ></i>
                                             <span >
                                                 {currentUser.username}
                                             </span>
                                         </div>
+                                        
 
                                     </div>
 
@@ -121,6 +161,8 @@ const Topnav = props => {
                             <ThemeMenu />
                         </div>
                     </div>
+                    
+                    
                 </div>
             ) : (
                 <div>

@@ -83,7 +83,17 @@ const Evolis = ({ location, props }) => {
                         .filter((task) => task.nom_soc.toLowerCase() === e.nom_societe.toLowerCase())
                         .map((index) => (
                             <a href={`/Societe/${index.siret}`} key={index.id}>
-                                {index.nom_soc}
+                                {index.activite_soc}
+                            </a>
+                        ))
+                    }
+                </TableCell>
+                <TableCell style={{ fontSize: '8px' }}>
+                    {societeListe
+                        .filter((task) => task.nom_soc.toLowerCase() === e.nom_societe.toLowerCase())
+                        .map((index) => (
+                            <a href={`/Societe/${index.siret}`} key={index.id}>
+                                {index.libelle_naf}
                             </a>
                         ))
                     }
@@ -93,7 +103,7 @@ const Evolis = ({ location, props }) => {
                     {moment(e.date_rdv).format('DD MMMM YYYY HH:mm')}
                 </TableCell>
                 <TableCell style={{ fontSize: '8px' }}>{e.besoin}</TableCell>
-                <TableCell style={{ fontSize: '8px' }}><ReadMore>{e.description}</ReadMore></TableCell>
+                <TableCell style={{ fontSize: '8px' }}>{e.investissement}</TableCell>
                 <TableCell style={{ fontSize: '8px' }}>{e.montant}</TableCell>
             </TableRow>
         );
@@ -137,16 +147,19 @@ const Evolis = ({ location, props }) => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell style={{ width: '60px', fontSize: '10px' }}>
-                                        🏢 Société
+                                        🏢 Code NAF
+                                    </TableCell>
+                                    <TableCell style={{ width: '60px', fontSize: '10px' }}>
+                                        🏢 Libelle
                                     </TableCell>
                                     <TableCell style={{ width: '120px', fontSize: '10px' }}>
                                         ⏱️ Date activité commerciale
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
-                                        💼 Besoin
+                                        💼 Nature d'investissement
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
-                                        📋 Description
+                                        📋 Quelle Equipement
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
                                         💰 Montant

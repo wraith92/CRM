@@ -1,25 +1,25 @@
 [
 
     {
-      "TYPE": "FIM",
+      "TYPE": "Fonction",
       "NOM": "PDG / Gérant"
     },
     {
-      "TYPE": "FIM",
+      "TYPE": "Fonction",
       "NOM": "DG"
     },
     {
-      "TYPE": "FIM",
+      "TYPE": "Fonction",
       "NOM": "DAF"
     },
     {
-    "TYPE": "FIM",
+    "TYPE": "Fonction",
     "NOM": "Directeur de Site"
     },{
-    "TYPE": "FIM",
+    "TYPE": "Fonction",
     "NOM": "Responsable comptable"
     },{
-    "TYPE": "FIM",
+    "TYPE": "Fonction",
     "NOM": "Directeur Technique"
     }
 

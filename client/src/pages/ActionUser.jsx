@@ -1,90 +1,103 @@
-import React, { useEffect, useState, useRef } from 'react'
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Stack from '@mui/material/Stack';
+import React, { useEffect, useState, useRef } from 'react';
 import Form from "react-validation/build/form";
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import Grid from '@mui/material/Grid';
-import CardContent from '@mui/material/CardContent';
+import EditIcon from '@mui/icons-material/Edit';
+import { DownloadTableExcel } from 'react-export-table-to-excel';
 import CheckButton from "react-validation/build/button";
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import AuthAction from '../services/Action';
 import AuthService from "../services/auth.service";
 import RoleUser from "../controllers/Role";
 import moment from "moment";
-import UserService from "../services/user.service";
+import Societe from '../controllers/Societe';
 import 'moment/locale/fr';
-//table class
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
-import Chip from '@mui/material/Chip';
+import Switch from '@mui/material/Switch';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid,
+  Typography,
+} from '@material-ui/core';
+import UserService from '../services/user.service';
+import { accordionActionsClasses } from '@mui/material';
 
-const initialSocieteState = {
-  id: "",
-  validation: "",
-};
-
-function ActionDetails() {
-  //GET role admin
+const ActionDetails = () => {
+  const [showFullDescription, setFullDescription] = useState(false);
   const myadmin = RoleUser.AdminRole();
+  const ReadMore = ({ children }) => {
+    const text = children;
+    const [isReadMore, setIsReadMore] = useState(true);
+    const toggleReadMore = () => {
+      setIsReadMore(!isReadMore);
+    };
 
+    if (!text) {
+      return null;
+    }
 
+    return (
+      <p className="text">
+        {isReadMore ? text.slice(0, 30) : text}
+        <span onClick={toggleReadMore} className="read-or-hide">
+          {isReadMore ? "...read more" : " show less"}
+        </span>
+      </p>
+    );
+  };
 
-
-  //GET USER INFO
-  const user = AuthService.getCurrentUser()
-  //GET Action
-  const [Vali, setVali] = useState({ initialSocieteState });
+  const user = AuthService.getCurrentUser();
+  const [Vali, setVali] = useState({});
   const [Action, SetAction] = useState([]);
   const [ACtionFilter, SetActionFilter] = useState([]);
   const [Etat, setEtat] = useState([]);
   const [Test, setTest] = useState([]);
-
-  const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
+  const [societeListe,SetsocieteListe]=useState([]);
+  const label = { inputProps: { 'aria-label': 'Color switch demo' } };
+  const [realiserFilter, setRealiserFilter] = useState(false);
+  const [ setSuccessful] = useState(false);
+  const [ setMessage] = useState("");
   const form = useRef();
   const checkBtn = useRef();
-  const [search, setSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [listuser, setListeUser] = useState([]);
-  const [rowsPerPage2, setRowsPerPage2] = React.useState(10);
-  const [page2, setPage2] = React.useState(0);
-  const handleChangePage2 = (newPage) => {
-    setPage2(newPage);
-  };
-  const handleChangeRowsPerPage2 = (event) => {
-    setRowsPerPage2(+event.target.value);
-    setPage2(0);
-  };
+  const mysofitech = RoleUser.SofitechRole();
+//GET role cemece
+const mycemeca = RoleUser.CemecaRole
+  const tableRef = useRef(null);
 
-  //SELECT ALL SOCIETES WHERE AUTH
-  const retrieveActions = (e) => {
+
+  const retrieveActions = () => {
     if (user) {
       AuthAction.findAll()
         .then((response) => {
           SetAction(response.data);
-
         })
         .catch((e) => {
           console.log(e);
         });
-
     }
   };
-  //afficher la liste des users
+
+   //SELECT ALL SOCIETES (CEMECA/SOFITECH)
+   const retrieveSociete = () => {
+    if (user) {
+    //afficher cemca
+    if (mycemeca) Societe.CemecaListe().then(data => SetsocieteListe(data))
+    ;
+  //afficher sofitech
+    if (mysofitech) Societe.AllSociete().then(data => SetsocieteListe(data))
+    ;
+    }
+  };
   const retrieveUsers = () => {
     UserService.getListe_User()
       .then((response) => {
         setListeUser(response.data);
-        console.log(response.data);
       })
       .catch((e) => {
         console.log(e);
@@ -98,235 +111,199 @@ function ActionDetails() {
 
     e.preventDefault();
     form.current.validateAll();
-    if (checkBtn.current.context._errors.length === 0) {
+    if (checkBtn.current && checkBtn.current.context && checkBtn.current.context._errors.length === 0) {
       AuthAction.update(Test, data)
         .then(response => {
           setVali({
             id: response.data.id,
-            validation: response.data.validation
-
-          }
-          );
+            validation: response.data.validation,
+          });
           setSuccessful(true);
-          window.location.reload()
-        },
-          error => {
-            const resMessage =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString();
-            setMessage(resMessage);
-          }
-        )
+          window.location.reload();
+        })
         .catch(e => {
           console.log(e);
-
         });
     }
-
-  }
+  };
 
   useEffect(() => {
-    retrieveActions()
-    retrieveUsers()
-
+    retrieveActions();
+    retrieveUsers();
   }, []);
+
   useEffect(() => {
     if (myadmin) {
-      SetActionFilter(Action)
+      SetActionFilter(Action);
       Action.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
+    } else {
+      const data = Action.filter((task) => task.id_utili === user.id);
+      data.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
+      SetActionFilter(data);
+
     }
-    else {
-      const data = Action.filter(task => task.id_utili === user.id)
-      SetActionFilter(data)
-      ACtionFilter.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
+
+    // Apply the filter based on "Etat" (Status)
+    if (realiserFilter) {
+      SetActionFilter((prevFilter) => prevFilter.filter((task) => task.validation === 'non realiser'));
+      if (mysofitech) Societe.AllSociete().then(data => SetsocieteListe(data))
+    ;
+    } else {
+       if (mysofitech) Societe.AllSociete().then(data => SetsocieteListe(data))
+    ;
     }
-  }, [myadmin, Action]);
-  //CARD TABLE
-  const card = (
-    <React.Fragment>
-      {Etat === "realiser" ? (
-        <div className="form-group">
-          <div
-            className={
-              successful
-                ? "alert alert-success"
-                : ""
-            }
-            role="alert"
-          >
-            {message}
-          </div>
-        </div>
-      ) : (
-        <div className="form-group">
-          <div
-            className={
-              successful
-                ? "alert alert-danger"
-                : ""
-            }
-            role="alert"
-          >
-            {message}
-          </div>
-        </div>
-      )}
 
-      <div className="row">
-        <div className="col-12 list">
-          <div className="input-group mb-3">
-            <div className="topnav">
-              <div className="topnav__search">
-                <input type="text"
-                  className="form-control"
-                  placeholder="Recherche "
+    // Apply the filter based on the search term
+    if (searchTerm !== '') {
+      SetActionFilter((prevFilter) =>
+        prevFilter.filter((task) => task.nom_societe.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
 
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <i className='bx bx-search'></i>
-              </div>
-            </div>
-          </div>
-        </div>
+    // Update the page when filters change
+  }, [myadmin, Action, searchTerm, realiserFilter,mysofitech]);
 
-        {
-          ACtionFilter
-            .filter((e) => {
-              return search.toLowerCase() === ''
-                ? e
-                : e.nom_societe.toLowerCase().includes(search.toLowerCase());
+  const handleSearchChange = (event) => {
+    const searchTerm = event.target.value || '';
+    setSearchTerm(searchTerm);
+  };
 
+  const renderCardRow = (e) => {
+    const isRealiser = e.validation === 'realiser';
+    console.log("Action data:", e);
+    console.log("societeListe:", societeListe);
+    console.log("Filtered:", societeListe.filter((task) => task.nom_soc.toLowerCase() === e.nom_societe.toLowerCase()));
+ 
+    return (
+      <TableRow key={e.id} style={{ fontSize: '10px' }}>
 
-            }).map((e) =>
-              <div className="col-4">
-                <Card variant="outlined" >
-                  <CardContent>
+<TableCell style={{ fontSize: '8px' }}>
+{societeListe
+  .filter((task) => task.nom_soc.toLowerCase() === e.nom_societe.toLowerCase())
+  .map((index) => (
+    <a href={`/Societe/${index.siret}`} key={index.id}>
+      {index.nom_soc}
+    </a>
+  ))
+}
+</TableCell>
+        {myadmin &&
+          (listuser.filter((task) => task.id === e.id_utili)).map((index) => (
+            <TableCell style={{ fontSize: '8px' }}>
+              <Typography variant="body2" key={index.id} style={{ fontSize: '8px' }}>
+                {index.username}
+              </Typography>
+            </TableCell>
+          ))}
+        <TableCell style={{ fontSize: '10px' }}>
+          {moment(e.date_rdv).format('DD MMMM YYYY HH:mm')}
+        </TableCell>
+        <TableCell style={{ fontSize: '8px' }}>{e.nom_interlocuteur}</TableCell>
+        <TableCell style={{ fontSize: '8px' }}>{e.besoin}</TableCell>
+        <TableCell style={{ fontSize: '8px' }}><ReadMore>{e.description}</ReadMore></TableCell>
+        <TableCell style={{ fontSize: '8px' }}>
+          {moment(e.createdAt).format('DD MMMM YYYY HH:mm')}
+        </TableCell>
+        <TableCell style={{ fontSize: '8px' }}>
+     <Form onSubmit={valideAction} ref={form}>
+  <button
+    className="btn"
+    onClick={() => {
+      setTest(e.id);
+      setMessage(isRealiser ? 'Activité commerciale Réalisée Annulée' : 'Activité commerciale Réalisée');
+      setEtat(isRealiser ? 'non realiser' : 'realiser');
+    }}
+    value={Vali.id = e.id}
+    name="id"
+    style={{
+      fontSize: '8px',
+      padding: '4px',
+      color: isRealiser ? 'white' : 'black',
+      backgroundColor: isRealiser ? 'green' : 'red',
+      border: 'none',
+      cursor: 'pointer',
+    }}
+  >
+    {isRealiser ? 'Réalisé' : 'Non Réalisé'}
+  </button>
+  <CheckButton style={{ display: 'none' }} ref={checkBtn} />
+</Form>
+      </TableCell>
+      <TableCell>
+      <Button
+        href={`/Actions/modifier/${e.id}`}
+        color="warning"
+        size="small"
+        style={{ fontSize: '8px' }}
+        startIcon={<EditIcon />} // Add the icon to the startIcon prop
+      >
+      </Button>
+    </TableCell>
+      </TableRow>
+    );
+  };
 
-                    {e.validation === 'realiser' &&
-                      <Typography variant="h5" component="div">
-                        <Stack spacing={1} alignItems="center">
-                          <Stack direction="row" spacing={1}>
-                            <Alert severity="success">
-                              <AlertTitle>Etat : réalisé </AlertTitle>
-                            </Alert>
-                          </Stack>
-
-                        </Stack>
-                      </Typography>
-                    }
-                    {e.validation === 'non realiser' &&
-                      <Typography variant="h5" component="div">
-                        <Stack spacing={1} alignItems="center">
-                          <Stack direction="row" spacing={1}>
-                            <Alert severity="warning">
-                              <AlertTitle>Etat : Non réalisé </AlertTitle>
-                            </Alert>
-                          </Stack>
-
-                        </Stack>
-                      </Typography>
-                    }
-
-                    <Typography variant="body2">
-                      Société : {e.nom_societe}
-                    </Typography>
-
-                    {myadmin &&
-                      (listuser.filter(task => task.id === e.id_utili)).map((index) => (
-                        <Typography variant="body2">
-                          commerciale :{index.username}
-                        </Typography>
-                      ))}
-                    <Typography sx={{ fontSize: 10 }} >
-                      Date activité commerciale : {moment(e.date_rdv).format("DD  MMMM YYYY  HH:mm")}
-                    </Typography>
-
-                    <Typography sx={{ fontSize: 10 }}>
-                      Besoin : {e.besoin}
-                    </Typography>
-                    <Typography sx={{ fontSize: 10 }}>
-                      decription : {e.description}
-                    </Typography>
-
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                      Date d'ajout dans le CRM : {moment(e.createdAt).format("DD  MMMM YYYY  HH:mm")}
-                    </Typography>
-                    {e.nom_assur === 'non realiser' &&
-                      <Typography variant="body2">
-                        Déscription : {e.nom_assur} {e.date_assur}
-                      </Typography>
-                    }
-
-                    {e.nom_factor === 'non realiser' &&
-                      <Typography variant="body2">
-                        Déscription : {e.nom_factor} {e.date_factor}
-                      </Typography>
-                    }
-                  </CardContent>
-                  <Grid container spacing={3}>
-                    <Grid item xs="auto">
-                      <Form onSubmit={valideAction} ref={form}>
-
-                        <button className="btn btn-success"
-                          onClick={() => (setTest(e.id), setMessage('Activité commerciale Réalisé'), setEtat('realiser'))}
-                          value={Vali.id = e.id}
-                          name="id"
-                        >
-                          Réalisé
-                        </button>
-
-                        <CheckButton style={{ display: "none" }} ref={checkBtn} />
-                      </Form>
-                    </Grid>
-                    <Grid item xs='auto'>
-
-                      <Form onSubmit={valideAction} ref={form}>
-
-                        <button className="btn btn-danger"
-                          onClick={() => (setTest(e.id), setMessage('Activité  commerciale Réalisé Annulé'), setEtat('non realiser'))}
-                          value={Vali.id = e.id}
-                          name="id"
-                        >
-                          Non Réalisé
-                        </button>
-                        <CheckButton style={{ display: "none" }} ref={checkBtn} />
-                      </Form>
-                    </Grid>
-                    <Grid item xs='auto'>
-                      <Button href={`/Actions/modifier/${e.id}`} color="warning"> Modifier</Button>
-                    </Grid>
-                  </Grid>
-                </Card>
-                <br />
-              </div>
-            )
-        }
-
-      </div>
-      <CardActions>
-        <Button href={`/`} size="small">Retour</Button>
-      </CardActions>
-
-    </React.Fragment>
-
-  );
   return (
     <Box sx={{ minWidth: 275 }}>
       <div className="row">
-        <div variant="outlined">{card}</div>
+        <Grid container alignItems="center">
+          <Grid item xs={12} md={4}>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="recherche par Société"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Switch
+              {...label}
+              onChange={() => setRealiserFilter(!realiserFilter)}
+              checked={realiserFilter}
+            />
+          </Grid>
+          <Grid item xs={12} md={6} container justifyContent="flex-end">
+            {/* Add the Download Button */}
+            <DownloadTableExcel
+              filename={"Compte-rendu"}
+              sheet={"Compte-rendu"}
+              currentTableRef={tableRef.current}
+            >
+              <Button variant="contained" color="success" >
+                Excel
+              </Button>
+            </DownloadTableExcel>
 
+          </Grid>
+        </Grid>
+
+        <div variant="outlined">
+          <TableContainer component={Paper}>
+            <Table ref={tableRef}>
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: '60px', fontSize: '10px' }}>Société</TableCell>
+                  <TableCell style={{ width: '80px', fontSize: '10px' }}>Commerciale</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Date activité commerciale</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>INTERLOCUTEUR</TableCell>
+                  <TableCell style={{ width: '100px', fontSize: '10px' }}>Besoin</TableCell>
+                  <TableCell style={{ width: '100px', fontSize: '10px' }}>Description</TableCell>
+                  <TableCell style={{ width: '100px', fontSize: '10px' }}>Date d'ajout</TableCell>
+                  <TableCell style={{ width: '70px', fontSize: '10px' }}>Etat</TableCell>
+                  <TableCell style={{ width: '70px', fontSize: '10px' }}>Modifier</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {ACtionFilter.map(renderCardRow)}
+              </TableBody>
+            </Table>
+          </TableContainer>
+         
+        </div>
       </div>
     </Box>
   );
+};
 
-}
-
-export default ActionDetails
-
-
-
-
-
+export default ActionDetails;

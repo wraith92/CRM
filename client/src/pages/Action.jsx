@@ -3,7 +3,7 @@
 import sidebar_items from '../assets/JsonData/sidebar_routes.json'
 import Grid from '@mui/material/Grid';
 //require React
-import React, { useState, useRef, useEffect  } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Button from '@mui/material/Button';
 //React validation
@@ -13,6 +13,7 @@ import CheckButton from "react-validation/build/button";
 import AuthAction from "../services/Action";
 //require page Interlocuteur
 import AuthInter from "../services/Interlocuteur";
+import { useHistory } from 'react-router-dom';
 //controlleur service
 import AuthService from "../services/auth.service";
 //import mui
@@ -28,12 +29,15 @@ import liste from "../assets/JsonData/centre-affaire.json";
 import besoinliste from "../assets/JsonData/besoin.json";
 import RoleUser from "../controllers/Role";
 import Societe from '../controllers/Societe';
-
+import Evolis from '../assets/JsonData/Evolis.json';
+import Modal from 'react-modal';
 
 const Action = (props) => {
+  let history = useHistory();
   const [myJSON, setactive] = useState([]);
   const [myJSON2, setactive2] = useState([]);
   const [myJSON3, setactive3] = useState([]);
+  const [EvolisJson, setEvolisjSon] = useState([]);
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
   const form = useRef();
@@ -44,38 +48,39 @@ const Action = (props) => {
   const [Credit, setCredit] = useState(false);
   const [Factor, setFactor] = useState(false);
   const sofitech = RoleUser.SofitechRole();
+  const [showInvestissementProductif, setShowInvestissementProductif] = useState(false);
   //GET role cemece
   const cemeca = RoleUser.CemecaRole();
   const user = AuthService.getCurrentUser();
+  myJSON2.join()
   useEffect(() => {
     if (user) {
-      //INTERLOCUTEUR
-      AuthInter.findAll().then((response) => {
-        setInterlocuteur(response.data)
-      })
-
+      // INTERLOCUTEUR
+      AuthInter.findAll()
+        .then((response) => {
+          setInterlocuteur(response.data);
+        })
         .catch((e) => {
           console.log(e);
         });
-    }
 
-  }, [])
+      // Check if "Investissement productif" is in the selected besoin
+      if (myJSON2.join().includes("Investissement productif")) {
+        setShowInvestissementProductif(true);
+      }
+    }
+  }, [myJSON2.join()]);
   useEffect(() => {
-
     if (user) {
-
-        //afficher cemca
-        if (cemeca) Societe.CemecaListe().then(data => setID_societe(data))
-            ;
-        //afficher sofitech
-        if (sofitech) Societe.AllSociete().then(data => setID_societe(data))
-            ;
-
-
-
+      //afficher cemca
+      if (cemeca) Societe.CemecaListe().then(data => setID_societe(data))
+        ;
+      //afficher sofitech
+      if (sofitech) Societe.AllSociete().then(data => setID_societe(data))
+        ;
     }
-}, [sofitech, cemeca])
-console.log(ID_societe)
+  }, [sofitech, cemeca])
+  console.log(ID_societe)
 
   // Get ID from URL
   const params = useParams();
@@ -103,6 +108,9 @@ console.log(ID_societe)
   const land3 = (e) => {
     setactive3(Array.isArray(e) ? e.map(x => x.nom) : [])
   }
+  const land4 = (e) => {
+    setEvolisjSon(Array.isArray(e) ? e.map(x => x.NOM) : [])
+  }
 
   //filter action where siret
   const actItem = ID_societe.filter(task => task.siret === nb)
@@ -125,17 +133,23 @@ console.log(ID_societe)
     nom_assur: "",
     nom_factor: "",
     besoin: "",
+    investissement: "",
+    montant: "",
     credit_cop: "",
     validation: "non realiser"
 
   };
 
+
   //ajouter l'action
   const [Action, setAction] = useState({ initial1ctionState });
+ 
   const saveAction = (e) => {
     const credit_cop = myJSON.join();
     const besoin = myJSON2.join();
     const interl = myJSON3.join();
+    const investissement = EvolisJson.join();
+ 
     var data = {
       nom_interlocuteur: interl,
       nom_societe: actItem[0].nom_soc,
@@ -143,12 +157,14 @@ console.log(ID_societe)
       date_action: new Date(),
       date_factor: Action.date_factor,
       date_assur: Action.date_assur,
+      montant: Action.montant,
       nom_assur: Action.nom_assur,
       nom_factor: Action.nom_factor,
       id_utili: user.id,
       type_action: Action.type_action,
       description: Action.description,
       besoin: besoin,
+      investissement: investissement,
       credit_cop: credit_cop,
       validation: "non realiser"
     };
@@ -162,7 +178,9 @@ console.log(ID_societe)
             nom_societe: response.data.nom_societe,
             date_rdv: response.data.date_rdv,
             date_action: response.data.date_action,
+            investissement: response.data.investissement,
             besoin: response.data.besoin,
+            montant: response.data.montant,
             id_utili: response.data.id_utili,
             type_action: response.data.type_action,
             description: response.data.description,
@@ -170,7 +188,11 @@ console.log(ID_societe)
           }
           );
           setSuccessful(true);
-          setMessage("activité commerciale ajouter avec succès :)")
+          setMessage("activité commerciale ajoutée avec succès :)")
+          setTimeout(() => {
+            history.push("/AllAction");
+          }, 1000)
+
         },
           error => {
             const resMessage =
@@ -185,19 +207,16 @@ console.log(ID_societe)
 
     }
   };
+  
   const handleInputChange = event => {
     const { name, value } = event.target;
     setAction({ ...Action, [name]: value });
-    console.log(Action.description)
 
   };
-
-
+     
 
   return (
     <div className="col-md-12">
-
-
       {/* ajouter des actions */}
       <h3><i class='bx bxs-bank danger'></i> Ajouter une action</h3>
       <div className="card card-container">
@@ -223,22 +242,22 @@ console.log(ID_societe)
               </div>
 
               <div className="form-group">
-              <label htmlFor="title">interlocuteur</label>
-                            {filterInter.map((e) =>
-                                <Multiselect
-                                    displayValue="nom"
-                                    value="4"
-                                    isObject={true}
-                                    onChange={console.log}
-                                    id={console.log}
-                                    onNOMPressFn={function noRefCheck() { }}
-                                    onRemove={function noRefCheck() { }}
-                                    onSearch={function noRefCheck() { }}
-                                    onSelect={land3}
-                                    options={filterInter}
-                                    showCheckbox
-                                />
-                            )}
+                <label htmlFor="title">interlocuteur</label>
+      
+                  <Multiselect
+                    displayValue="nom"
+                    value="4"
+                    isObject={true}
+                    onChange={console.log}
+                    id={console.log}
+                    onNOMPressFn={function noRefCheck() { }}
+                    onRemove={function noRefCheck() { }}
+                    onSearch={function noRefCheck() { }}
+                    onSelect={land3}
+                    options={filterInter}
+                    showCheckbox
+                  />
+               
               </div>
 
               <div className="form-group">
@@ -268,6 +287,7 @@ console.log(ID_societe)
                 </FormControl>
               </div>
 
+           
               <div className="form-group">
                 <label htmlFor="password">type d'action</label>
                 <FormControl fullWidth>
@@ -308,7 +328,45 @@ console.log(ID_societe)
                   />
                 </div>
               )}
-              <br />
+              {sofitech && showInvestissementProductif && (
+        <div className="form-group">
+          <label htmlFor="password">Investissement productif</label>
+          <Multiselect
+            displayValue="NOM"
+            groupBy="TYPE"
+            value="4"
+            isObject={true}
+            selectedValues={console.log}
+            onChange={console.log}
+            id={console.log}
+            onNOMPressFn={function noRefCheck() { }}
+            onRemove={function noRefCheck() { }}
+            onSearch={function noRefCheck() { }}
+            onSelect={land4}
+            options={Evolis}
+            showCheckbox
+          />
+        </div>
+      )}
+                 <div className="form-group">
+                <label htmlFor="password">Montant</label>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Montant</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={Action.montant}
+                    label="motant de l'action"
+                    name="montant"
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value={"De 1 à 500 K€"}>De 1 à 500 K€ </MenuItem>
+                    <MenuItem value={"De 501 à 1 M€"}>De 501 à 1 M€</MenuItem>
+                    <MenuItem value={"Plus de 1M€ "}>Plus de 1M€ </MenuItem>
+                  </Select>
+                </FormControl>
+
+              </div>
               {cemeca && (
                 <div className="form-group">
                   <Grid container spacing={3}>
@@ -329,7 +387,6 @@ console.log(ID_societe)
                 </div>
 
               )}
-              <br />
               {cemeca && Credit && (
                 <div className="form-group">
                   <TextField
@@ -352,7 +409,6 @@ console.log(ID_societe)
                   />
                 </div>
               )}
-              <br />
               {cemeca && (
                 <div className="form-group">
                   <Grid container spacing={3}>
@@ -373,7 +429,6 @@ console.log(ID_societe)
                   </Grid>
                 </div>
               )}
-              <br />
               {cemeca && Factor && (
                 <div>
                   <div className="form-group">
@@ -398,7 +453,6 @@ console.log(ID_societe)
                   </div>
                 </div>
               )}
-              <br />
               <div className="form-group">
                 <label htmlFor="title">Centre d'affaires CREDIT COOPERATIF</label>
                 <Multiselect

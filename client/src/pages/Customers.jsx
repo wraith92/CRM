@@ -104,14 +104,7 @@ function Customers() {
 
 
 
-  const handleChangePage = (newPage) => {
-    setPage(newPage);
-  };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
 
   //liste des users
   const classes = useStyles();
@@ -119,13 +112,20 @@ function Customers() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [ListTest, SetTest] = useState([]);
-//GET role sofitech
-const mysofitech = RoleUser.SofitechRole();
-//GET role cemece
-const mycemeca = RoleUser.CemecaRole();
-//GET societer
+  //GET role sofitech
+  const mysofitech = RoleUser.SofitechRole();
+  //GET role cemece
+  const mycemeca = RoleUser.CemecaRole();
+  //GET societer
   const [searchAll, setSearchAll] = useState("");
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0); // Reset the page to the first one when changing rows per page
+  };
   //SELECT WHERE SEARCH INPUT
   const onChangeSearchAll = (e) => {
     const searchAll = e.target.value;
@@ -172,27 +172,27 @@ const mycemeca = RoleUser.CemecaRole();
   //SELECT ALL SOCIETES (CEMECA/SOFITECH)
   const retrieveTutorials = () => {
     if (user) {
-    //afficher cemca
-    if (mycemeca) Societe.CemecaListe().then(data => SetTest(data))
-    ;
-  //afficher sofitech
-    if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
-    ;
+      //afficher cemca
+      if (mycemeca) Societe.CemecaListe().then(data => SetTest(data))
+        ;
+      //afficher sofitech
+      if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
+        ;
     }
 
   };
 
+
+  const [Filter, SetFilter] = useState(ListTest);
   //USE_EFFECT
   useEffect(() => {
     retrieveTutorials()
-  }, [mysofitech,mycemeca]);
+  }, [mysofitech, mycemeca, searchAll]);
   useEffect(() => {
     ListTest.sort((b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-  }, [ListTest]);
-  const [Filter, SetFilter] = useState(ListTest);
+  }, [Filter]);
 
-
-
+  const tableCellStyle = { fontSize: '11px' };
 
 
   return (
@@ -223,33 +223,38 @@ const mycemeca = RoleUser.CemecaRole();
           <TableContainer sx={{ maxHeight: 550 }}>
             <Table sx={{ minWidth: 650 }} size="small" stickyHeader aria-label="sticky table">
               <TableHead>
-                <TableRow>
-
-                  <TableCell>Société</TableCell>
-                  <TableCell align='left' style={{ minWidth: 140 }}>Adresse postale</TableCell>
-
-                  <TableCell align='left' style={{ minWidth: 100 }}>Statuts</TableCell>
-                  <TableCell align='left' style={{ minWidth: 50 }}>Interlocuteur</TableCell>
-                  <TableCell align='left' style={{ minWidth: 50 }}>info</TableCell>
-                  <TableCell align='left' style={{ minWidth: 50 }}>Action</TableCell>
-
-                </TableRow>
+              <TableRow>
+        <TableCell style={tableCellStyle}>
+          🏢 Société
+        </TableCell>
+        <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
+          📮 Adresse postale
+        </TableCell>
+        <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
+          👤 Interlocuteur
+        </TableCell>
+        <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
+          ℹ️ Info
+        </TableCell>
+        <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
+          ⚙️ Action
+        </TableCell>
+      </TableRow>
               </TableHead>
               <TableBody>
                 {Filter.length ? (
                   Filter.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                     <TableRow key={row.name}>
-                      <TableCell align='left' style={{ minWidth: 175 }}>
+                      <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
                         <Grid container >
                           <Grid item lg={10}>
                             <Typography className={classes.name} color="textSecondary" variant="body2"><i class='bx bxs-bank'></i><a href={`/Societe/${row.siret}`}>{row.nom_soc}</a></Typography>
                             <Typography variant="body3" >{row.siret}</Typography>
-                            <Typography color="textSecondary" variant="body2">{row.siren}</Typography>
                           </Grid>
                         </Grid>
                       </TableCell>
 
-                      <TableCell align='left' style={{ minWidth: 150 }}>
+                      <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
                         <Grid >
                           <Typography style={{ minWidth: 50 }}>{row.code_postal} {row.ville_soc} </Typography>
                           <Typography color="textSecondary" variant="body2">{row.adresse_local}</Typography>
@@ -257,15 +262,7 @@ const mycemeca = RoleUser.CemecaRole();
 
                       </TableCell>
 
-                      {row.app_sofitech == true &&
-                        <TableCell >
-                          <Stack spacing={1} alignItems="center">
-                            <Alert severity="success">
-                              <AlertTitle> Prospect Sofitech </AlertTitle>
-                            </Alert>
-                          </Stack>
-                        </TableCell>
-                      }
+
 
 
 
@@ -292,7 +289,7 @@ const mycemeca = RoleUser.CemecaRole();
                 ) : (
                   ListTest.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                     <TableRow key={row.name}>
-                      <TableCell align='left' style={{ minWidth: 175 }}>
+                      <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
                         <Grid container >
                           <Grid item lg={10}>
                             <Typography className={classes.name} color="textSecondary" variant="body2"><i class='bx bxs-bank'></i><a href={`/Societe/${row.siret}`}>{row.nom_soc}</a></Typography>
@@ -302,38 +299,30 @@ const mycemeca = RoleUser.CemecaRole();
                         </Grid>
                       </TableCell>
 
-                      <TableCell align='left' style={{ minWidth: 150 }}>
+                      <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
                         <Grid >
-                          <Typography style={{ minWidth: 50 }}>{row.code_postal} {row.ville_soc} </Typography>
-                          <Typography color="textSecondary" variant="body2">{row.adresse_local}</Typography>
+                          <Typography style={{ ...tableCellStyle}}>{row.code_postal} {row.ville_soc} </Typography>
+                          <Typography style={{ ...tableCellStyle}} color="textSecondary" variant="body2">{row.adresse_local}</Typography>
                         </Grid>
 
                       </TableCell>
 
-                      {row.app_sofitech == true &&
-                        <TableCell >
-                          <Stack spacing={1} alignItems="center">
-                            <Alert severity="success">
-                              <AlertTitle> Prospect Sofitech </AlertTitle>
-                            </Alert>
-                          </Stack>
-                        </TableCell>
-                      }
 
 
 
-                      <TableCell align='left' style={{ minWidth: 50 }}>
+
+                      <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
                         <Button startIcon={<FontAwesomeIcon icon={faUser} />} href={`/Interlocuteur/${row.siret}`} variant="outlined" size="small"> +
                         </Button>
                       </TableCell>
 
-                      <TableCell align='left' style={{ minWidth: 50 }}>
+                      <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
                         <IconButton aria-label="Example" href={`/Societe/${row.siret}`} >
                           <FontAwesomeSvgIcon icon={faFile} />
                         </IconButton>
                       </TableCell>
 
-                      <TableCell align='left' style={{ minWidth: 50 }}>
+                      <TableCell align='left' style={{ ...tableCellStyle, minWidth: 50 }}>
                         <IconButton aria-label="Example" href={`/Action/${row.siret}`} >
                           <FontAwesomeSvgIcon icon={faEllipsisV} />
                         </IconButton>
@@ -357,6 +346,7 @@ const mycemeca = RoleUser.CemecaRole();
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
+
         </Paper>
 
       </div>

@@ -58,9 +58,8 @@ const ActionDetails = () => {
   const [Test, setTest] = useState([]);
   const [societeListe,SetsocieteListe]=useState([]);
   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
-  const [realiserFilter, setRealiserFilter] = useState(false);
   const [ setSuccessful] = useState(false);
-  const [ setMessage] = useState("");
+  const [ message,setMessage] = useState("");
   const form = useRef();
   const checkBtn = useRef();
   const [searchTerm, setSearchTerm] = useState('');
@@ -83,17 +82,6 @@ const mycemeca = RoleUser.CemecaRole
     }
   };
 
-   //SELECT ALL SOCIETES (CEMECA/SOFITECH)
-   const retrieveSociete = () => {
-    if (user) {
-    //afficher cemca
-    if (mycemeca) Societe.CemecaListe().then(data => SetsocieteListe(data))
-    ;
-  //afficher sofitech
-    if (mysofitech) Societe.AllSociete().then(data => SetsocieteListe(data))
-    ;
-    }
-  };
   const retrieveUsers = () => {
     UserService.getListe_User()
       .then((response) => {
@@ -103,29 +91,45 @@ const mycemeca = RoleUser.CemecaRole
         console.log(e);
       });
   };
-  const valideAction = (e) => {
+  const valideAction = () => {
+    // Préparer les données pour la mise à jour
     var data = {
       id: Test,
       validation: Etat,
     };
-
-    e.preventDefault();
+  
+    // Valider le formulaire
     form.current.validateAll();
-    if (checkBtn.current && checkBtn.current.context && checkBtn.current.context._errors.length === 0) {
+  
+    // Vérifier s'il n'y a pas d'erreurs de validation
+    if (
+      checkBtn.current &&
+      checkBtn.current.context &&
+      checkBtn.current.context._errors.length === 0
+    ) {
+      // Effectuer la mise à jour via l'API
       AuthAction.update(Test, data)
-        .then(response => {
+        .then((response) => {
+          // Mettre à jour l'état après la mise à jour réussie
           setVali({
             id: response.data.id,
             validation: response.data.validation,
           });
+  
+          // Mettre à jour l'état successful pour afficher un message
           setSuccessful(true);
+  
+          // Recharger la page pour afficher les mises à jour
           window.location.reload();
         })
-        .catch(e => {
-          console.log(e);
+        .catch((e) => {
+          // Gérer les erreurs de mise à jour
+          console.log("Error during update:", e);
         });
     }
   };
+  
+  
 
   useEffect(() => {
     retrieveActions();
@@ -144,14 +148,10 @@ const mycemeca = RoleUser.CemecaRole
     }
 
     // Apply the filter based on "Etat" (Status)
-    if (realiserFilter) {
-      SetActionFilter((prevFilter) => prevFilter.filter((task) => task.validation === 'non realiser'));
-      if (mysofitech) Societe.AllSociete().then(data => SetsocieteListe(data))
-    ;
-    } else {
+   
        if (mysofitech) Societe.AllSociete().then(data => SetsocieteListe(data))
-    ;
-    }
+    
+    
 
     // Apply the filter based on the search term
     if (searchTerm !== '') {
@@ -161,7 +161,7 @@ const mycemeca = RoleUser.CemecaRole
     }
 
     // Update the page when filters change
-  }, [myadmin, Action, searchTerm, realiserFilter,mysofitech]);
+  }, [myadmin, Action, searchTerm,,mysofitech]);
 
   const handleSearchChange = (event) => {
     const searchTerm = event.target.value || '';
@@ -206,26 +206,26 @@ const mycemeca = RoleUser.CemecaRole
         </TableCell>
         <TableCell style={{ fontSize: '8px' }}>
      <Form onSubmit={valideAction} ref={form}>
-  <button
-    className="btn"
-    onClick={() => {
-      setTest(e.id);
-      setMessage(isRealiser ? 'Activité commerciale Réalisée Annulée' : 'Activité commerciale Réalisée');
-      setEtat(isRealiser ? 'non realiser' : 'realiser');
-    }}
-    value={Vali.id = e.id}
-    name="id"
-    style={{
-      fontSize: '8px',
-      padding: '4px',
-      color: isRealiser ? 'white' : 'black',
-      backgroundColor: isRealiser ? 'green' : 'red',
-      border: 'none',
-      cursor: 'pointer',
-    }}
-  >
-    {isRealiser ? 'Réalisé' : 'Non Réalisé'}
-  </button>
+     <button
+  className="btn"
+  onClick={() => {
+    setTest(e.id);
+    setMessage(e.validation === 'realiser' ? 'Activité commerciale Réalisée Annulée' : 'Activité commerciale Réalisée');
+    setEtat(e.validation === 'realiser' ? 'non realiser' : 'realiser');
+    valideAction(e); // Appeler la fonction de validation
+  }}
+  style={{
+    fontSize: '8px',
+    padding: '4px',
+    color: e.validation === 'realiser' ? 'white' : 'black',
+    backgroundColor: e.validation === 'realiser' ? 'green' : 'red',
+    border: 'none',
+    cursor: 'pointer',
+  }}
+>
+  {e.validation === 'realiser' ? 'Réalisé' : 'Non Réalisé'}
+</button>
+
   <CheckButton style={{ display: 'none' }} ref={checkBtn} />
 </Form>
       </TableCell>
@@ -256,13 +256,7 @@ const mycemeca = RoleUser.CemecaRole
               onChange={handleSearchChange}
             />
           </Grid>
-          <Grid item xs={12} md={2}>
-            <Switch
-              {...label}
-              onChange={() => setRealiserFilter(!realiserFilter)}
-              checked={realiserFilter}
-            />
-          </Grid>
+         
           <Grid item xs={12} md={6} container justifyContent="flex-end">
             {/* Add the Download Button */}
             <DownloadTableExcel

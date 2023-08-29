@@ -114,9 +114,10 @@ const Topnav = props => {
 
                 <div className='topnav'>
                     <div className="input-group mb-3">
+                    {renderPasswordExpirationAlert()}
                         <div className="topnav">
                             <div className=''>
-                            {renderPasswordExpirationAlert()}
+                            
                             </div>
                             
                         </div>

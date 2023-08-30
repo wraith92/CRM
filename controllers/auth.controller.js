@@ -170,7 +170,7 @@ function continueLogin(user, req, res) {
      // Envoi du code de vérification à l'adresse e-mail de l'utilisateur
      const mailOptions = {
        from: "sofitech_mail_automatique@sofitech.pro",
-       to: "sofitech_mail_automatique@sofitech.pro",
+       to: user.email,
        subject: "Code de vérification pour connexion",
        text: `Votre code de vérification est : ${verificationCode}`,
      };
@@ -470,6 +470,12 @@ exports.getDaysSincePasswordChange = async (req, res) => {
 
 
 
+
+
+// Function to generate a random password
+const generateRandomPassword = () => {
+  return Math.random().toString(36).slice(2);
+};
 const transporter = nodemailer.createTransport({
   host: "mail.exchangeincloud.com", // Outlook SMTP server
   port: 587, // Use a non-standard port (587 is the standard TLS port)
@@ -479,18 +485,12 @@ const transporter = nodemailer.createTransport({
     pass: "!SOFImail2023", // Your Outlook password
   }
 });
-
-// Function to generate a random password
-const generateRandomPassword = () => {
-  return Math.random().toString(36).slice(2);
-};
-
 // Function to send password reset email
 const sendPasswordResetEmail = async (email, resetToken) => {
   try {
     const mailOptions = {
       from: "sofitech_mail_automatique@sofitech.pro", // Use your Outlook email
-      to: "sofitech_mail_automatique@sofitech.pro",
+      to: email,
       subject: "Password Reset",
       text: `Click the following link to reset your password: ${HOST}/reset-password/${resetToken}`,
     };

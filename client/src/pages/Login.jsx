@@ -5,6 +5,8 @@ import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service";
 import Modal from '@mui/material/Modal';
 import Avatar from '@mui/material/Avatar';
+import { InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Backdrop from '@mui/material/Backdrop';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
@@ -24,7 +26,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://crm.sofitech.pro/">
-        sofitech & cemeca
+        sofitech
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -38,6 +40,8 @@ const Login = () => {
   let history = useHistory();
   const form = useRef();
   const checkBtn = useRef();
+  const [showPassword, setShowPassword] = useState(false);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(undefined);
@@ -223,18 +227,31 @@ const Login = () => {
                     autoComplete="username"
                     autoFocus
                   />
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    value={password}
-                    onChange={onChangePassword}
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                  />
+                 <TextField
+  margin="normal"
+  required
+  fullWidth
+  name="password"
+  value={password}
+  onChange={onChangePassword}
+  label="Password"
+  type={showPassword ? 'text' : 'password'} // Montre ou masque le mot de passe
+  id="password"
+  autoComplete="current-password"
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          aria-label="toggle password visibility"
+          onClick={() => setShowPassword(!showPassword)} // Inverse la visibilité
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {showPassword ? <Visibility /> : <VisibilityOff />}
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+/>
 
                   <Button
                     type="submit"

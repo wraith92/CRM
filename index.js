@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const path =require('path')
 const app = express();
-const controller = require("./controllers/auth.controller");
 const PORT = process.env.PORT || 8080 ;
 require('dotenv').config();
 const db = require("./models");
@@ -61,6 +60,15 @@ app.get('/admin', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 app.get('/User/Info/:id', (req,res) =>{
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+app.get('/change-password', (req,res) =>{
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+app.get('/reset-password/:id', (req,res) =>{
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+app.get('/forget-password', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
@@ -144,7 +152,6 @@ db.sequelize.sync({force: true}).then(() => {
   initial();
 });
 */
-
 
 //listen port
 app.listen(PORT, ADRESSE, () => {

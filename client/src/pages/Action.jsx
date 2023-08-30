@@ -171,6 +171,7 @@ const Action = (props) => {
     e.preventDefault();
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
+     
       AuthAction.create(data)
         .then(response => {
           setAction({
@@ -256,6 +257,7 @@ const Action = (props) => {
                     onSelect={land3}
                     options={filterInter}
                     showCheckbox
+                    required
                   />
                
               </div>
@@ -268,6 +270,7 @@ const Action = (props) => {
                   name="date_rdv"
                   value={Action.date_rdv}
                   onChange={handleInputChange}
+                  required
 
                 />
               </div>
@@ -299,6 +302,7 @@ const Action = (props) => {
                     label="type_action"
                     name="type_action"
                     onChange={handleInputChange}
+                    required
                   >
                     <MenuItem value={"RDV"}>RDV</MenuItem>
                     <MenuItem value={"contact téléphonique"}>contact téléphonique</MenuItem>
@@ -325,6 +329,7 @@ const Action = (props) => {
                     onSelect={land2}
                     options={besoinliste}
                     showCheckbox
+                    required
                   />
                 </div>
               )}

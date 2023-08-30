@@ -62,6 +62,8 @@ function verifyTwoFactorAuthCode(user, verificationCode) {
   const twoFactorAuthSecretValue = user.twoFactorAuthSecret;
   const twoFactorAuthSecretObject = JSON.parse(twoFactorAuthSecretValue);
   const verification2FA = twoFactorAuthSecretObject.code;
+  console.log(verification2FA)
+  console.log()
   if (parseInt(verificationCode) !== verification2FA) {
     console.log("Code de vérification incorrect :", verificationCode);
     console.log("Code de vérification attendu :", verification2FA);
@@ -159,7 +161,7 @@ function continueLogin(user, req, res) {
      // Génération d'un code de vérification (6 chiffres)
      const verificationCode = Math.floor(100000 + Math.random() * 900000);
      const expiration = new Date();
-     expiration.setTime(expiration.getTime() + 2 * 60 * 60 * 1000); // 2 heures à partir de maintenant
+     expiration.setTime(expiration.getTime() + 5 * 60 * 60 * 1000); // 2 heures à partir de maintenant
 
      // Stockage du code de vérification dans l'objet user
      user.twoFactorAuthSecret = {
@@ -170,8 +172,8 @@ function continueLogin(user, req, res) {
      // Envoi du code de vérification à l'adresse e-mail de l'utilisateur
      const mailOptions = {
        from: "sofitech_mail_automatique@sofitech.pro",
-       to: "sofitech_mail_automatique@sofitech.pro",
-       subject: "Code de vérification pour connexion",
+       to: user.email,
+       subject: "Code de vérification pour connexion CRM SOFITECH ",
        text: `Votre code de vérification est : ${verificationCode}`,
      };
 
@@ -241,82 +243,66 @@ function generateTokenAndResponse(user, res) {
 }
 
 
-
-// Two-Factor Authentication (2FA) code verification route
-exports.twoFactorAuth = (req, res) => {
-  User.findOne({
-    where: {
-      username: req.body.username,
-    }
-  })
-    .then(user => {
-      if (!user) {
-        return res.status(404).send({ message: "utilisateur introuvable :(" });
-      }
-
-      // Vérifier si l'utilisateur est bloqué pour la vérification du 2FA
-      if (user.blockedUntil && user.blockedUntil > new Date()) {
-        // L'utilisateur est bloqué, envoi d'une réponse avec l'heure de déblocage
-        return res.status(401).send({
-          message: "Vérification 2FA temporairement bloquée. Réessayez après " + user.blockedUntil,
-        });
-      }
-
-      if (!req.body.verificationCode) {
-        return res.status(400).send({ message: "Veuillez saisir le code de vérification." });
-      }
-
-      // Vérifier le code 2FA
-      if (verifyTwoFactorAuthCode(user, req.body.verificationCode)) {
-        // Réinitialiser le compteur de tentatives de vérification du 2FA
-        user.update({ loginAttempts: 0 }).then(() => {
-          const authorities = []; // Initialisez le tableau des autorités si nécessaire
-
-          // Récupérer les rôles ou autres autorités liées ici
-          user.getRoles().then((roles) => {
-            for (let i = 0; i < roles.length; i++) {
-              authorities.push("ROLE_" + roles[i].name.toUpperCase());
-            }
-
-            // Générer le jeton JWT
-            const token = jwt.sign({ id: user.id }, config.secret, {
-              expiresIn: 7200, // 24 heures
-            });
-
-            // Envoyer la réponse avec les données nécessaires
-            res.status(200).send({
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              passwordLastChanged:user.passwordLastChanged,
-              roles: authorities, // Utiliser les autorités récupérées
-              accessToken: token,
-              message: "Connection établie avec succès :)",
-            });
-          }).catch((err) => {
-            res.status(500).send({ message: err.message });
-          });
-        }).catch((err) => {
-          res.status(500).send({ message: err.message });
-        });
-      } else {
-        // Code de vérification 2FA incorrect
-        user.increment("loginAttempts");
-        if (user.loginAttempts >= 3) {
-          // Bloquer l'utilisateur pendant 5 minutes après trois tentatives infructueuses de vérification du 2FA
-          user.update({
-            blockedUntil: new Date(new Date().getTime() + 5 * 60 * 1000), // Bloquer pendant 5 minutes
-          });
-        }
-        res.status(401).send({ message: "Code de vérification incorrect ou expiré." });
-        console.log(req.body.verificationCode)
-        console.log(verifyTwoFactorAuthCode(user, req.body.verificationCode))
-      }
-    })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
+exports.twoFactorAuth = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        username: req.body.username,
+      },
     });
+
+    const verificationCode = parseInt(req.body.verificationCode);
+    const twoFactorAuthSecretValue = user.twoFactorAuthSecret.code;
+    const authorities = [];
+     // Vérifier si l'utilisateur est bloqué pour la vérification du 2FA
+     if (user.blockedUntil && user.blockedUntil > new Date()) {
+      // L'utilisateur est bloqué, envoi d'une réponse avec l'heure de déblocage
+      return res.status(401).send({
+        message: "Vérification 2FA temporairement bloquée. Réessayez après " + user.blockedUntil,
+      });
+    }
+
+    if (verificationCode === twoFactorAuthSecretValue) {
+      // Récupérer les rôles de l'utilisateur
+      user.getRoles().then((roles) => {
+        const authorities = roles.map(role => "ROLE_" + role.name.toUpperCase());
+
+        // Générer le jeton JWT
+        const token = jwt.sign({ id: user.id }, config.secret, {
+          expiresIn: 7200, // 24 heures
+        });
+
+        // Envoyer la réponse avec les données nécessaires, y compris le rôle et le jeton
+        res.status(200).send({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          passwordLastChanged: user.passwordLastChanged,
+          authorities: authorities,
+          accessToken: token,
+          message: "Connexion établie avec succès :)",
+        });
+      }).catch((err) => {
+        res.status(500).send({ message: err.message });
+      });
+    } else {
+      user.increment("loginAttempts");
+      if (user.loginAttempts >= 3) {
+        // Bloquer l'utilisateur pendant 5 minutes après trois tentatives infructueuses de vérification du 2FA
+        user.update({
+          blockedUntil: new Date(new Date().getTime() + 5 * 60 * 1000), // Bloquer pendant 5 minutes
+        });
+      }
+      res.status(401).send({ message: "Code de vérification incorrect." });
+    }
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 };
+
+
+
+
 
 
 
@@ -490,7 +476,7 @@ const sendPasswordResetEmail = async (email, resetToken) => {
   try {
     const mailOptions = {
       from: "sofitech_mail_automatique@sofitech.pro", // Use your Outlook email
-      to: "sofitech_mail_automatique@sofitech.pro",
+      to: email,
       subject: "Password Reset",
       text: `Click the following link to reset your password: ${HOST}/reset-password/${resetToken}`,
     };

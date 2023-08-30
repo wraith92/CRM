@@ -1,7 +1,0 @@
-[Function: corsMiddleware]
-Server is running  \\.\pipe\fefb7ee9-1225-46d8-bb5c-a4e5a67de265 cors https://sofcem.mtech.dev
-
-Connected to the MySQL server.
-Executing (default): SELECT `id`, `username`, `email`, `password`, `passwordLastChanged`, `resetToken`, `resetTokenExpires`, `twoFactorAuthSecret`, `loginAttempts`, `blockedUntil`, `createdAt`, `updatedAt` FROM `users` AS `users` WHERE `users`.`username` = 'celine' LIMIT 1;
-Executing (default): SELECT `id`, `username`, `email`, `password`, `passwordLastChanged`, `resetToken`, `resetTokenExpires`, `twoFactorAuthSecret`, `loginAttempts`, `blockedUntil`, `createdAt`, `updatedAt` FROM `users` AS `users` WHERE `users`.`username` = 'celine' LIMIT 1;
-Executing (default): SELECT `id`, `username`, `email`, `password`, `passwordLastChanged`, `resetToken`, `resetTokenExpires`, `twoFactorAuthSecret`, `loginAttempts`, `blockedUntil`, `createdAt`, `updatedAt` FROM `users` AS `users` WHERE `users`.`username` = 'celine' LIMIT 1;

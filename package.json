@@ -18,13 +18,23 @@
     "express": "^4.17.3",
     "express-http-proxy": "^1.6.3",
     "jsonwebtoken": "^8.5.1",
+<<<<<<< HEAD
     "morgan": "^1.10.0",
+=======
+>>>>>>> origin/main
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.9.4",
     "nodemon": "^2.0.15",
+<<<<<<< HEAD
     "react-router-dom": "^6.2.2",
     "sequelize": "^6.17.0",
+=======
+    "qrcode": "^1.5.3",
+    "react-router-dom": "^6.2.2",
+    "sequelize": "^6.17.0",
+    "speakeasy": "^2.0.0",
+>>>>>>> origin/main
     "yarn": "^1.22.18"
   }
 }

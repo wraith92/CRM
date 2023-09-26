@@ -3,6 +3,10 @@ const express = require("express");
 const cors = require("cors");
 const path =require('path')
 const app = express();
+<<<<<<< HEAD
+=======
+const controller = require("./controllers/auth.controller");
+>>>>>>> origin/main
 const PORT = process.env.PORT || 8080 ;
 require('dotenv').config();
 const db = require("./models");
@@ -62,6 +66,7 @@ app.get('/admin', (req,res) =>{
 app.get('/User/Info/:id', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
+<<<<<<< HEAD
 app.get('/change-password', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
@@ -71,6 +76,8 @@ app.get('/reset-password/:id', (req,res) =>{
 app.get('/forget-password', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
+=======
+>>>>>>> origin/main
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -153,6 +160,10 @@ db.sequelize.sync({force: true}).then(() => {
 });
 */
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
 //listen port
 app.listen(PORT, ADRESSE, () => {
   console.log(`Server is running `,PORT,"cors",process.env.HOST);

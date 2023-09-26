@@ -10,7 +10,11 @@
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.6.2",
+<<<<<<< HEAD
     "@mui/material": "^5.7.0",
+=======
+    "@mui/material": "^5.14.2",
+>>>>>>> origin/main
     "@mui/x-date-pickers": "^5.0.0-beta.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
@@ -52,7 +56,11 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
+<<<<<<< HEAD
     "start": "react-scripts --openssl-legacy-provider start",
+=======
+    "start": "react-scripts start",
+>>>>>>> origin/main
     "build": "react-scripts  build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

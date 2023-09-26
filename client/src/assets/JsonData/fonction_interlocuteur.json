@@ -22,9 +22,12 @@
     "TYPE": "Fonction",
     "NOM": "Directeur Technique"
     }
+<<<<<<< HEAD
     ,{
       "TYPE": "Fonction",
       "NOM": "Autre"
       }
+=======
+>>>>>>> origin/main
 
     ]

@@ -21,7 +21,11 @@ class AuthService {
   }
   twoFactorAuth(username,verificationCode) {
     return axios
+<<<<<<< HEAD
       .post(API_URL + "/signin/2fa", {
+=======
+      .post(API_URL + "2fa", {
+>>>>>>> origin/main
         username,
         verificationCode
       })
@@ -69,7 +73,10 @@ class AuthService {
       email,
       roles,
       password,
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
     });
   }
   

@@ -555,21 +555,21 @@ const AddTutorial = () => {
               <div>
 
                 <div className="form-group">
-                  <label htmlFor="title">siren</label>
+                  <label htmlFor="title">Siren</label>
 
                   <SIREN />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="title">nom de la societe</label>
+                  <label htmlFor="title">Nom de la societe</label>
                   <NOM />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="title">code naf</label>
+                  <label htmlFor="title">Code naf</label>
                   <CODENAF />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="title">libelle_code_naf</label>
+                  <label htmlFor="title">Libellé</label>
                   <LibelleCodeNaf />
                 </div>
                 <div className="form-group">
@@ -577,7 +577,7 @@ const AddTutorial = () => {
                   <ADRESSE />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="title">pays</label>
+                  <label htmlFor="title">Pays</label>
                   <PAYE />
                 </div>
                 <div className="form-group">
@@ -598,7 +598,7 @@ const AddTutorial = () => {
           )}
           <div className="form-group">
 
-            <label htmlFor="title">origine du prospect </label>
+            <label htmlFor="title">Origine du prospect </label>
             <Multiselect
               displayValue="NOM"
               groupBy="TYPE"
@@ -652,7 +652,7 @@ const AddTutorial = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="title">telephone Societes</label>
+            <label htmlFor="title">Telephone</label>
             <Input
               type="text"
               className="form-control"

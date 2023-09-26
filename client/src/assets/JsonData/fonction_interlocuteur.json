@@ -22,5 +22,9 @@
     "TYPE": "Fonction",
     "NOM": "Directeur Technique"
     }
+    ,{
+      "TYPE": "Fonction",
+      "NOM": "Autre"
+      }
 
     ]

@@ -88,7 +88,7 @@ exports.signin = async (req, res) => {
 
     const daysSinceLastChange = daysSincePasswordChange(user);
 
-    if (daysSinceLastChange >= 30) {
+    if (daysSinceLastChange >= 91) {
       const randomPassword = Math.random().toString(36).slice(-10);
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
 

@@ -52,7 +52,7 @@ const PasswordForget = () => {
     if (checkBtn.current.context._errors.length === 0) {
       AuthService.forgotPassword(email).then(
         () => {
-          const message = 'mail envoyer !';
+          const message = 'mail envoyé !';
           setLoading(true)
          
           setTimeout(() => {

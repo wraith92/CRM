@@ -2,10 +2,12 @@ import React, { useState, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";  // Import de useParams
 import Form from "react-validation/build/form";
 import CheckButton from "react-validation/build/button";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 import AuthService from "../services/auth.service";
-import ReactLoading from "react-loading";
 import Avatar from "@mui/material/Avatar";
 import Link from '@mui/material/Link';
+import EyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -21,7 +23,7 @@ function Copyright(props) {
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
         <Link color="inherit" href="https://crm.sofitech.pro/">
-          sofitech & cemeca
+          sofitech 
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}
@@ -40,6 +42,7 @@ function Resetpassword() {
   const [confirmPassword, setConfirmPassword] = useState("");  // Nouvelle variable d'état pour la confirmation du mot de passe
   const [loading, setLoading] = useState(undefined);
   const [message, setMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const onChangePassword = (e) => {
     const newPasswordValue = e.target.value;
@@ -136,7 +139,7 @@ function Resetpassword() {
                   <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                  recupration de mot de passe
+                récupération de mot de passe
                 </Typography>
                 <Box component="form" onSubmit={handleResetPassword} noValidate sx={{ mt: 1 }}>
                   <TextField
@@ -150,6 +153,19 @@ function Resetpassword() {
                     value={newPassword}
                     autoComplete="newPassword"
                     autoFocus
+                    type={showPassword ? 'text' : 'password'} // Utilisez le type 'text' pour afficher en clair
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            <EyeOutlinedIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                    <TextField
                     margin="normal"
@@ -162,6 +178,19 @@ function Resetpassword() {
                     value={confirmPassword}
                     autoComplete="confirmPassword"
                     autoFocus
+                    type={showPassword ? 'text' : 'password'} // Utilisez le type 'text' pour afficher en clair
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            <EyeOutlinedIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
               
                   <Button

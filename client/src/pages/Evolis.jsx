@@ -150,16 +150,16 @@ const Evolis = ({ location, props }) => {
                                         🏢 Code NAF
                                     </TableCell>
                                     <TableCell style={{ width: '60px', fontSize: '10px' }}>
-                                        🏢 Libelle
+                                        🏢 Libellé NAF
                                     </TableCell>
                                     <TableCell style={{ width: '120px', fontSize: '10px' }}>
-                                        ⏱️ Date activité commerciale
+                                        ⏱️ Date action commercial
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
                                         💼 Nature d'investissement
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
-                                        📋 Quelle Equipement
+                                        📋  Equipement
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
                                         💰 Montant

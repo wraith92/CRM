@@ -278,9 +278,9 @@ const mycemeca = RoleUser.CemecaRole
               <TableHead>
                 <TableRow>
                   <TableCell style={{ width: '60px', fontSize: '10px' }}>Société</TableCell>
-                  <TableCell style={{ width: '80px', fontSize: '10px' }}>Commerciale</TableCell>
-                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Date activité commerciale</TableCell>
-                  <TableCell style={{ width: '120px', fontSize: '10px' }}>INTERLOCUTEUR</TableCell>
+                  <TableCell style={{ width: '80px', fontSize: '10px' }}>Commercial</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Date action commercial</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Interlocuteur</TableCell>
                   <TableCell style={{ width: '100px', fontSize: '10px' }}>Besoin</TableCell>
                   <TableCell style={{ width: '100px', fontSize: '10px' }}>Description</TableCell>
                   <TableCell style={{ width: '100px', fontSize: '10px' }}>Date d'ajout</TableCell>

@@ -4,7 +4,6 @@ import axios from "axios";
 import {
   TextField,
   Button,
-  Typography,
   InputAdornment,
   IconButton,
 } from "@mui/material";
@@ -125,7 +124,7 @@ const PasswordChangeCountdown = ({ userId }) => {
                 {message && <div>{message}</div>}
               </div>
             ) : (
-              <div>
+              <div>v   
                 <br />
                 <Button onClick={() => setShowPasswordChangeForm(true)}>Changer le mot de passe</Button>
               </div>

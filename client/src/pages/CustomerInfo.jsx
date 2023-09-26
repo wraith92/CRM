@@ -161,11 +161,11 @@ console.log(getResponsibleName(1))
             Code naf : {e.activite_soc}
           </Typography>
           <Typography variant="body2">
-            Libelle naf : {e.libelle_naf}
+            Libellé naf : {e.libelle_naf}
           </Typography>
 
           <Typography variant="body2">
-            adresse postal  : {e.adresse_local} {e.ville_soc} {e.code_postal}
+            Adresse postal  : {e.adresse_local} {e.ville_soc} {e.code_postal}
           </Typography>
 
           <Typography variant="body2">
@@ -173,15 +173,15 @@ console.log(getResponsibleName(1))
           </Typography>
 
           <Typography variant="body2">
-            syndicat : {e.syndicat}
+            Syndicat : {e.syndicat}
           </Typography>
      
           <Typography variant="body2">
-            telephone : {e.tel}
+            Telephone : {e.tel}
           </Typography>
 
           <Typography variant="body1">
-            les interlocuteurs ratacher a cette societe
+          Les interlocuteurs rattachés à cette société
             {
               id_soc.map((item, index) => (
                 <Typography variant="body2" key={index}>
@@ -200,12 +200,12 @@ console.log(getResponsibleName(1))
                   </Typography>
                   {typeof item.besoin !== 'undefined' && item.besoin !== '' && (
                     <Typography variant="body2">
-                      besoin : {item.besoin}
+                      Besoin : {item.besoin}
                     </Typography>
                   )}
                   {typeof item.description !== 'undefined' && item.description !== '' && (
                     <Typography variant="body2">
-                      description : {item.description}
+                      Description : {item.description}
                     </Typography>
                   )}
                 </div>

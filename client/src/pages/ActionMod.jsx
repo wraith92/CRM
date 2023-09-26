@@ -225,7 +225,7 @@ const ActionMod = () => {
                             )}
                         </div>
                         <div className="form-group">
-                            <label htmlFor="title">description</label>
+                            <label htmlFor="title">Description</label>
 
                             {actItem.map((e) =>
                                 <input
@@ -243,7 +243,7 @@ const ActionMod = () => {
 
                         <div className="form-group">
 
-                            <label htmlFor="title">interlocuteur</label>
+                            <label htmlFor="title">Interlocuteur</label>
                             {actItem.map((e) =>
                                 <Multiselect
                                     displayValue="nom"
@@ -284,7 +284,7 @@ const ActionMod = () => {
 
                         </div>
                         <div className="form-group">
-                            <label htmlFor="title">besoin</label>
+                            <label htmlFor="title">Besoin</label>
                             {actItem.map((e) =>
                                 <Multiselect
                                     displayValue="NOM"

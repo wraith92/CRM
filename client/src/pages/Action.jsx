@@ -292,7 +292,7 @@ const Action = (props) => {
 
            
               <div className="form-group">
-                <label htmlFor="password">type d'action</label>
+                <label htmlFor="password">Type d'action</label>
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">type_action</InputLabel>
                   <Select
@@ -314,7 +314,7 @@ const Action = (props) => {
               </div>
               {sofitech && (
                 <div className="form-group">
-                  <label htmlFor="password">besoin</label>
+                  <label htmlFor="password">Besoin</label>
                   <Multiselect
                     displayValue="NOM"
                     groupBy="TYPE"

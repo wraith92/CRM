@@ -33,23 +33,7 @@
   },
   {
     "TYPE": "Investissement non productif",
-<<<<<<< HEAD
     "NOM": "Investissement non productif"
-=======
-    "NOM": "Autre"
-  },
-  {
-    "TYPE": "Innovation immatérielle",
-    "NOM": "Innovation immatérielle"
-  },
-  {
-    "TYPE": "Rachat de part, Croissance Externe",
-    "NOM": "Rachat de part, Croissance Externe"
-  },
-  {
-    "TYPE": "Immobilier",
-    "NOM": "Immobilier"
->>>>>>> origin/main
   }
   
 ]

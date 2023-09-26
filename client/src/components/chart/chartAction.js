@@ -30,39 +30,11 @@ const ChartDate = (props) => {
             xaxis: {
                 categories: ['JAN', 'FÉV', 'MAR', 'AVR', 'MAI', 'JUN', 'JUL', 'AOÛ', 'SEP', 'OCT', 'NOV', 'DÉC']
             },
-<<<<<<< HEAD
-            legend: {
-                position: 'top'
-            },
-=======
->>>>>>> origin/main
             grid: {
                 show: false
             }
         }
     }
-<<<<<<< HEAD
-    return ( 
-        <div className="card full-height">
-
-                                <Chart
-                                    options={themeReducer === 'theme-mode-dark' ? {
-                                        ...chartOptions.options,
-                                        theme: { mode: 'dark' }
-                                    } : {
-                                        ...chartOptions.options,
-                                        theme: { mode: 'light' }
-                                    }}
-                                    series={chartOptions.series}
-                                    type='line'
-                                    height='100%'
-                                />
-                            </div>
-     );
-}
- 
-export default ChartDate;
-=======
 
     return ( 
         <div className="card full-height">
@@ -83,4 +55,3 @@ export default ChartDate;
 }
 
 export default ChartDate;
->>>>>>> origin/main

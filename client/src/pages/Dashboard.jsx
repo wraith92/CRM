@@ -10,10 +10,7 @@ import Societe from "../controllers/Societe";
 import ListeSociete from "../components/societe/ListeDashbord";
 import ListeAction from "../components/action/ListeDashboard";
 import ChartDateAction from "../components/chart/chartAction";
-<<<<<<< HEAD
 import ChartDateSociete from "../components/chart/chartSociete";
-=======
->>>>>>> origin/main
 import InputDateDebut from "../components/Date/inputDate";
 import InputDateFin from "../components/Date/inputDate2";
 import { getStatusCardAdmin } from "../components/card/statuscardadmin";
@@ -45,10 +42,7 @@ const Dashboard = () => {
   societeListe.sort(
     (b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
-<<<<<<< HEAD
   console.log(societe_util);
-=======
->>>>>>> origin/main
   //refreh data
   useEffect(() => {
     if (user) {
@@ -91,10 +85,6 @@ const Dashboard = () => {
       ).length
     );
   }
-<<<<<<< HEAD
-=======
-  console.log(tableau_action , tableau_societe);
->>>>>>> origin/main
 
   const mysn = 1000 * 3600 * 24;
   const fltr_date = Action.filter(
@@ -105,18 +95,6 @@ const Dashboard = () => {
   const filtre_date_Action_util1 = fltr_date.filter(
     (task) => task.id_utili === user.id
   );
-<<<<<<< HEAD
-  //card contrat
-  const StatusContrat = [
-    {
-      icon: "bx bxs-contact",
-      count: 0,
-      title: "Sociétaire SOFITECH ",
-    },
-  ];
-=======
-
->>>>>>> origin/main
   //card acrion admin
   const statusCardAdmin = getStatusCardAdmin({ fltr_date });
   const statusCardEvolis = getStatusCardEvolis({ fltr_date });
@@ -250,11 +228,7 @@ const Dashboard = () => {
             </div>
             {/* chart graphique des clients  */}
             <div className="col-6">
-<<<<<<< HEAD
-              <ChartDateAction tableau_action={tableau_action} />
-=======
               <ChartDateAction tableau_action={tableau_action} tableau_societe={tableau_societe} />
->>>>>>> origin/main
             </div>
            
             {/* dernier societe cree */}

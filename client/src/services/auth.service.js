@@ -69,7 +69,6 @@ class AuthService {
       email,
       roles,
       password,
-
     });
   }
   

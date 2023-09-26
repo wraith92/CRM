@@ -139,7 +139,7 @@ function Resetpassword() {
                   <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                  recupration de mot de passe
+                récupération de mot de passe
                 </Typography>
                 <Box component="form" onSubmit={handleResetPassword} noValidate sx={{ mt: 1 }}>
                   <TextField

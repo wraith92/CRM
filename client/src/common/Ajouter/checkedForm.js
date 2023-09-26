@@ -93,7 +93,7 @@ class checkedForm{
   }
   
    cville = value => {
-    if (value.length < 4 || value.length > 30) {
+    if (value.length < 2 || value.length > 30) {
       return (
         <div className="alert alert-danger" role="alert">
           ville invalide !

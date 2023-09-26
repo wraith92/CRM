@@ -24,26 +24,7 @@ const Evolis = ({ location, props }) => {
     const [ACtionFilter, SetActionFilter] = useState(fltr_date || []);
     console.log(fltr_date);
     const myadmin = RoleUser.AdminRole();
-    const ReadMore = ({ children }) => {
-        const text = children;
-        const [isReadMore, setIsReadMore] = useState(true);
-        const toggleReadMore = () => {
-            setIsReadMore(!isReadMore);
-        };
-
-        if (!text) {
-            return null;
-        }
-
-        return (
-            <p className="text">
-                {isReadMore ? text.slice(0, 30) : text}
-                <span onClick={toggleReadMore} className="read-or-hide">
-                    {isReadMore ? "...read more" : " show less"}
-                </span>
-            </p>
-        );
-    };
+ 
     const [societeListe, SetsocieteListe] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const mysofitech = RoleUser.SofitechRole();
@@ -150,16 +131,16 @@ const Evolis = ({ location, props }) => {
                                         🏢 Code NAF
                                     </TableCell>
                                     <TableCell style={{ width: '60px', fontSize: '10px' }}>
-                                        🏢 Libelle
+                                        🏢 Libellé NAF
                                     </TableCell>
                                     <TableCell style={{ width: '120px', fontSize: '10px' }}>
-                                        ⏱️ Date activité commerciale
+                                        ⏱️ Date action commercial
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
                                         💼 Nature d'investissement
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
-                                        📋 Quelle Equipement
+                                        📋  Equipement
                                     </TableCell>
                                     <TableCell style={{ width: '100px', fontSize: '10px' }}>
                                         💰 Montant

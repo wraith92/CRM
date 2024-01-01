@@ -146,12 +146,12 @@ connection.connect(function(err) {
 
 //syncroniser la base de donner
 
-/*
+
 db.sequelize.sync({force: true}).then(() => {
   console.log('Drop and Resync Db');
   initial();
 });
-*/
+
 
 //listen port
 app.listen(PORT, ADRESSE, () => {

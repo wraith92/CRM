@@ -88,6 +88,20 @@ console.log(listSoc,"les societes")
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
               Telephone :  {e.tel}
             </Typography>
+            {e.isConfirmed ? (
+            <Typography variant="body2" color="text.secondary">
+              Statut de confirmation : Confirmé
+            </Typography>
+          ) : (
+            <React.Fragment>
+              <Typography variant="body2" color="text.secondary">
+                Statut de confirmation : En attente
+              </Typography>
+              <Button href={`/send_mail_confirmation_interlocuteur/${e.id_interlocuteur}`} size="small">
+                Confirmer par e-mail
+              </Button>
+            </React.Fragment>
+          )}
 
 
 

@@ -198,6 +198,7 @@ const mycemeca = RoleUser.CemecaRole
         <TableCell style={{ fontSize: '10px' }}>
           {moment(e.date_rdv).format('DD MMMM YYYY HH:mm')}
         </TableCell>
+        <TableCell style={{ fontSize: '8px' }}>{e.credit_cop}</TableCell>
         <TableCell style={{ fontSize: '8px' }}>{e.nom_interlocuteur}</TableCell>
         <TableCell style={{ fontSize: '8px' }}>{e.besoin}</TableCell>
         <TableCell style={{ fontSize: '8px' }}><ReadMore>{e.description}</ReadMore></TableCell>
@@ -280,6 +281,7 @@ const mycemeca = RoleUser.CemecaRole
                   <TableCell style={{ width: '60px', fontSize: '10px' }}>Société</TableCell>
                   <TableCell style={{ width: '80px', fontSize: '10px' }}>Commercial</TableCell>
                   <TableCell style={{ width: '120px', fontSize: '10px' }}>Date action commercial</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Credit_cop</TableCell>
                   <TableCell style={{ width: '120px', fontSize: '10px' }}>Interlocuteur</TableCell>
                   <TableCell style={{ width: '100px', fontSize: '10px' }}>Besoin</TableCell>
                   <TableCell style={{ width: '100px', fontSize: '10px' }}>Description</TableCell>

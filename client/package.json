@@ -76,7 +76,7 @@
     ]
   },
   "description": "Build React Admin Dashboard with Multiple Themes | React Admin Panel CSS | ReactJS",
-  "proxy": "http://localhost:8081/",
+  "proxy": "http://localhost:8080/",
   "main": "index.js",
   "author": "",
   "license": "ISC"

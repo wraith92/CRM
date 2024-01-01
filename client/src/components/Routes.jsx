@@ -52,7 +52,7 @@ console.log(daysSinceLastChange);
         <>
           <Route path='/' exact component={Dashboard} />
           <Route path='/admin'  component={DashboardAdmin} />
-          <Route path='/register' component={Register} />
+         
           <Route path='/Action/:id' component={Action} />
           <Route path='/Evolis' component={Evolis} />
           <Route path='/AllAction' component={ActionDetails}  />
@@ -77,6 +77,7 @@ console.log(daysSinceLastChange);
         <div>
           <Route path='*' exact component={PageError} />
           <Route path='/Login' component={Login} />
+          <Route path='/register' component={Register} />
           <Route path='/forget-password' component={PasswordForget} />
           <Route path='/reset-password/:id' component={Resetpassword} /> {/* Nouvelle route pour l'oubli de mot de passe */}
         </div>

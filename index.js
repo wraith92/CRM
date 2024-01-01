@@ -9,7 +9,7 @@ const db = require("./models");
 const Role = db.role;
 const ADRESSE=process.env.ADRESSE
 var corsOptions = {
-  origin: process.env.HOST
+  origin: process.env.CORS_ORIGIN
 };
 
 app.use(cors(corsOptions));
@@ -146,12 +146,12 @@ connection.connect(function(err) {
 
 //syncroniser la base de donner
 
-
+/*
 db.sequelize.sync({force: true}).then(() => {
   console.log('Drop and Resync Db');
   initial();
 });
-
+*/
 
 //listen port
 app.listen(PORT, ADRESSE, () => {

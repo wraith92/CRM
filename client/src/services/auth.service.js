@@ -21,7 +21,7 @@ class AuthService {
   }
   twoFactorAuth(username,verificationCode) {
     return axios
-      .post(API_URL + "/signin/2fa", {
+      .post(API_URL + "signin/2fa", {
         username,
         verificationCode
       })

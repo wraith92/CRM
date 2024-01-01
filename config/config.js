@@ -1,8 +1,8 @@
 module.exports = {
   HOST: "localhost",
   USER: "root",
-  PASSWORD: "Adminsqlsofcem3/",
-  DB: "sofcem_base_crm",
+  PASSWORD: "root",
+  DB: "testdb",
   dialect: "mysql",
   pool: {
     max: 5,

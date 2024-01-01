@@ -19,18 +19,11 @@ module.exports = function(app) {
     controller.signup
   );
   app.post("/api/auth/signin", controller.signin);
-<<<<<<< HEAD
-=======
-  
->>>>>>> origin/main
   app.post("/api/auth/historique", controller.Post_historique_auth);
   app.get("/api/auth/list_historique", controller.get_historique_auth);
   app.delete("/api/auth/list_historique", controller.deleteAll_historique_auth);
   app.delete("/api/auth/list_historique/:id", controller.delete_historique_auth);
-<<<<<<< HEAD
   app.post("/api/auth/signin/2fa",controller.twoFactorAuth)
-=======
->>>>>>> origin/main
   app.get("/api/find", test.findAll);
   app.post(
     "/api/auth/change-password",
@@ -42,8 +35,4 @@ module.exports = function(app) {
 
     // Route to handle password change
     app.post("/api/auth/modifier-password", controller.modifierPassword);
-<<<<<<< HEAD
-=======
-    app.post("/api/auth/2fa", controller.twoFactorAuth);
->>>>>>> origin/main
 };

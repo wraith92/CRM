@@ -14,7 +14,6 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
-console.log(cors(corsOptions))
 app.use(express.static(path.join(__dirname , "client","build")))
 //all path in front end
 app.get('/register', (req,res) =>{

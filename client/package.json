@@ -52,7 +52,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
     "build": "react-scripts  build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -79,5 +79,8 @@
   "proxy": "http://localhost:8081/",
   "main": "index.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
 }

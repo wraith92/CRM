@@ -86,7 +86,7 @@ exports.signin = async (req, res) => {
 
     const daysSinceLastChange = daysSincePasswordChange(user);
 
-    if (daysSinceLastChange >= 30) {
+    if (daysSinceLastChange >= 91) {
       const randomPassword = Math.random().toString(36).slice(-10);
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
@@ -176,11 +176,11 @@ function continueLogin(user, req, res) {
      };
 
      const transporter = nodemailer.createTransport({
-       host: "mail.exchangeincloud.com", // Outlook SMTP server
+       host: process.env.MAIL_HOST, // Outlook SMTP server
        port: 587, // Use a non-standard port (587 is the standard TLS port)
        auth: {
-         user: "sofitech_mail_automatique@sofitech.pro", // Your Outlook email
-         pass: "!SOFImail2023", // Your Outlook password
+         user: process.env.MAIL_USER, // Your Outlook email
+         pass: process.env.MAIL_PASSWORD, // Your Outlook password
        },
      });
 
@@ -477,13 +477,12 @@ const generateRandomPassword = () => {
   return Math.random().toString(36).slice(2);
 };
 const transporter = nodemailer.createTransport({
-  host: "mail.exchangeincloud.com", // Outlook SMTP server
+  host: process.env.MAIL_HOST, // Outlook SMTP server
   port: 587, // Use a non-standard port (587 is the standard TLS port)
-  // Set secure to false if you're using a non-standard port
   auth: {
-    user: "sofitech_mail_automatique@sofitech.pro", // Your Outlook email
-    pass: "!SOFImail2023", // Your Outlook password
-  }
+    user: process.env.MAIL_USER, // Your Outlook email
+    pass: process.env.MAIL_PASSWORD, // Your Outlook password
+  },
 });
 // Function to send password reset email
 const sendPasswordResetEmail = async (email, resetToken) => {

@@ -15,7 +15,8 @@ const ChartDate = (props) => {
                 data: props.tableau_societe
             }
         ],
-        options: {
+        
+         options: {
             color: ['#6ab04c', '#2980b9'],
             chart: {
                 background: 'transparent',

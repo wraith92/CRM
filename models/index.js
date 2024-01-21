@@ -50,8 +50,8 @@ db.user.hasMany(db.societe,{foreignKey : 'id_utili' , sourceKey:'id'})
 //user => action,
 db.user.hasMany(db.action, {foreignKey: 'id_utili', sourceKey: 'id'});
 
-// role => societes
-db.role.hasMany(db.societe, {foreignKey: 'id_role', sourceKey: 'id'});
+  // role => societes
+  db.role.hasMany(db.societe, {foreignKey: 'id_role', sourceKey: 'id'});
 
 // user plusieurs interlocuteur
 db.societe.hasMany(db.interlocuteur, {foreignKey: 'id_soc', sourceKey: 'siret'});

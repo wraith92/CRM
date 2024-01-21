@@ -39,6 +39,7 @@ const AddTutorial = () => {
   const vtel = checkForm.vtel;
   const vpays = checkForm.vpays;
   const vadresse = checkForm.vadresse;
+  const montant = checkForm.montant;
   const user = AuthService.getCurrentUser();
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
@@ -52,6 +53,7 @@ const AddTutorial = () => {
     nom_soc: "",
     date_creation_soc: "",
     activite_soc: "",
+    libelle_naf: "",
     adresse_local: "",
     pays: "",
     ville_soc: "",
@@ -122,6 +124,7 @@ const AddTutorial = () => {
       nom_responsable_soc: Societe.nom_responsable_soc,
       date_creation_soc: Societe.date_creation_soc,
       activite_soc: Societe.activite_soc,
+      libelle_naf: Societe.libelle_naf,
       adresse_local: Societe.adresse_local,
       pays: Societe.pays,
       ville_soc: Societe.ville_soc,
@@ -149,6 +152,7 @@ const AddTutorial = () => {
             nom_soc: response.data.nom_soc,
             nom_responsable_soc: response.data.nom_responsable_soc,
             activite_soc: response.data.activite_soc,
+            libelle_naf: response.data.libelle_naf,
             adresse_local: response.data.adresse_local,
             app_sofitech: response.data.app_sofitech,
             pays: response.data.pays,
@@ -231,6 +235,7 @@ const AddTutorial = () => {
 
   const [SIRETAPI, setSIRETAPI] = useState([]);
   const [Etablissement, SetETA] = useState([]);
+  console.log(Etablissement)
   const [value, setValue] = useState("");
   const GetAPI = () => {
     getAPINSEE().then(response => {
@@ -255,6 +260,7 @@ const AddTutorial = () => {
   const Siren = result.filter(([key]) => key === 'siren');
   const Nom = result.filter(([key]) => key === "nom_entreprise");
   const Code_naf = result.filter(([key]) => key === "code_naf");
+  const libelle_naf = result.filter(([key]) => key === "libelle_code_naf");
   const adresse = result2.filter(([key]) => key === "adresse_ligne_1");
   const paye = result2.filter(([key]) => key === "pays");
   const ville = result2.filter(([key]) => key === "ville");
@@ -309,6 +315,24 @@ const AddTutorial = () => {
           className="form-control"
           id="title"
           value={Societe.activite_soc = e[1]}
+          onChange={handleInputChange}
+          validations={[required, vsyndicat]}
+          name="activite_soc"
+        />
+      )}
+    </div>)
+
+  }
+  const LibelleCodeNaf = () => {
+
+    return (<div>
+      {libelle_naf.map((e, valeur) =>
+        <Input
+          key={valeur}
+          type="text"
+          className="form-control"
+          id="title"
+          value={Societe.libelle_naf = e[1]}
           onChange={handleInputChange}
           validations={[required, vsyndicat]}
           name="activite_soc"
@@ -384,7 +408,7 @@ const AddTutorial = () => {
             id="title"
             value={Societe.code_postal = e[1]}
             onChange={handleInputChange}
-            validations={[required, vcode_postal]}
+            validations={[required]}
             name="code_postal"
           />
         )}
@@ -531,25 +555,29 @@ const AddTutorial = () => {
               <div>
 
                 <div className="form-group">
-                  <label htmlFor="title">siren</label>
+                  <label htmlFor="title">Siren</label>
 
                   <SIREN />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="title">nom de la societe</label>
+                  <label htmlFor="title">Nom de la societe</label>
                   <NOM />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="title">code naf</label>
+                  <label htmlFor="title">Code naf</label>
                   <CODENAF />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="title">Libellé</label>
+                  <LibelleCodeNaf />
                 </div>
                 <div className="form-group">
                   <label htmlFor="title">Adresse local</label>
                   <ADRESSE />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="title">pays</label>
+                  <label htmlFor="title">Pays</label>
                   <PAYE />
                 </div>
                 <div className="form-group">
@@ -570,7 +598,7 @@ const AddTutorial = () => {
           )}
           <div className="form-group">
 
-            <label htmlFor="title">origine du prospect </label>
+            <label htmlFor="title">Origine du prospect </label>
             <Multiselect
               displayValue="NOM"
               groupBy="TYPE"
@@ -624,7 +652,7 @@ const AddTutorial = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="title">telephone Societes</label>
+            <label htmlFor="title">Telephone</label>
             <Input
               type="text"
               className="form-control"

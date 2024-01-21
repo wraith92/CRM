@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import Form from "react-validation/build/form";
 import Box from '@mui/material/Box';
-import ExportToExcel from 'react-export-table-to-excel';
+import EditIcon from '@mui/icons-material/Edit';
+import { DownloadTableExcel } from 'react-export-table-to-excel';
 import CheckButton from "react-validation/build/button";
 import Button from '@mui/material/Button';
 import AuthAction from '../services/Action';
 import AuthService from "../services/auth.service";
 import RoleUser from "../controllers/Role";
 import moment from "moment";
+import Societe from '../controllers/Societe';
 import 'moment/locale/fr';
 import Switch from '@mui/material/Switch';
 import {
@@ -22,9 +22,9 @@ import {
   Paper,
   Grid,
   Typography,
-  TablePagination,
 } from '@material-ui/core';
 import UserService from '../services/user.service';
+import { accordionActionsClasses } from '@mui/material';
 
 const ActionDetails = () => {
   const [showFullDescription, setFullDescription] = useState(false);
@@ -56,26 +56,19 @@ const ActionDetails = () => {
   const [ACtionFilter, SetActionFilter] = useState([]);
   const [Etat, setEtat] = useState([]);
   const [Test, setTest] = useState([]);
-  const [checked, setChecked] = useState(false);
+  const [societeListe,SetsocieteListe]=useState([]);
   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
-  const [realiserFilter, setRealiserFilter] = useState(false);
-  const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
+  const [ setSuccessful] = useState(false);
+  const [ message,setMessage] = useState("");
   const form = useRef();
   const checkBtn = useRef();
   const [searchTerm, setSearchTerm] = useState('');
   const [listuser, setListeUser] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
+  const mysofitech = RoleUser.SofitechRole();
+//GET role cemece
+const mycemeca = RoleUser.CemecaRole
+  const tableRef = useRef(null);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
 
   const retrieveActions = () => {
     if (user) {
@@ -98,30 +91,45 @@ const ActionDetails = () => {
         console.log(e);
       });
   };
-
-  const valideAction = (e) => {
+  const valideAction = () => {
+    // Préparer les données pour la mise à jour
     var data = {
       id: Test,
       validation: Etat,
     };
-
-    e.preventDefault();
+  
+    // Valider le formulaire
     form.current.validateAll();
-    if (checkBtn.current && checkBtn.current.context && checkBtn.current.context._errors.length === 0) {
+  
+    // Vérifier s'il n'y a pas d'erreurs de validation
+    if (
+      checkBtn.current &&
+      checkBtn.current.context &&
+      checkBtn.current.context._errors.length === 0
+    ) {
+      // Effectuer la mise à jour via l'API
       AuthAction.update(Test, data)
-        .then(response => {
+        .then((response) => {
+          // Mettre à jour l'état après la mise à jour réussie
           setVali({
             id: response.data.id,
             validation: response.data.validation,
           });
+  
+          // Mettre à jour l'état successful pour afficher un message
           setSuccessful(true);
+  
+          // Recharger la page pour afficher les mises à jour
           window.location.reload();
         })
-        .catch(e => {
-          console.log(e);
+        .catch((e) => {
+          // Gérer les erreurs de mise à jour
+          console.log("Error during update:", e);
         });
     }
   };
+  
+  
 
   useEffect(() => {
     retrieveActions();
@@ -129,10 +137,6 @@ const ActionDetails = () => {
   }, []);
 
   useEffect(() => {
-    console.log("ACtionFilter:", ACtionFilter);
-    console.log("page:", page);
-    console.log("rowsPerPage:", rowsPerPage);
-
     if (myadmin) {
       SetActionFilter(Action);
       Action.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
@@ -140,14 +144,14 @@ const ActionDetails = () => {
       const data = Action.filter((task) => task.id_utili === user.id);
       data.sort((b, a) => new Date(a.date_rdv).getTime() - new Date(b.date_rdv).getTime());
       SetActionFilter(data);
+
     }
 
     // Apply the filter based on "Etat" (Status)
-    if (realiserFilter) {
-      SetActionFilter((prevFilter) => prevFilter.filter((task) => task.validation === 'realiser'));
-    } else {
-      SetActionFilter((prevFilter) => prevFilter.filter((task) => task.validation === 'non realiser'));
-    }
+   
+       if (mysofitech) Societe.AllSociete().then(data => SetsocieteListe(data))
+    
+    
 
     // Apply the filter based on the search term
     if (searchTerm !== '') {
@@ -157,8 +161,7 @@ const ActionDetails = () => {
     }
 
     // Update the page when filters change
-    setPage(0);
-  }, [myadmin, Action, searchTerm, realiserFilter, page, rowsPerPage]);
+  }, [myadmin, Action, searchTerm,,mysofitech]);
 
   const handleSearchChange = (event) => {
     const searchTerm = event.target.value || '';
@@ -166,20 +169,24 @@ const ActionDetails = () => {
   };
 
   const renderCardRow = (e) => {
+    const isRealiser = e.validation === 'realiser';
+    console.log("Action data:", e);
+    console.log("societeListe:", societeListe);
+    console.log("Filtered:", societeListe.filter((task) => task.nom_soc.toLowerCase() === e.nom_societe.toLowerCase()));
+ 
     return (
       <TableRow key={e.id} style={{ fontSize: '10px' }}>
-        <TableCell style={{ fontSize: '6px' }}>
-          {e.validation === 'realiser' ? (
-            <Alert severity="success">
-              <AlertTitle></AlertTitle>
-            </Alert>
-          ) : (
-            <Alert severity="warning">
-              <AlertTitle></AlertTitle>
-            </Alert>
-          )}
-        </TableCell>
-        <TableCell style={{ fontSize: '8px' }}>{e.nom_societe}</TableCell>
+
+<TableCell style={{ fontSize: '8px' }}>
+{societeListe
+  .filter((task) => task.nom_soc.toLowerCase() === e.nom_societe.toLowerCase())
+  .map((index) => (
+    <a href={`/Societe/${index.siret}`} key={index.id}>
+      {index.nom_soc}
+    </a>
+  ))
+}
+</TableCell>
         {myadmin &&
           (listuser.filter((task) => task.id === e.id_utili)).map((index) => (
             <TableCell style={{ fontSize: '8px' }}>
@@ -191,6 +198,7 @@ const ActionDetails = () => {
         <TableCell style={{ fontSize: '10px' }}>
           {moment(e.date_rdv).format('DD MMMM YYYY HH:mm')}
         </TableCell>
+        <TableCell style={{ fontSize: '8px' }}>{e.credit_cop}</TableCell>
         <TableCell style={{ fontSize: '8px' }}>{e.nom_interlocuteur}</TableCell>
         <TableCell style={{ fontSize: '8px' }}>{e.besoin}</TableCell>
         <TableCell style={{ fontSize: '8px' }}><ReadMore>{e.description}</ReadMore></TableCell>
@@ -198,67 +206,44 @@ const ActionDetails = () => {
           {moment(e.createdAt).format('DD MMMM YYYY HH:mm')}
         </TableCell>
         <TableCell style={{ fontSize: '8px' }}>
-          <Form onSubmit={valideAction} ref={form}>
-            <button
-              className="btn btn-success"
-              onClick={() =>
-                (setTest(e.id),
-                  setMessage('Activité commerciale Réalisée'),
-                  setEtat('realiser'))
-              }
-              value={Vali.id = e.id}
-              name="id"
-              style={{ fontSize: '8px', padding: '4px' }}
-            >
-              Réalisé
-            </button>
-            <CheckButton style={{ display: 'none' }} ref={checkBtn} />
-          </Form>
-        </TableCell>
-        <TableCell style={{ fontSize: '8px' }}>
-          <Form onSubmit={valideAction} ref={form}>
-            <button
-              className="btn btn-danger"
-              onClick={() =>
-                (setTest(e.id),
-                  setMessage('Activité commerciale Réalisée Annulée'),
-                  setEtat('non realiser'))
-              }
-              value={Vali.id = e.id}
-              name="id"
-              style={{ fontSize: '8px', padding: '4px' }}
-            >
-              Non Réalisé
-            </button>
-            <CheckButton style={{ display: 'none' }} ref={checkBtn} />
-          </Form>
-        </TableCell>
-        <TableCell>
-          <Button href={`/Actions/modifier/${e.id}`} color="warning" size="small" style={{ fontSize: '8px' }}>
-            Modifier
-          </Button>
-        </TableCell>
+     <Form onSubmit={valideAction} ref={form}>
+     <button
+  className="btn"
+  onClick={() => {
+    setTest(e.id);
+    setMessage(e.validation === 'realiser' ? 'Activité commerciale Réalisée Annulée' : 'Activité commerciale Réalisée');
+    setEtat(e.validation === 'realiser' ? 'non realiser' : 'realiser');
+    valideAction(e); // Appeler la fonction de validation
+  }}
+  style={{
+    fontSize: '8px',
+    padding: '4px',
+    color: e.validation === 'realiser' ? 'white' : 'black',
+    backgroundColor: e.validation === 'realiser' ? 'green' : 'red',
+    border: 'none',
+    cursor: 'pointer',
+  }}
+>
+  {e.validation === 'realiser' ? 'Réalisé' : 'Non Réalisé'}
+</button>
+
+  <CheckButton style={{ display: 'none' }} ref={checkBtn} />
+</Form>
+      </TableCell>
+      <TableCell>
+      <Button
+        href={`/Actions/modifier/${e.id}`}
+        color="warning"
+        size="small"
+        style={{ fontSize: '8px' }}
+        startIcon={<EditIcon />} // Add the icon to the startIcon prop
+      >
+      </Button>
+    </TableCell>
       </TableRow>
     );
   };
-  const getTableDataForExcel = () => {
-    // Extracting data for Excel export
-    const data = ACtionFilter.map((item) => ({
-      Etat: item.validation === 'realiser' ? 'Réalisé' : 'Non Réalisé',
-      Société: item.nom_societe,
-      Commerciale: item.id_utili, // Replace with the appropriate user data
-      DateActivitéCommerciale: moment(item.date_rdv).format('DD MMMM YYYY HH:mm'),
-      INTERLOCUTEUR: item.nom_interlocuteur,
-      Besoin: item.besoin,
-      Description: item.description,
-      DateAjout: moment(item.createdAt).format('DD MMMM YYYY HH:mm'),
-    }));
-  
-    console.log(data); // Add this line to check if the data is correct
-  
-    // Pass data and filename to ExportToExcel component
-    return <ExportToExcel data={data} fileName="action_data" />;
-  };
+
   return (
     <Box sx={{ minWidth: 275 }}>
       <div className="row">
@@ -272,55 +257,45 @@ const ActionDetails = () => {
               onChange={handleSearchChange}
             />
           </Grid>
-          <Grid item xs={12} md={2}>
-            <Switch
-              {...label}
-              onChange={() => setRealiserFilter(!realiserFilter)}
-              checked={realiserFilter}
-            />
-          </Grid>
+         
           <Grid item xs={12} md={6} container justifyContent="flex-end">
             {/* Add the Download Button */}
-            <Button variant="contained" color="primary" onClick={() => getTableDataForExcel}>
-  Download Excel
-</Button>
+            <DownloadTableExcel
+              filename={"Compte-rendu"}
+              sheet={"Compte-rendu"}
+              currentTableRef={tableRef.current}
+            >
+              <Button variant="contained" color="success" >
+                Excel
+              </Button>
+            </DownloadTableExcel>
+
           </Grid>
         </Grid>
 
         <div variant="outlined">
           <TableContainer component={Paper}>
-            <Table>
+            <Table ref={tableRef}>
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ width: '40px', fontSize: '10px' }}>Etat</TableCell>
                   <TableCell style={{ width: '60px', fontSize: '10px' }}>Société</TableCell>
-                  <TableCell style={{ width: '80px', fontSize: '10px' }}>Commerciale</TableCell>
-                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Date activité commerciale</TableCell>
-                  <TableCell style={{ width: '120px', fontSize: '10px' }}>INTERLOCUTEUR</TableCell>
+                  <TableCell style={{ width: '80px', fontSize: '10px' }}>Commercial</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Date action commercial</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Credit_cop</TableCell>
+                  <TableCell style={{ width: '120px', fontSize: '10px' }}>Interlocuteur</TableCell>
                   <TableCell style={{ width: '100px', fontSize: '10px' }}>Besoin</TableCell>
                   <TableCell style={{ width: '100px', fontSize: '10px' }}>Description</TableCell>
                   <TableCell style={{ width: '100px', fontSize: '10px' }}>Date d'ajout</TableCell>
-                  <TableCell style={{ width: '70px', fontSize: '10px' }}>Réalisé</TableCell>
-                  <TableCell style={{ width: '80px', fontSize: '10px' }}>Non Réalisé</TableCell>
+                  <TableCell style={{ width: '70px', fontSize: '10px' }}>Etat</TableCell>
                   <TableCell style={{ width: '70px', fontSize: '10px' }}>Modifier</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ACtionFilter
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map(renderCardRow)}
+                {ACtionFilter.map(renderCardRow)}
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={Action.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+         
         </div>
       </div>
     </Box>

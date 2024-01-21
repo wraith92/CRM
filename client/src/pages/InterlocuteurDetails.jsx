@@ -9,6 +9,7 @@ import UserService from "../services/user.service";
 import AuthInterlocuteur from "../services/Interlocuteur";
 import 'moment/locale/fr';
 import Societe from '../controllers/Societe';
+import axios from 'axios';
 
 
 function InterlocuteurDetails() {
@@ -19,6 +20,17 @@ function InterlocuteurDetails() {
   const [search, setSearch] = useState('');
   const [listuser, setListeUser] = useState([]);
   const [listSoc ,setSoc] = useState([]);
+
+  const handleEmailConfirmation = async (interlocuteurId) => {
+    try {
+      const response = await axios.get(`/send_mail_confirmation_interlocuteur/${interlocuteurId}`);
+      console.log(response.data);
+      // Vous pouvez ajouter ici une logique pour gérer la réponse si nécessaire
+    } catch (error) {
+      console.error('Erreur lors de la confirmation par e-mail:', error);
+      // Vous pouvez ajouter ici une logique pour gérer les erreurs si nécessaire
+    }
+  };
   //Select all interlocuteur
   const retrieveInterlocuteur = () => {
     AuthInterlocuteur.findAll()
@@ -88,8 +100,20 @@ console.log(listSoc,"les societes")
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
               Telephone :  {e.tel}
             </Typography>
-
-
+            {!e.isConfirmed ? (
+              <React.Fragment>
+                <Typography variant="body2" color="text.secondary">
+                  Statut de confirmation : En attente
+                </Typography>
+                <Button size="small" onClick={() => handleEmailConfirmation(e.id_interlocuteur)}>
+                  Confirmer par e-mail
+                </Button>
+              </React.Fragment>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                Statut de confirmation : Confirmé
+              </Typography>
+            )}
 
 
           </CardContent>

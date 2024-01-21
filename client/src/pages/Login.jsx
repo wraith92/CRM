@@ -3,8 +3,12 @@ import { useHistory } from 'react-router-dom';
 import Form from "react-validation/build/form";
 import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service";
-import ReactLoading from 'react-loading';
+import Modal from '@mui/material/Modal';
 import Avatar from '@mui/material/Avatar';
+import { InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import Backdrop from '@mui/material/Backdrop';
+import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -22,7 +26,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://crm.sofitech.pro/">
-        sofitech & cemeca
+        sofitech
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -36,10 +40,20 @@ const Login = () => {
   let history = useHistory();
   const form = useRef();
   const checkBtn = useRef();
+  const [showPassword, setShowPassword] = useState(false);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(undefined);
+  const [successful, setSuccessful] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationError, setVerificationError] = useState("");
   const [message, setMessage] = useState("");
+  const [messagevalidation, setMessagevalidation] = useState("");
+  const openVerificationModal = () => {
+    setShowVerificationModal(true);
+  };
   const onChangeUsername = (e) => {
     const username = e.target.value;
     setUsername(username);
@@ -55,13 +69,15 @@ const Login = () => {
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
       AuthService.login(username, password).then(
-        () => {
-          const message = 'connection etablie !';
+        (response) => {
+          const message = 'Mail envoyé. Vérifiez votre boîte de réception pour le code de vérification.';
           const password = '********'
           setLoading(true)
+          setMessage(message);
+          setSuccessful(true);
           setTimeout(() => {
                 setLoading(false)
-                history.push("/");
+                openVerificationModal();
               }, 1000)
 
 
@@ -110,6 +126,36 @@ const Login = () => {
 
     }
   };
+  const handleVerification = (e) => {
+    e.preventDefault();
+
+    if (!verificationCode) {
+      setVerificationError("Veuillez saisir le code de vérification.");
+      return;
+    }
+
+    AuthService.twoFactorAuth(username,verificationCode).then(
+      (data) => {
+        if (data.accessToken) {
+          sessionStorage.setItem("user", JSON.stringify(data));
+          history.push("/"); // Rediriger vers la page principale en cas de succès
+        } else {
+          setVerificationError("Code de vérification incorrect ou expiré.");
+        }
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+        setVerificationError(resMessage);
+      }
+    );
+  };
+
   return (
 
     <div className="col-md-12">
@@ -136,6 +182,7 @@ const Login = () => {
                 <br></br>
                 <Loader />
               </Typography>
+              <a href="/forget-password">Mot de passe oublier ?</a>
 
             </Box>
             <Copyright sx={{ mt: 8, mb: 4 }} />
@@ -146,6 +193,7 @@ const Login = () => {
 
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
         </Form>
+     
       </div>)
         : (
           <div className="card card-container">
@@ -179,18 +227,31 @@ const Login = () => {
                     autoComplete="username"
                     autoFocus
                   />
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    value={password}
-                    onChange={onChangePassword}
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                  />
+                 <TextField
+  margin="normal"
+  required
+  fullWidth
+  name="password"
+  value={password}
+  onChange={onChangePassword}
+  label="Password"
+  type={showPassword ? 'text' : 'password'} // Montre ou masque le mot de passe
+  id="password"
+  autoComplete="current-password"
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          aria-label="toggle password visibility"
+          onClick={() => setShowPassword(!showPassword)} // Inverse la visibilité
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {showPassword ? <Visibility /> : <VisibilityOff />}
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+/>
 
                   <Button
                     type="submit"
@@ -201,15 +262,22 @@ const Login = () => {
                     Connection
                   </Button >
                   {message && (
-                    <div className="form-group">
-                      <div className="alert alert-danger" role="alert">
-                        {message}
-                      </div>
-                    </div>
-                  )}
+            <div className="form-group">
+              <div
+                className={
+                  successful
+                    ? "alert alert-success"
+                    : "alert alert-danger"
+                }
+                role="alert"
+              >
+                {message}
+              </div>
+            </div>
+          )}
                   <Grid container>
                     <Grid item xs>
-
+                    <a href="/forget-password">Mot de passe oublier ?</a>
                     </Grid>
                     <Grid item>
 
@@ -225,6 +293,61 @@ const Login = () => {
 
             <CheckButton style={{ display: "none" }} ref={checkBtn} />
           </Form>
+          <div className="col-md-12">
+      {/* ... Le reste du code ... */}
+      {/* Modal de vérification 2FA */}
+      <Modal
+        open={showVerificationModal}
+        onClose={() => setShowVerificationModal(false)}
+        closeAfterTransition
+     
+      >
+        <Fade in={showVerificationModal}>
+          {/* Utiliser le composant Container pour centrer le modal */}
+          <Container maxWidth="sm" style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+            <Box sx={{ bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 8 }}>
+            {message && (
+            <div className="form-group">
+              <div
+                className={
+                  successful
+                    ? "alert alert-success"
+                    : "alert alert-danger"
+                }
+                role="alert"
+              >
+                {message}
+              </div>
+            </div>
+          )}
+              <h4 className="modal-title">Vérification 2FA</h4>
+              <form onSubmit={handleVerification}>
+                <div className="form-group">
+              
+                  <label htmlFor="verificationCode">Code de vérification</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="verificationCode"
+                    required
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                  />
+                </div>
+                {verificationError && (
+                  <div className="alert alert-danger" role="alert">
+                    {verificationError}
+                  </div>
+                )}
+                <button type="submit" className="btn btn-primary">
+                  Vérifier
+                </button>
+              </form>
+            </Box>
+          </Container>
+        </Fade>
+      </Modal>
+    </div>
         </div>
         )}
 

@@ -62,6 +62,15 @@ app.get('/admin', (req,res) =>{
 app.get('/User/Info/:id', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
+app.get('/change-password', (req,res) =>{
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+app.get('/reset-password/:id', (req,res) =>{
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+app.get('/forget-password', (req,res) =>{
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 
 // parse requests of content-type - application/json
 app.use(express.json());

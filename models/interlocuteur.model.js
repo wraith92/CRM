@@ -25,7 +25,10 @@ module.exports =(sequelize,Sequelize)=>{
     },
     fonction_inter: {
       type: Sequelize.STRING
-    }
+    },
+    isConfirmed: {
+      type: Sequelize.INTEGER,
+    },
   });
   return Interlocuteur;
 };

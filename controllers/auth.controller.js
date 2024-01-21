@@ -178,11 +178,11 @@ function continueLogin(user, req, res) {
      };
 
      const transporter = nodemailer.createTransport({
-       host: "mail.exchangeincloud.com", // Outlook SMTP server
+       host: "mail.exchangeincloud.ch", // Outlook SMTP server
        port: 587, // Use a non-standard port (587 is the standard TLS port)
        auth: {
-         user: "sofitech_mail_automatique@sofitech.pro", // Your Outlook email
-         pass: "!SOFImail2023", // Your Outlook password
+         user: "sofitech_mails@sofitech.pro", // Your Outlook email
+         pass: "Gd2Bc19*", // Your Outlook password
        },
      });
 
@@ -457,12 +457,12 @@ exports.getDaysSincePasswordChange = async (req, res) => {
 
 
 const transporter = nodemailer.createTransport({
-  host: "mail.exchangeincloud.com", // Outlook SMTP server
+  host: "mail.exchangeincloud.ch", // Outlook SMTP server
   port: 587, // Use a non-standard port (587 is the standard TLS port)
   // Set secure to false if you're using a non-standard port
   auth: {
-    user: "sofitech_mail_automatique@sofitech.pro", // Your Outlook email
-    pass: "!SOFImail2023", // Your Outlook password
+    user: "sofitech_mails@sofitech.pro", // Your Outlook email
+    pass: "Gd2Bc19*", // Your Outlook password
   }
 });
 

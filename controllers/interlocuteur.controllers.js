@@ -3,23 +3,58 @@ const db = require("../models");
 const Interlocuteur = db.interlocuteur;
 const Op = db.Sequelize.Op;
 const nodemailer = require("nodemailer");
-const sendConfirmationEmail = (recipientEmail, confirmationLink) => {
+const sendConfirmationEmail = (recipientEmail, confirmationLink, nom,prenom) => {
   const transporter = nodemailer.createTransport({
-    host: "mail.exchangeincloud.com",
+    host: "mail.exchangeincloud.ch",
     port: 587,
     auth: {
       user: "sofitech_mail_automatique@sofitech.pro",
-      pass: "!SOFImail2023",
+      pass: "Gd2Bc19*",
     },
   });
-
+  const logoUrl = "https://sofitech.pro/wp-content/uploads/2018/12/Groupe-1.png";
   const mailOptions = {
     from: "sofitech_mail_automatique@sofitech.pro",
     to: recipientEmail,
     subject: "Confirmation Sofitech",
     html: `
-    <p>En cliquant sur le bouton "Confirmer", vous acceptez de partager vos données personnelles avec Sofitech.</p>
+    <p><img src="${logoUrl}" alt="Sofitech Logo" style="max-width: 100%; height: auto;"></p>
+      <p>Bienvenue chez Sofitech !</p>
+      <p>Madame, Monsieur ${nom} ${prenom},</p>
+      <p>Dans le cadre de nos derniers échanges, vous nous avez communiqué vos coordonnées, ainsi que vos données.</p>
+      <p>
+  En cliquant sur « j’accepte », vous acceptez que vos données personnelles recueillies par
+  CMGM Sofitech soient conservées en conformité avec la note d’information sur le traitement
+  des données personnelles de la CMGM SOFITECH disponible sur notre site internet
+  (https://sofitech.pro/mentions-legales).
+</p>
       <a href="${confirmationLink}"><button>Confirmer</button></a>
+      <p>
+  Espérant vous accompagner dans vos divers projets.
+</p>
+<p>
+  Au plaisir de poursuivre nos échanges.
+</p>
+<p>
+  Bien cordialement,
+</p>
+<p>
+  L’équipe SOFITECH
+</p>
+<p style="color:blue;">
+  En application de la loi « informatique et libertés » du 6 janvier 1978 modifiée, et du Règlement
+  Général sur la Protection des Données (RGPD 2016/679 (UE), vous disposez à tout moment d’un
+  droit d’accès, de rectification, de portabilité et d’effacement de vos données ou encore de limitation de
+  traitement. Vos données sont utilisées uniquement dans le cadre de notre activité de caution mutuelle
+  et ne font l’objet d’aucune vente à un tiers. Vous pouvez également, pour des motifs légitimes, vous
+  opposer au traitement des données vous concernant. Pour exercer l’un de ces droits ou obtenir des
+  informations supplémentaires, adressez-nous un courrier électronique à l’adresse suivante :
+  accueil@sofitech.pro
+</p>
+<p>
+  Dans le respect de la réglementation et le cadre uniquement de notre activité de cautionnement, vos
+  données sont susceptibles d’être partagées avec nos partenaires.
+</p>
     `,
   };
 
@@ -32,12 +67,31 @@ const sendConfirmationEmail = (recipientEmail, confirmationLink) => {
   });
 };
 
-exports.send_mail_confirmation = (req, res) => {
+exports.send_mail_confirmation = async (req, res) => {
   const id = req.params.id;
 
-  const confirmationLink = `https://sofcem.mtech.dev/confirmation/${id}`;
-  sendConfirmationEmail(data.email, confirmationLink);
+  try {
+    // Assuming you have a Sequelize model named Interlocuteu
+
+    const interlocuteur = await Interlocuteur.findOne({
+      where: {
+        id_interlocuteur: id,
+      },
+    });
+
+    if (!interlocuteur) {
+      return res.status(404).send({ message: "Interlocuteur not found with the provided ID." });
+    }
+
+    const confirmationLink = `https://sofcem.mtech.dev/confirmation/${id}`;
+    sendConfirmationEmail(interlocuteur.email, confirmationLink, interlocuteur.nom,interlocuteur.prenom);
+
+    res.send({ message: "interlocuteur send succefuly " });
+  } catch (err) {
+    res.status(500).send({ message: err.message || "Error retrieving Interlocuteur." });
+  }
 };
+
 
 exports.create_action = (req, res) => {
   const insert = {
@@ -56,7 +110,7 @@ exports.create_action = (req, res) => {
   Interlocuteur.create(insert)
     .then(data => {
       const confirmationLink = `https://sofcem.mtech.dev/confirmation/${data.id_interlocuteur}`;
-      sendConfirmationEmail(data.email, confirmationLink);
+      sendConfirmationEmail(data.email, confirmationLink,data.nom,data.prenom);
       res.send({ message: 'Interlocuteur ajouté avec succès', data });
     })
     .catch(err => {

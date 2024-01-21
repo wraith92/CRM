@@ -1,4 +1,0 @@
-[Function: corsMiddleware]
-Server is running  \\.\pipe\57fddcc4-a846-4475-84a2-ec38a8cbfc0e cors https://sofcem.mtech.dev
-
-Connected to the MySQL server.

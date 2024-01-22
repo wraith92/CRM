@@ -6,9 +6,7 @@ import CheckButton from "react-validation/build/button";
 import AuthSociete from "../services/societe";
 import "react-datepicker/dist/react-datepicker.css";
 import checkForm from '../common/Ajouter/checkedForm'
-import Typography from '@mui/material/Typography';
 import { useHistory } from 'react-router-dom';
-import Loader_cherche from "../components/search";
 import './../assets/css/picklist.css'
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
@@ -16,11 +14,9 @@ import liste from "../assets/JsonData/liste_syndicat.json"
 import origine_prospect from "../assets/JsonData/origine_prospect.json"
 import Button from '@mui/material/Button';
 import UserService from "../services/user.service";
-import dotenv from 'dotenv'
 import AuthService from "../services/auth.service";
 import Soc from '../controllers/Societe';
 import RoleUser from "../controllers/Role";
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -33,22 +29,17 @@ const AddTutorial = () => {
   let history = useHistory();
   //GET societer
   const [societeListe, SetsocieteListe] = useState([])
-  //variable checked from 
+  //variable checked from
   const required = checkForm.required;
   const vsiret = checkForm.vsiret;
   const vsiren = checkForm.vsiren;
-  const vnom_soc = checkForm.vnom_soc;
-  const vnom_responsable = checkForm.vnom_responsable;
-  const vdate_creation_soc = checkForm.vdate_creation_soc;
-  const vid_role = checkForm.vid_role;
   const vcode_postal = checkForm.vcode_postal;
-  const vobservation = checkForm.vopportunité;
   const cville = checkForm.cville;
   const vsyndicat = checkForm.vobservation;
-  const vactivité = checkForm.vactivité;
   const vtel = checkForm.vtel;
   const vpays = checkForm.vpays;
   const vadresse = checkForm.vadresse;
+  const montant = checkForm.montant;
   const user = AuthService.getCurrentUser();
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
@@ -62,6 +53,7 @@ const AddTutorial = () => {
     nom_soc: "",
     date_creation_soc: "",
     activite_soc: "",
+    libelle_naf: "",
     adresse_local: "",
     pays: "",
     ville_soc: "",
@@ -86,13 +78,10 @@ const AddTutorial = () => {
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
   const [messagesiret, setMessagesiret] = useState("");
-
   const [myJSON, setactive] = useState([]);
   const [myJSON2, setactive2] = useState([]);
   const [role, setrole] = useState("")
   const [rolesofitech, setrolesofitech] = useState("")
-  const [Sofitech, setSofitech] = useState([])
-  const [Admin, setAdmin] = useState()
   const form = useRef();
   const checkBtn = useRef();
   const mysofitech = RoleUser.SofitechRole();
@@ -100,22 +89,11 @@ const AddTutorial = () => {
   const mycemeca = RoleUser.CemecaRole();
 
   useEffect(() => {
-
-    if (user) {
-
-
-      //afficher cemca           
-      if (mycemeca) Soc.CemecaListe().then(data => SetsocieteListe(data))
-        ;
-      //afficher sofitech           
-      if (mysofitech) Soc.AllSociete().then(data => SetsocieteListe(data))
-        ;
-
-
-
-    }
+    //afficher cemca
+    if (mycemeca) Soc.CemecaListe().then(data => SetsocieteListe(data))
+    //afficher sofitech
+    if (mysofitech) Soc.AllSociete().then(data => SetsocieteListe(data))
   }, [mycemeca, mysofitech])
-  console.log(societeListe, 'liste des societe')
   const land = (e) => {
     setactive(Array.isArray(e) ? e.map(x => x.NOM) : [])
   }
@@ -124,15 +102,11 @@ const AddTutorial = () => {
   }
 
   const Retriverole = () => {
-
     //sofitech Role
-    UserService.getSofitechBoard().then((response) => {
-      setSofitech(response.data)
+    UserService.getSofitechBoard().then(() => {
       setrole(2)
-      console.log(response.data)
     })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setrole(1)
       });
 
@@ -150,6 +124,7 @@ const AddTutorial = () => {
       nom_responsable_soc: Societe.nom_responsable_soc,
       date_creation_soc: Societe.date_creation_soc,
       activite_soc: Societe.activite_soc,
+      libelle_naf: Societe.libelle_naf,
       adresse_local: Societe.adresse_local,
       pays: Societe.pays,
       ville_soc: Societe.ville_soc,
@@ -168,7 +143,7 @@ const AddTutorial = () => {
 
     e.preventDefault();
     form.current.validateAll();
-    if (checkBtn.current.context._errors.length === 0 && messagesiret.length == 0) {
+    if (checkBtn.current.context._errors.length === 0 && messagesiret === "Siret PAPPERS validé.") {
       AuthSociete.create(data)
         .then(response => {
           setSociete({
@@ -177,6 +152,7 @@ const AddTutorial = () => {
             nom_soc: response.data.nom_soc,
             nom_responsable_soc: response.data.nom_responsable_soc,
             activite_soc: response.data.activite_soc,
+            libelle_naf: response.data.libelle_naf,
             adresse_local: response.data.adresse_local,
             app_sofitech: response.data.app_sofitech,
             pays: response.data.pays,
@@ -200,10 +176,9 @@ const AddTutorial = () => {
 
         },
           error => {
-            const resMessage =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
               error.message ||
               error.toString();
             setMessage("Société déjà ajouté");
@@ -235,7 +210,7 @@ const AddTutorial = () => {
     return () => {
       active = false;
     };
-  }, [loading]);
+  }, [loading, societeListe]);
   useEffect(() => {
     if (!open) {
       setOptions([]);
@@ -260,11 +235,13 @@ const AddTutorial = () => {
 
   const [SIRETAPI, setSIRETAPI] = useState([]);
   const [Etablissement, SetETA] = useState([]);
+  console.log(Etablissement)
   const [value, setValue] = useState("");
   const GetAPI = () => {
     getAPINSEE().then(response => {
       setSIRETAPI(response.data);
       SetETA(response.data.etablissement);
+      setMessagesiret("Siret PAPPERS validé.");
       setMessage('')
     },
       error => {
@@ -280,14 +257,14 @@ const AddTutorial = () => {
   };
   const result = Object.entries(SIRETAPI)
   const result2 = Object.entries(Etablissement)
-  console.log(result)
-  const Siren = result.filter(([key, value]) => key === 'siren');
-  const Nom = result.filter(([key, value]) => key === "nom_entreprise");
-  const Code_naf = result.filter(([key, value]) => key === "code_naf");
-  const adresse = result2.filter(([key, value]) => key === "adresse_ligne_1");
-  const paye = result2.filter(([key, value]) => key === "pays");
-  const ville = result2.filter(([key, value]) => key === "ville");
-  const code_postal = result2.filter(([key, value]) => key === "code_postal");
+  const Siren = result.filter(([key]) => key === 'siren');
+  const Nom = result.filter(([key]) => key === "nom_entreprise");
+  const Code_naf = result.filter(([key]) => key === "code_naf");
+  const libelle_naf = result.filter(([key]) => key === "libelle_code_naf");
+  const adresse = result2.filter(([key]) => key === "adresse_ligne_1");
+  const paye = result2.filter(([key]) => key === "pays");
+  const ville = result2.filter(([key]) => key === "ville");
+  const code_postal = result2.filter(([key]) => key === "code_postal");
 
 
   const SIREN = () => {
@@ -346,6 +323,24 @@ const AddTutorial = () => {
     </div>)
 
   }
+  const LibelleCodeNaf = () => {
+
+    return (<div>
+      {libelle_naf.map((e, valeur) =>
+        <Input
+          key={valeur}
+          type="text"
+          className="form-control"
+          id="title"
+          value={Societe.libelle_naf = e[1]}
+          onChange={handleInputChange}
+          validations={[required, vsyndicat]}
+          name="activite_soc"
+        />
+      )}
+    </div>)
+
+  }
   const ADRESSE = () => {
 
     return (<div>
@@ -357,7 +352,7 @@ const AddTutorial = () => {
           id="title"
           value={Societe.adresse_local = e[1]}
           onChange={handleInputChange}
-          validations={[required, vadresse]}
+          validations={[required]}
           name="adresse_local"
         />
       )}
@@ -393,7 +388,7 @@ const AddTutorial = () => {
           id="title"
           value={Societe.ville_soc = e[1]}
           onChange={handleInputChange}
-          validations={[required, cville]}
+          validations={[required]}
           name="ville_soc"
         />
       )}
@@ -413,7 +408,7 @@ const AddTutorial = () => {
             id="title"
             value={Societe.code_postal = e[1]}
             onChange={handleInputChange}
-            validations={[required, vcode_postal]}
+            validations={[required]}
             name="code_postal"
           />
         )}
@@ -425,7 +420,7 @@ const AddTutorial = () => {
   useEffect(() => {
     Retriverole()
 
-    if (role == 2) {
+    if (role === 2) {
       setrolesofitech(1)
     }
 
@@ -441,6 +436,7 @@ const AddTutorial = () => {
 
   return (
     <div className="submit-form">
+      <div className="container">
       <div className="row">
         <div className="col-6">
           <Autocomplete
@@ -479,31 +475,32 @@ const AddTutorial = () => {
           <Form ref={form}>
             <div>
               <div className="form-group">
+                <div className="container">
                 <div className="row">
-                  <div>
-
-                  </div>
+                  <div className="col-5">
                   <TextField
                     label="Recherche PAPPERS"
                     value={value}
                     onChange={e => setValue(e.target.value)}
                     onKeyPress={handleKeyDown}
                   />
+                  </div>
+                  <div className="col">
                   <Button type="submit" variant="contained" onClick={() => window.open(`https://www.pappers.fr/recherche?q=${value}`, "_blank")}>
                     recherche
                   </Button>
+                  </div>  
+                </div>
                 </div>
               </div>
             </div>
 
-
-
             <CheckButton style={{ display: "none" }} ref={checkBtn} />
-         
+
           </Form>
         </div>
       </div>
-
+      </div>
       <div className="card card-container">
 
         <h3><i class='bx bxs-bank danger'></i> Ajouter une Société</h3>
@@ -513,9 +510,9 @@ const AddTutorial = () => {
 
               <div className="form-group">
                 <div className="row">
-
+                <label htmlFor="title">siret</label>
                   <div className="col-6">
-                    <label htmlFor="title">siret</label>
+                    
                     <Input
                       type="text"
                       className="form-control"
@@ -525,13 +522,15 @@ const AddTutorial = () => {
                       validations={[required, vsiret]}
                       name="siret"
                     />
+                  </div>
+                  <div className="col-6">
                     <Button onClick={GetAPI} variant="contained">valider</Button>
                   </div>
                   {messagesiret && (
                     <div className="form-group">
                       <div
                         className={
-                          successful
+                          messagesiret === "Siret PAPPERS validé."
                             ? "alert alert-success"
                             : "alert alert-warning"
                         }
@@ -556,25 +555,29 @@ const AddTutorial = () => {
               <div>
 
                 <div className="form-group">
-                  <label htmlFor="title">siren</label>
+                  <label htmlFor="title">Siren</label>
 
                   <SIREN />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="title">nom de la societe</label>
+                  <label htmlFor="title">Nom de la societe</label>
                   <NOM />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="title">code naf</label>
+                  <label htmlFor="title">Code naf</label>
                   <CODENAF />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="title">Libellé</label>
+                  <LibelleCodeNaf />
                 </div>
                 <div className="form-group">
                   <label htmlFor="title">Adresse local</label>
                   <ADRESSE />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="title">pays</label>
+                  <label htmlFor="title">Pays</label>
                   <PAYE />
                 </div>
                 <div className="form-group">
@@ -595,7 +598,7 @@ const AddTutorial = () => {
           )}
           <div className="form-group">
 
-            <label htmlFor="title">origine du prospect </label>
+            <label htmlFor="title">Origine du prospect </label>
             <Multiselect
               displayValue="NOM"
               groupBy="TYPE"
@@ -649,7 +652,7 @@ const AddTutorial = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="title">telephone Societes</label>
+            <label htmlFor="title">Telephone</label>
             <Input
               type="text"
               className="form-control"

@@ -179,7 +179,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
   const actItem = ListeSociete.filter(task => task.siret === nb)
   useEffect(() => {
     retrieveTutorials()
-  }, [mycemeca,mysofitech]);
+  }, []);
 
 
   //API INSEE
@@ -230,7 +230,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
 
               <div className="form-group">
 
-                <label htmlFor="title">siret</label>
+                <label htmlFor="title">Siret</label>
                 {actItem.map((e) =>
                   <input
                     type="text"
@@ -245,7 +245,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">siren</label>
+                <label htmlFor="title">Siren</label>
                 {actItem.map((e) =>
 
                   <input
@@ -261,7 +261,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">nom de la societe</label>
+                <label htmlFor="title">Nom de la societe</label>
 
                 {actItem.map((e) =>
                   <Input
@@ -277,7 +277,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">nom du delegué</label>
+                <label htmlFor="title">Nom du delegué</label>
                 {actItem.map((e) =>
                   <Input
                     type="text"
@@ -292,7 +292,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">origine du prospect </label>
+                <label htmlFor="title">Origine du prospect </label>
                 <Multiselect
                   displayValue="NOM"
                   groupBy="TYPE"
@@ -311,7 +311,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="title">code naf</label>
+                <label htmlFor="title">Code naf</label>
 
                 {actItem.map((e) =>
                   <Input
@@ -327,7 +327,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">adresse_local</label>
+                <label htmlFor="title">Adresse local</label>
                 {actItem.map((e) =>
                   <Input
                     type="text"
@@ -342,7 +342,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">pays</label>
+                <label htmlFor="title">Pays</label>
                 {actItem.map((e) =>
                   <input
                     type="text"
@@ -357,7 +357,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">ville_soc</label>
+                <label htmlFor="title">ville</label>
                 {actItem.map((e) =>
                   <Input
                     type="text"
@@ -372,7 +372,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="text">code_postale</label>
+                <label htmlFor="text">Code postale</label>
                 {actItem.map((e) =>
                   <Input
                     type="text"
@@ -389,7 +389,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
 
               <div className="form-group">
 
-                <label htmlFor="title">syndicat</label>
+                <label htmlFor="title">Syndicat</label>
                 <Multiselect
                   displayValue="NOM"
                   groupBy="TYPE"
@@ -409,7 +409,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
               </div>
 
               <div className="form-group">
-                <label htmlFor="title">observation</label>
+                <label htmlFor="title">Observation</label>
                 {actItem.map((e) =>
                   <Input
                     type="text"
@@ -424,7 +424,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">telephone Societes</label>
+                <label htmlFor="title">Telephone</label>
                 {actItem.map((e) =>
                   <Input
                     type="text"
@@ -447,7 +447,7 @@ if (mysofitech) Societe.AllSociete().then(data => SetTest(data))
               </select>
 
               <button className="btn btn-success">
-                Submit
+                Valider
               </button>
 
 

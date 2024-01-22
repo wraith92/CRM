@@ -1,35 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import AuthInterlocuteur from "../services/Interlocuteur";
-import AuthSociete from "../services/societe";
 import "react-datepicker/dist/react-datepicker.css";
 import checkForm from '../common/Ajouter/checkedForm'
 import './../assets/css/picklist.css'
-
 import AuthService from "../services/auth.service";
-import UserService from "../services/user.service";
 import { useParams } from "react-router-dom";
 const AddTutorial = () => {
 
 
 
-    //variable checked from 
+    //variable checked from
     const required = checkForm.required;
     const vsiret = checkForm.vsiret;
     const vsiren = checkForm.vsiren;
     const vnom_soc = checkForm.vnom_soc;
     const vnom_responsable = checkForm.vnom_responsable;
-    const vdate_creation_soc = checkForm.vdate_creation_soc;
-    const vid_role = checkForm.vid_role;
-    const vcode_postal = checkForm.vcode_postal;
-    const vobservation = checkForm.vopportunité;
-    const cville = checkForm.cville;
     const vsyndicat = checkForm.vobservation;
-    const vactivité = checkForm.vactivité;
-    const vtel = checkForm.vtel;
-    const vpays = checkForm.vpays;
     const vadresse = checkForm.vadresse;
 
     const initialSocieteState = {
@@ -44,9 +32,6 @@ const AddTutorial = () => {
 
 
     };
-
-
-
     const [Interlocuteur, setInterlocuteur] = useState({ initialSocieteState });
     const [ListeInterlocuteur, setListeInterlocuteur] = useState([]);
     const [successful, setSuccessful] = useState(false);
@@ -54,17 +39,6 @@ const AddTutorial = () => {
     const [myJSON, setactive] = useState([]);
     const form = useRef();
     const checkBtn = useRef();
-
-
-    const land = (e) => {
-        setactive(Array.isArray(e) ? e.map(x => x.NOM) : [])
-    }
-
-
-
-
-
-
     const saveSociete = (e) => {
         var data = {
             id_interlocuteur : Interlocuteur.id_interlocuteur ,
@@ -129,14 +103,14 @@ const AddTutorial = () => {
             AuthInterlocuteur.findAll()
             .then((response) => {
                 setListeInterlocuteur(response.data);
-      
+
             })
             .catch((e) => {
               console.log(e);
             });
         }
     };
-    //FILTER SOCIETES SELON L'ID 
+    //FILTER SOCIETES SELON L'ID
     const actItem = ListeInterlocuteur.filter(task => task.id_interlocuteur === nb)
     useEffect(() => {
         retrieveInterlocuteur()
@@ -273,7 +247,7 @@ const AddTutorial = () => {
                                 />
                             )}
                         </div>
-                      
+
 
                         <button className="btn btn-success">
                             Valider

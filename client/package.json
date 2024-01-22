@@ -36,6 +36,7 @@
     "react-export-table-to-excel": "^1.0.6",
     "react-hook-form": "^7.30.0",
     "react-loading": "^2.0.3",
+    "react-modal": "^3.16.1",
     "react-moment": "^1.1.2",
     "react-multiple-select-dropdown-lite": "^2.0.5",
     "react-redux": "^7.2.4",

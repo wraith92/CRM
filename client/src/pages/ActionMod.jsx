@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import AuthInter from "../services/Interlocuteur"
 import AuthAction from "../services/Action";
@@ -8,35 +7,17 @@ import "react-datepicker/dist/react-datepicker.css";
 import checkForm from '../common/Ajouter/checkedForm'
 import './../assets/css/picklist.css'
 import Multiselect from 'multiselect-react-dropdown';
-import axios from 'axios';
 import AuthService from "../services/auth.service";
-import UserService from "../services/user.service";
 import { useParams } from "react-router-dom";
 import besoinliste from "../assets/JsonData/besoin.json";
 import RoleUser from "../controllers/Role";
 import Societe from '../controllers/Societe';
-import DataArrayContext from "../Liste/DataContext";
-import ListInterlocuteurSociete from "../Liste/ListeInterlocuteur";
 const ActionMod = () => {
-    //variable checked from 
-    const dataArray = useContext(DataArrayContext);
-
+    //variable checked from
     const required = checkForm.required;
     const vsiret = checkForm.vsiret;
     const vsiren = checkForm.vsiren;
     const vnom_soc = checkForm.vnom_soc;
-    const vnom_responsable = checkForm.vnom_responsable;
-    const vdate_creation_soc = checkForm.vdate_creation_soc;
-    const vid_role = checkForm.vid_role;
-    const vcode_postal = checkForm.vcode_postal;
-    const vobservation = checkForm.vopportunité;
-    const cville = checkForm.cville;
-    const vsyndicat = checkForm.vobservation;
-    const vactivité = checkForm.vactivité;
-    const vtel = checkForm.vtel;
-    const vpays = checkForm.vpays;
-    const vadresse = checkForm.vadresse;
-
     const initialSocieteState = {
         id: "",
         date_action: "",
@@ -47,18 +28,8 @@ const ActionMod = () => {
         date_rdv: "",
         createdAt: "",
         besoin: "",
-
-
     };
-    //liste type action  
-    const options = [
-        { type_action: 'RDV', label: 'RDV' },
-        { type_action: 'contact téléphonique', label: 'contact téléphonique' },
-        { type_action: 'contact teams', label: 'contact teams' },
-        { type_action: 'contact par courrier', label: 'contact par courrier' }
-    ]
-
-
+    //liste type action
     const [Action, setAction] = useState({ initialSocieteState });
     const [ListeAction, setListeAction] = useState([]);
     const [ListeSociete, setListeSociete] = useState([]);
@@ -74,7 +45,7 @@ const ActionMod = () => {
     const [myJSON_besoin, setactivebesoin] = useState([]);
     const form = useRef();
     const checkBtn = useRef();
-    //liste type Action   
+    //liste type Action
     const option = [
         { value: 'RDV', label: 'RDV' },
         { value: 'contact téléphonique', label: 'contact téléphonique' },
@@ -94,15 +65,10 @@ const ActionMod = () => {
     const land3 = (e) => {
         setactivebesoin(Array.isArray(e) ? e.map(x => x.NOM) : [])
     }
-
-
     // API modifier
     const params = useParams();
     var nb = parseInt(params.id);
     const user = AuthService.getCurrentUser()
-
-
-
     const saveSociete = (e) => {
         const type_action = myJSON.join();
         const besoin = myJSON_besoin.join();
@@ -120,7 +86,6 @@ const ActionMod = () => {
             message: message.message,
             successful: successful.successful,
         };
-
         e.preventDefault();
         form.current.validateAll();
         if (checkBtn.current.context._errors.length === 0) {
@@ -158,13 +123,10 @@ const ActionMod = () => {
                 });
         }
     };
-
-
-
     //SELECT ALL SOCIETES WHERE AUTH
     const retrieveTutorials = () => {
         if (user) {
-            // liste interlocuteur 
+            // liste interlocuteur
             AuthInter.findAll()
                 .then((response) => {
                     setListeInter(response.data);
@@ -183,40 +145,31 @@ const ActionMod = () => {
                     console.log(e);
                 });
             //liste societe
-            //afficher cemca           
+            //afficher cemca
             if (mycemeca) Societe.CemecaListe().then(data => setListeSociete(data))
                 ;
-            //afficher sofitech           
+            //afficher sofitech
             if (mysofitech) Societe.AllSociete().then(data => setListeSociete(data))
                 ;
-
-
         }
     };
-    //FILTER SOCIETES SELON L'ID 
+    //FILTER SOCIETES SELON L'ID
     const [societefiltred, setsocietefiltred] = useState("");
     const [societefiltredid, setsocietefiltredid] = useState([]);
     const actItem = ListeAction.filter(task => task.id === nb)
-
     const retriveSocietefiltred = () => {
-
         actItem.map((e) => {
             setsocietefiltred(e.nom_societe)
         })
-        
-     
-
     }
     const idSociete = ListeSociete.filter(task => task.nom_soc === societefiltred)
     const retriveSocietefiltredid = () => {
-        
+
         idSociete.map((e) => {
             setsocietefiltredid(e.siret)
         })
     }
     const idSocieteInterl = ListeInter.filter(task => task.id_soc === societefiltredid)
-
-
     useEffect(() => {
         retrieveTutorials()
     }, [mycemeca, mysofitech]);
@@ -226,28 +179,13 @@ const ActionMod = () => {
     useEffect(() => {
         retriveSocietefiltredid()
     }, [idSociete]);
-
- 
-    console.log(societefiltred, "nom")
-    console.log(idSociete, "id liste ")
-    console.log(societefiltredid, "id")
-    console.log(idSocieteInterl ,"filtres")
-
-
-
     const handleInputChange = event => {
         const { name, value } = event.target;
         setAction({ ...Action, [name]: value });
 
     };
-
-
-
     return (
         <div className="submit-form">
-
-
-
             <Form onSubmit={saveSociete} ref={form}>
                 {!successful && (
                     <div>
@@ -255,8 +193,6 @@ const ActionMod = () => {
                         <div className="form-group">
 
                             <label htmlFor="title">Société</label>
-
-
                             {actItem.map((e) =>
 
                                 <input
@@ -289,7 +225,7 @@ const ActionMod = () => {
                             )}
                         </div>
                         <div className="form-group">
-                            <label htmlFor="title">description</label>
+                            <label htmlFor="title">Description</label>
 
                             {actItem.map((e) =>
                                 <input
@@ -304,10 +240,10 @@ const ActionMod = () => {
                                 />
                             )}
                         </div>
-                        
+
                         <div className="form-group">
 
-                            <label htmlFor="title">interlocuteur</label>
+                            <label htmlFor="title">Interlocuteur</label>
                             {actItem.map((e) =>
                                 <Multiselect
                                     displayValue="nom"
@@ -348,7 +284,7 @@ const ActionMod = () => {
 
                         </div>
                         <div className="form-group">
-                            <label htmlFor="title">besoin</label>
+                            <label htmlFor="title">Besoin</label>
                             {actItem.map((e) =>
                                 <Multiselect
                                     displayValue="NOM"
@@ -366,21 +302,11 @@ const ActionMod = () => {
                                 />
                             )}
                         </div>
-
-
-
-
-
-
-
                         <button className="btn btn-success">
                             Valider
                         </button>
-
-
                     </div>
                 )}
-
                 {message && (
                     <div className="form-group">
                         <div

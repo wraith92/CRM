@@ -33,83 +33,7 @@
   },
   {
     "TYPE": "Investissement non productif",
-    "NOM": "Investissement non productif"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits de l'agriculure, de la sylviculture et de la pêche"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés outillage"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés instrument et apareils de mesure,d'essai et de navigation"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés autres matériels électriques"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés autres pompes et compresseurs"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés autres articles de robinetterie"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés autres machines d'usinage général n.c.a"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés machines d'usinage et de fromage des métaux "
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés autres machines-outils "
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés machines pour extraction ou la construction "
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés machines pour les industries du papier et du carton  "
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés autre machines d'usage spécifique n.c.a"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Produits Manufacturés autre produit manufacturé"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "électricité,gaz vapeur et air conditionné"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Production et distribution d'eau ,assainissement ,gestion des déchets et dépollution"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Construction et travaux de construction"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Commerce réparation d'automobiles et de motocycles "
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Service de transport et d'entreposage"
-  },
-  {
-    "TYPE": "Innovation matérielle/machine",
-    "NOM": "Autres services"
+    "NOM": "Autre"
   },
   {
     "TYPE": "Innovation immatérielle",
@@ -123,4 +47,5 @@
     "TYPE": "Immobilier",
     "NOM": "Immobilier"
   }
+  
 ]

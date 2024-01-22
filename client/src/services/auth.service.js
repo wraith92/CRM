@@ -3,6 +3,7 @@ import axios from "axios";
 const API_URL = `${process.env.REACT_APP_API_HOST}/api/auth/`;
 
 class AuthService {
+
   login(username, password) {
     return axios
       .post(API_URL + "signin", {
@@ -12,9 +13,22 @@ class AuthService {
       .then(response => {
         if (response.data.accessToken) {
           sessionStorage.setItem("user", JSON.stringify(response.data));
-        
+
         }
 
+        return response.data;
+      });
+  }
+  twoFactorAuth(username,verificationCode) {
+    return axios
+      .post(API_URL + "signin/2fa", {
+        username,
+        verificationCode
+      })
+      .then(response => {
+        if (response.data.accessToken) {
+          sessionStorage.setItem("user", JSON.stringify(response.data));
+        }
         return response.data;
       });
   }
@@ -22,7 +36,7 @@ class AuthService {
   logout() {
     sessionStorage.removeItem("user");
   }
-  runLogoutTimer(timer) {
+  runLogoutTimer() {
     setTimeout(() => {
         this.logout();
     }, 5000);
@@ -34,7 +48,7 @@ class AuthService {
       username,
       password,
       message
-      
+
     });
 
   }
@@ -55,12 +69,35 @@ class AuthService {
       email,
       roles,
       password,
-      
+
     });
   }
+  
 
   getCurrentUser() {
     return JSON.parse(sessionStorage.getItem('user'));;
+  }
+  changePassword(userId, oldPassword, newPassword) {
+    return axios.post(API_URL + "change-password", {
+      userId,
+      oldPassword,
+      newPassword,
+    });
+  }
+  // Forgot Password
+  forgotPassword(email) {
+    return axios.post(API_URL + 'reset-password', {
+      email
+    });
+  }
+
+  // Reset Password with Token
+  resetPassword(resetToken, newPassword) {
+    return axios.post(API_URL + `modifier-password`, {
+      resetToken,
+      newPassword
+      
+    });
   }
 }
 

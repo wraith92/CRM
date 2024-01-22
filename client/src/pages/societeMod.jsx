@@ -7,31 +7,27 @@ import "react-datepicker/dist/react-datepicker.css";
 import checkForm from '../common/Ajouter/checkedForm'
 import './../assets/css/picklist.css'
 import Multiselect from 'multiselect-react-dropdown';
-import axios from 'axios';
 import AuthService from "../services/auth.service";
-import UserService from "../services/user.service";
 import { useParams } from "react-router-dom";
 import liste from "../assets/JsonData/liste_syndicat.json"
 import origine_prospect from "../assets/JsonData/origine_prospect.json"
 import RoleUser from "../controllers/Role";
 import SocieteAPI from '../controllers/Societe';
 const AddTutorial = () => {
-  
 
 
-  //variable checked from 
+
+  //variable checked from
   const required = checkForm.required;
   const vsiret = checkForm.vsiret;
   const vsiren = checkForm.vsiren;
   const vnom_soc = checkForm.vnom_soc;
   const vnom_responsable = checkForm.vnom_responsable;
-  const vdate_creation_soc = checkForm.vdate_creation_soc;
   const vid_role = checkForm.vid_role;
   const vcode_postal = checkForm.vcode_postal;
   const vobservation = checkForm.vopportunité;
   const cville = checkForm.cville;
   const vsyndicat = checkForm.vobservation;
-  const vactivité = checkForm.vactivité;
   const vtel = checkForm.vtel;
   const vpays = checkForm.vpays;
   const vadresse = checkForm.vadresse;
@@ -56,12 +52,12 @@ const AddTutorial = () => {
     soc_sofitech: "",
     soc_cemeca: "",
     id_role: "",
-   
-    
+
+
   };
 
 
-  
+
   const [Societe, setSociete] = useState({initialSocieteState});
   const [ListeSociete, setListeSociete] = useState([]);
   const [successful, setSuccessful] = useState(false);
@@ -78,13 +74,6 @@ const AddTutorial = () => {
   const land2 = (e) => {
     setactive2(Array.isArray(e) ? e.map(x => x.NOM) : [])
   }
-
-
-  
-
-
- 
-
   const saveSociete = (e) => {
         const syndicat = myJSON.join();
         const Origine_du_prospect = myJSON2.join();
@@ -102,12 +91,12 @@ const AddTutorial = () => {
           syndicat:syndicat,
           Origine_du_prospect:Origine_du_prospect,
           observation: Societe.observation,
-          tel: Societe.tel,   
+          tel: Societe.tel,
           id_role: Societe.id_role,
           message: message.message,
           successful:successful.successful,
         };
-      
+
         e.preventDefault();
         form.current.validateAll();
         if (checkBtn.current.context._errors.length === 0) {
@@ -152,9 +141,9 @@ const AddTutorial = () => {
         }
   };
 
- 
+
 // API modifier
-const params = useParams(); 
+const params = useParams();
 var nb=parseInt(params.id);
 const user = AuthService.getCurrentUser()
   //GET role sofitech
@@ -164,11 +153,11 @@ const user = AuthService.getCurrentUser()
    //SELECT ALL SOCIETES WHERE AUTH
    const retrieveTutorials = () => {
     if(user){
-        if (mycemeca) SocieteAPI.CemecaListe().then(data => setListeSociete(data))        
+        if (mycemeca) SocieteAPI.CemecaListe().then(data => setListeSociete(data))
     if (mysofitech) SocieteAPI.AllSociete().then(data => setListeSociete(data))
   }
-  };  
-  //FILTER SOCIETES SELON L'ID 
+  };
+  //FILTER SOCIETES SELON L'ID
   const actItem =ListeSociete.filter(task=>task.siret===nb)
   useEffect(() =>{
     retrieveTutorials()
@@ -192,14 +181,14 @@ const handleInputChange = event => {
     <h2 className=" col-md-6 page-`header">Modification</h2>
     <div className="submit-form">
 
-       
-      
+
+
          <Form onSubmit={saveSociete} ref={form}>
          {!successful && (
            <div>
 
               <div className="form-group">
-              
+
                 <label htmlFor="title">siret</label>
                 {actItem.map((e)=>
                 <input
@@ -217,7 +206,7 @@ const handleInputChange = event => {
               <div className="form-group">
                 <label htmlFor="title">siren</label>
                 {actItem.map((e)=>
-             
+
                 <input
                   type="text"
                   className="form-control"
@@ -262,8 +251,8 @@ const handleInputChange = event => {
                 )}
               </div>
               <div className="form-group">
-                <label htmlFor="title">code naf</label>      
-                  
+                <label htmlFor="title">code naf</label>
+
                 {actItem.map((e)=>
                 <input
                   type="text"
@@ -356,9 +345,9 @@ const handleInputChange = event => {
                   showCheckbox
                 />
               </div>
-             
+
               <div className="form-group">
-                
+
                 <label htmlFor="title">syndicat</label>
                 <Multiselect
                     displayValue="NOM"
@@ -375,9 +364,9 @@ const handleInputChange = event => {
                     options={liste}
                     showCheckbox
                   />
-                
+
               </div>
-             
+
               <div className="form-group">
                 <label htmlFor="title">observation</label>
                 {actItem.map((e)=>
@@ -408,18 +397,18 @@ const handleInputChange = event => {
                 />
                 )}
               </div>
-             
-              
+
+
               <select  validations={[required,vid_role]}  value={Societe.id_role} onChange={handleInputChange} name="id_role" >
                 <option>select une valeur</option>
                 <option value="1">cemeca</option>
                 <option value="2">sofitech</option>
               </select>
-             
+
               <button  className="btn btn-success">
                 Submit
               </button>
-             
+
 
             </div>
           )}

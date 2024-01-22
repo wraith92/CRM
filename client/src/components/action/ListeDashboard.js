@@ -70,7 +70,6 @@ const ListeAction = (props) => {
                                 ))
 
 
-
                             ) : (
                                 Action_util.slice(page2 * rowsPerPage2, page2 * rowsPerPage2 + rowsPerPage2).map((row, index) => (
                                     <TableRow

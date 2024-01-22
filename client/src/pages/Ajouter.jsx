@@ -227,8 +227,7 @@ const AddTutorial = () => {
   const getAPINSEE = () => {
 
     return axios.get(chaine, {
-      headers: { "Authorization": ` Bearer 0d8966099937f4d67b63e5ae5266c5f2922aca4fb595b62f` }
-
+      headers: { "Authorization": `Bearer ${process.env.REACT_APP_PAPPERS_KEY}` }
     });
   }
 

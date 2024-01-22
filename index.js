@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const path =require('path')
 const app = express();
-const controller = require("./controllers/auth.controller");
 const PORT = process.env.PORT || 8080 ;
 require('dotenv').config();
 const db = require("./models");

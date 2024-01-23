@@ -83,6 +83,7 @@ if (mysofitech) Societe.AllSociete().then(data => setID_societe(data))
       });
   }; 
   const filterInter = listeinter.filter(task => task.id_soc === nb)
+  console.log()
   console.log(nb,"nb")
   console.log(listeinter,"liste")
   console.log(filterInter,"flter")

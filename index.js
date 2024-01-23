@@ -137,11 +137,11 @@ connection.connect(function(err) {
 //syncroniser la base de donner
 
 /*
-db.sequelize.sync({force: true}).then(() => {
-  console.log('Drop and Resync Db');
-  initial();
+db.sequelize.sync().then(() => {
+  console.log(' Resync Db');
 });
 */
+
 
 
 //listen port

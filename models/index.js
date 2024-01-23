@@ -28,6 +28,7 @@ db.societe = require("../models/societe.model.js")(sequelize, Sequelize);
 db.societe_sof = require("../models/societeSOF.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
 db.action = require("../models/action.model.js")(sequelize, Sequelize);
+db.archivInterlocuteur = require("../models/archiv_interlocuteur.model.js")(sequelize, Sequelize);
 db.role.belongsToMany(db.user, {
   through: "user_roles",
   foreignKey: "roleId",
@@ -62,5 +63,15 @@ db.societe.hasMany(db.police, {foreignKey: 'id_soc', sourceKey: 'siret'});
 //societe plusieurs contrat
 db.societe.hasMany(db.contrat, {foreignKey: 'id_soc', sourceKey: 'siret'});
 
+db.archivInterlocuteur.belongsTo(db.user, {
+  foreignKey: 'userId', // Assurez-vous que cela correspond au champ de clé étrangère dans ArchivInterlocuteur
+  targetKey: 'id' // Clé primaire de User
+});
+
+/*
+db.sequelize.sync().then(() => {
+  console.log('Database synced');
+});
+*/
 db.ROLES = ["1", "2", "3","4","5","6","7","8"];
 module.exports = db;

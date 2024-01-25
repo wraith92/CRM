@@ -53,26 +53,7 @@ exports.signup = (req, res) => {
     });
 };
 
-// Function to verify the 2FA code
-function verifyTwoFactorAuthCode(user, verificationCode) {
-  if (!user.twoFactorAuthSecret) {
-    // No 2FA secret, cannot verify
-    return false;
-  }
-  const twoFactorAuthSecretValue = user.twoFactorAuthSecret;
-  const twoFactorAuthSecretObject = JSON.parse(twoFactorAuthSecretValue);
-  const verification2FA = twoFactorAuthSecretObject.code;
-  console.log(verification2FA)
-  console.log()
-  if (parseInt(verificationCode) !== verification2FA) {
-    console.log("Code de vérification incorrect :", verificationCode);
-    console.log("Code de vérification attendu :", verification2FA);
-    // Incorrect code
-    return false;
-  }
 
-  return true; // Code is valid
-}
 
 exports.signin = async (req, res) => {
   try {
@@ -161,7 +142,7 @@ function continueLogin(user, req, res) {
      // Génération d'un code de vérification (6 chiffres)
      const verificationCode = Math.floor(100000 + Math.random() * 900000);
      const expiration = new Date();
-     expiration.setTime(expiration.getTime() + 5 * 60 * 60 * 1000); // 2 heures à partir de maintenant
+     expiration.setTime(expiration.getTime() + 2 * 60 * 60 * 1000); // 2 heures à partir de maintenant
 
      // Stockage du code de vérification dans l'objet user
      user.twoFactorAuthSecret = {
@@ -173,16 +154,16 @@ function continueLogin(user, req, res) {
      const mailOptions = {
        from: "sofitech_mail_automatique@sofitech.pro",
        to: user.email,
-       subject: "Code de vérification pour connexion CRM SOFITECH ",
+       subject: "Code de vérification pour connexion",
        text: `Votre code de vérification est : ${verificationCode}`,
      };
 
      const transporter = nodemailer.createTransport({
-       host: "mail.exchangeincloud.ch", // Outlook SMTP server
+       host: process.env.MAIL_HOST, // Outlook SMTP server
        port: 587, // Use a non-standard port (587 is the standard TLS port)
        auth: {
-         user: "sofitech_mails@sofitech.pro", // Your Outlook email
-         pass: "Gd2Bc19*", // Your Outlook password
+         user: process.env.MAIL_USER, // Your Outlook email
+         pass: process.env.MAIL_PASSWORD, // Your Outlook password
        },
      });
 
@@ -243,6 +224,8 @@ function generateTokenAndResponse(user, res) {
 }
 
 
+
+// Two-Factor Authentication (2FA) code verification route
 exports.twoFactorAuth = async (req, res) => {
   try {
     const user = await User.findOne({
@@ -299,11 +282,6 @@ exports.twoFactorAuth = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
-
-
-
-
-
 
 
 
@@ -456,21 +434,20 @@ exports.getDaysSincePasswordChange = async (req, res) => {
 
 
 
-const transporter = nodemailer.createTransport({
-  host: "mail.exchangeincloud.ch", // Outlook SMTP server
-  port: 587, // Use a non-standard port (587 is the standard TLS port)
-  // Set secure to false if you're using a non-standard port
-  auth: {
-    user: "sofitech_mails@sofitech.pro", // Your Outlook email
-    pass: "Gd2Bc19*", // Your Outlook password
-  }
-});
+
 
 // Function to generate a random password
 const generateRandomPassword = () => {
   return Math.random().toString(36).slice(2);
 };
-
+const transporter = nodemailer.createTransport({
+  host: process.env.MAIL_HOST, // Outlook SMTP server
+  port: 587, // Use a non-standard port (587 is the standard TLS port)
+  auth: {
+    user: process.env.MAIL_USER, // Your Outlook email
+    pass: process.env.MAIL_PASSWORD, // Your Outlook password
+  },
+});
 // Function to send password reset email
 const sendPasswordResetEmail = async (email, resetToken) => {
   try {

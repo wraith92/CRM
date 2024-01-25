@@ -1,6 +1,8 @@
 
 const db = require("../models");
 const Interlocuteur = db.interlocuteur;
+const User = db.user;
+const ArchivInterlocuteur = db.archivInterlocuteur;
 const Op = db.Sequelize.Op;
 const nodemailer = require("nodemailer");
 const sendConfirmationEmail = (recipientEmail, confirmationLink, nom,prenom) => {
@@ -8,7 +10,7 @@ const sendConfirmationEmail = (recipientEmail, confirmationLink, nom,prenom) => 
     host: "mail.exchangeincloud.ch",
     port: 587,
     auth: {
-      user: "sofitech_mail_automatique@sofitech.pro",
+      user: "sofitech_mails@sofitech.pro",
       pass: "Gd2Bc19*",
     },
   });
@@ -161,6 +163,8 @@ exports.findAll = (req, res) => {
 };
 
 
+
+
 // modify Interlocuteur
 exports.update = (req, res) => {
   const id = req.params.id;
@@ -185,3 +189,92 @@ exports.update = (req, res) => {
       });
     });
 };
+
+
+
+exports.archiveInterlocuteur = async (req, res) => {
+  // Calcul de la date qui remonte à 3 jours
+  const troisJoursAuparavant = new Date();
+  troisJoursAuparavant.setDate(troisJoursAuparavant.getDate() - 3);
+  console.log("Date limite pour l'archivage: ", troisJoursAuparavant);
+
+  const transporter = nodemailer.createTransport({
+    host: "mail.exchangeincloud.ch",
+    port: 587,
+    auth: {
+      user: "sofitech_mails@sofitech.pro",
+      pass: "Gd2Bc19*",
+    },
+  });
+
+  try {
+    console.log("Recherche d'interlocuteurs à archiver...");
+    const interlocuteursAExpirer = await Interlocuteur.findAll({
+      include: [{
+        model: db.user,
+        as: 'user',
+        attributes: ['email'] // Spécifiez les attributs que vous souhaitez inclure de l'utilisateur
+      }],
+      where: {
+        createdAt: {
+          [Op.lt]: troisJoursAuparavant,
+        },
+        isConfirmed: 0,
+      },
+    });
+
+    console.log(`Nombre d'interlocuteurs trouvés: ${interlocuteursAExpirer.length}`);
+
+    if (interlocuteursAExpirer.length === 0) {
+      res.status(404).send({ message: "Aucun interlocuteur à archiver." });
+      return;
+    }
+
+    for (const interlocuteur of interlocuteursAExpirer) {
+      console.log(`Traitement de l'interlocuteur ID: ${interlocuteur.id_interlocuteur}`);
+
+      await ArchivInterlocuteur.create(interlocuteur.dataValues);
+      console.log(`Interlocuteur archivé: ${interlocuteur.id_interlocuteur}`);
+
+      try {
+        await Interlocuteur.destroy({
+          where: { id_interlocuteur: interlocuteur.id_interlocuteur },
+        });
+        console.log(`Interlocuteur supprimé: ${interlocuteur.id_interlocuteur}`);
+      } catch (deleteError) {
+        console.error(`Erreur lors de la suppression de l'interlocuteur ID: ${interlocuteur.id_interlocuteur}`, deleteError);
+      }
+      // Envoyer des e-mails
+      const mailOptionsInterlocuteur = {
+        from: 'sofitech_mails@sofitech.pro',
+        to: interlocuteur.email,
+        subject: 'Notification de suppression',
+        text: 'Votre compte a été supprimé.'
+      };
+
+      const mailOptionsUser = {
+        from: 'sofitech_mails@sofitech.pro',
+        to: interlocuteur.user.email,
+        subject: 'Notification de suppression d\'interlocuteur',
+        text: `L'interlocuteur ${interlocuteur.nom} a été supprimé.`
+      };
+
+      try {
+        await transporter.sendMail(mailOptionsInterlocuteur);
+        console.log(`E-mail envoyé à l'interlocuteur: ${interlocuteur.email}`);
+        await transporter.sendMail(mailOptionsUser);
+        console.log(`E-mail envoyé à l'utilisateur associé: ${interlocuteur.user.email}`);
+      } catch (emailError) {
+        console.error("Erreur d'envoi d'e-mail: ", emailError);
+      }
+    }
+
+    res.send({
+      message: `${interlocuteursAExpirer.length} interlocuteur(s) archivé(s) avec succès.`,
+    });
+  } catch (err) {
+    console.error("Erreur lors de l'archivage: ", err);
+    res.status(500).send({ message: err.message || "Erreur lors de l'archivage des interlocuteurs." });
+  }
+};
+

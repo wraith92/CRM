@@ -1,4 +1,3 @@
-//route ajouter societer 
 const interlocuteur = require("../controllers/interlocuteur.controllers");
 
 module.exports = function(app) {
@@ -9,5 +8,6 @@ module.exports = function(app) {
   app.get("/send_mail_confirmation_interlocuteur/:id", interlocuteur.send_mail_confirmation);
   app.get("/api/auth/interlocuteur", interlocuteur.findAll);
   app.put("/api/auth/interlocuteur/update/:id", interlocuteur.update);
+  app.post("/api/auth/archiveInterlocuteur", interlocuteur.archiveInterlocuteur);
   
 };

@@ -78,7 +78,7 @@ const Topnav = props => {
             );
             console.log(daysUntilExpiration);
     
-            if (90 - daysUntilExpiration <= 7 && daysUntilExpiration > 0) {
+            if (91 - daysUntilExpiration <= 7 && daysUntilExpiration > 0) {
                 if (daysUntilExpiration === 0) {
                     return (
                         <a href="/change-password" className="alert alert-warning" role="alert">
@@ -88,13 +88,13 @@ const Topnav = props => {
                 }
                 return (
                     <a href="/change-password" className="alert alert-warning" role="alert">
-                        Votre mot de passe expirera dans {90- daysUntilExpiration} jours. 
+                        Votre mot de passe expirera dans {91- daysUntilExpiration} jours. 
                     </a>
                 );
-            } else if (90 - daysUntilExpiration > 7) {
+            } else if (91 - daysUntilExpiration > 7) {
                 return (
                     <a href="/change-password" className="alert alert-success" role="alert">
-                        Votre mot de passe expirera dans {90-daysUntilExpiration + 1} jours.
+                        Votre mot de passe expirera dans {91-daysUntilExpiration + 1} jours.
                     </a>
                 );
             }

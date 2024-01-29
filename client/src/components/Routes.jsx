@@ -34,7 +34,7 @@ const CRMRoutes = () => {
     const fetchDaysSinceLastChange = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/auth/days-since-password-change/${user.id}`
+          `${process.env.REACT_APP_API_HOST}/api/auth/days-since-password-change/${user.id}`
         );
         const data = response.data;
         setDaysSinceLastChange(data.days);

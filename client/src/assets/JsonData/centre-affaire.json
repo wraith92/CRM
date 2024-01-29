@@ -15,7 +15,7 @@
     },
     {
       "TYPE": "DGB",
-      "NOM": "BORDEAUX MERIGNAC"
+      "NOM": "BORDEAUX MERIGNIAC"
     },
     {
       "TYPE": "DGB",
@@ -77,7 +77,7 @@
     },
     {
       "TYPE": "DGL",
-      "NOM": "GRENOBLE MISTRAL"
+      "NOM": "GRENOBLE MINISTRAL"
     },
     {
       "TYPE": "DGL",
@@ -164,7 +164,7 @@
     },
     {
       "TYPE": "DGNEC",
-      "NOM": "METZ"
+      "NOM": "METZE"
     },
     {
       "TYPE": "DGNEC",
@@ -180,7 +180,7 @@
     },
     {
       "TYPE": "DGNEC",
-      "NOM": "STRASBOURG"
+      "NOM": "STARBOURG"
     },
     {
       "TYPE": "DGNEC",
@@ -242,7 +242,7 @@
     },
     {
       "TYPE": "DGP",
-      "NOM": "MAISONS-ALFORT"
+      "NOM": "MAISON-ALFORT"
     },
     {
       "TYPE": "DGP",

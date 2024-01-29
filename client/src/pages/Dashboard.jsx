@@ -10,6 +10,7 @@ import Societe from "../controllers/Societe";
 import ListeSociete from "../components/societe/ListeDashbord";
 import ListeAction from "../components/action/ListeDashboard";
 import ChartDateAction from "../components/chart/chartAction";
+import ChartDateSociete from "../components/chart/chartSociete";
 import InputDateDebut from "../components/Date/inputDate";
 import InputDateFin from "../components/Date/inputDate2";
 import { getStatusCardAdmin } from "../components/card/statuscardadmin";
@@ -41,6 +42,7 @@ const Dashboard = () => {
   societeListe.sort(
     (b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
+  console.log(societe_util);
   //refreh data
   useEffect(() => {
     if (user) {
@@ -83,7 +85,6 @@ const Dashboard = () => {
       ).length
     );
   }
-  console.log(tableau_action , tableau_societe);
 
   const mysn = 1000 * 3600 * 24;
   const fltr_date = Action.filter(
@@ -94,7 +95,6 @@ const Dashboard = () => {
   const filtre_date_Action_util1 = fltr_date.filter(
     (task) => task.id_utili === user.id
   );
-
   //card acrion admin
   const statusCardAdmin = getStatusCardAdmin({ fltr_date });
   const statusCardEvolis = getStatusCardEvolis({ fltr_date });

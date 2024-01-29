@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import React, { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import UserService from "../services/user.service";
 import AuthInterlocuteur from "../services/Interlocuteur";
-import 'moment/locale/fr';
-import Societe from '../controllers/Societe';
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/fr';
+import "moment/locale/fr";
+import Societe from "../controllers/Societe";
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/fr";
+import "./InterlocuteurDetails.css";
 
 function InterlocuteurDetails() {
   // Fonction pour calculer le temps restant avant l'expiration
@@ -26,7 +27,7 @@ function InterlocuteurDetails() {
     const minutesRemaining = duration.minutes();
 
     // Construisez la chaîne de temps restant
-    let timeRemaining = '';
+    let timeRemaining = "";
     if (daysRemaining > 0) {
       timeRemaining += `${daysRemaining} jour(s) `;
     }
@@ -42,32 +43,23 @@ function InterlocuteurDetails() {
 
   // GET interlocuteur
   const [Inter, SetInter] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [listuser, setListeUser] = useState([]);
   const [listSoc, setSoc] = useState([]);
 
   const handleEmailConfirmation = async (interlocuteurId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/send_mail_confirmation_interlocuteur/${interlocuteurId}`);
+      const response = await axios.get(
+        `http://localhost:8080/send_mail_confirmation_interlocuteur/${interlocuteurId}`
+      );
       console.log(response.data);
       // Vous pouvez ajouter ici une logique pour gérer la réponse si nécessaire
     } catch (error) {
-      console.error('Erreur lors de la confirmation par e-mail:', error);
+      console.error("Erreur lors de la confirmation par e-mail:", error);
       // Vous pouvez ajouter ici une logique pour gérer les erreurs si nécessaire
     }
   };
 
-  // Fonction pour archiver un interlocuteur expiré
-  const archiveInterlocuteur = async (interlocuteurId) => {
-    try {
-      await AuthInterlocuteur.archiveExpired();
-      console.log('Interlocuteur archivé avec succès');
-      // Vous pouvez ajouter ici une logique pour gérer la réponse si nécessaire
-    } catch (error) {
-      console.error('Erreur lors de l\'archivage de l\'interlocuteur:', error);
-      // Vous pouvez ajouter ici une logique pour gérer les erreurs si nécessaire
-    }
-  };
 
   // Select all interlocuteur
   const retrieveInterlocuteur = () => {
@@ -81,8 +73,8 @@ function InterlocuteurDetails() {
   };
 
   const retriveSociete = () => {
-    Societe.AllSociete().then(data => setSoc(data))
-  }
+    Societe.AllSociete().then((data) => setSoc(data));
+  };
 
   const retrieveUsers = () => {
     UserService.getListe_User()
@@ -99,15 +91,15 @@ function InterlocuteurDetails() {
     retrieveUsers();
     retriveSociete();
 
-    // Vérifiez si le temps restant est null et archivez l'interlocuteur
-    Inter.forEach((e) => {
-      const timeRemaining = calculateTimeRemaining(moment(e.createdAt).add(3, 'days'));
-      console.log(timeRemaining);
-      if (timeRemaining === '') {
-        // Le temps restant est nul, archivez l'interlocuteur
-        archiveInterlocuteur(e.id_interlocuteur);
-      }
-    });
+    // Déclenchez un appel API pour archiver les interlocuteurs expirés
+    // Cette API exécutera la logique côté serveur
+    AuthInterlocuteur.archiveExpired()
+      .then((response) => {
+        console.log("Interlocuteurs archivés :", response.data);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de l'archivage des interlocuteurs :", error);
+      });
   }, []);
 
   return (
@@ -121,69 +113,80 @@ function InterlocuteurDetails() {
               placeholder="Recherche "
               onChange={(e) => setSearch(e.target.value)}
             />
-            <i className='bx bx-search'></i>
+            <i className="bx bx-search"></i>
           </div>
         </div>
       </div>
       <div>
         <Box sx={{ minWidth: 260 }}>
           {Inter.filter((e) => {
-            return search.toLowerCase() === ''
+            return search.toLowerCase() === ""
               ? e
               : e.nom.toLowerCase().includes(search.toLowerCase());
           }).map((e) => (
-            <Card variant="outlined" key={e.id_interlocuteur}>
+            <Card
+              variant="outlined"
+              key={e.id_interlocuteur}
+              className="card-container"
+            >
               <CardContent>
-                <Typography variant="h5" component="div">
-                  <i class='bx bxs-id-card'></i>: {e.nom}
-                </Typography>
-                <Typography variant="body2">
-                  Fonction : {e.fonction_inter}
+                {/* Title */}
+                <Typography variant="h5" component="div" className="name-tag">
+                  {e.nom}
                 </Typography>
 
-                {(listuser.filter((task) => task.id === e.id_utili)).map((c) => (
-                  <Typography variant="body2" key={c.id}>
-                    nom commercial : {c.username}
-                  </Typography>
-                ))}
-                {(listSoc.filter((task) => task.siret === e.id_soc)).map((c) => (
-                  <Typography variant="body2" key={c.siret}>
-                    Societe : {c.nom_soc}
-                  </Typography>
-                ))}
-                <Typography variant="body2">
-                  Email : {e.email}
-                </Typography>
-
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  Telephone : {e.tel}
-                </Typography>
-                {!e.isConfirmed ? (
-                  <React.Fragment>
-                    <Typography variant="body2" color="text.secondary">
-                      Statut de confirmation : En attente
+                <div className="card-body">
+                        {/* Flex container for "nom commercial" and "Societe" */}
+                  <div className="flex-container">
+                    {/* Mapping for "nom commercial" */}
+                    
+                    {listuser
+                      .filter((task) => task.id === e.id_utili)
+                      .map((c) => (
+                        <Typography variant="body" key={c.id} color="text.secondary" style={{ fontWeight: "bold" }}>
+                          <i class='bx bx-user'></i> : {c.username}
+                        </Typography>
+                      ))}
+                    <Typography sx={{ mb: 1.5 }} color="text.secondary" style={{ fontWeight: "bold" }}>
+                    <i class='bx bx-phone' ></i>: {e.tel}
                     </Typography>
-                    {console.log(moment(e.createdAt).add(3, 'days'))}
-                    <Typography variant="body2" color="text.secondary">
-                      Temps restant : {calculateTimeRemaining(moment(e.createdAt).add(3, 'days'))}
-                    </Typography>
-                    <Button
-                      size="small"
-                      onClick={() => handleEmailConfirmation(e.id_interlocuteur)}
+                    
+                  </div>
+                  {/* Flex container for other details */}
+                  <div className="flex-container">
+                    
+                    
+                    {listSoc
+                      .filter((task) => task.siret === e.id_soc)
+                      .map((c) => (
+                        <Typography color="text.secondary" variant="body" key={c.siret} style={{ fontWeight: "bold" }}>
+                         <i class='bx bxs-bank'></i> : {c.nom_soc}
+                        </Typography>
+                      ))}
+                      <Typography variant="body" color="text.secondary" style={{ fontWeight: "bold" }}>
+                      <i class='bx bx-mail-send' ></i>: {e.email}
+                        </Typography>
+                  </div>
+                  {/* Flex container for confirmation status */}
+                  <div className="flex-container">
+                    <Typography
+                      variant="body2"
+                      className={
+                        e.isConfirmed ? "status-confirmed" : "status-awaiting"
+                      }
                     >
-                      Confirmer par e-mail
-                    </Button>
-                  </React.Fragment>
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    Statut de confirmation : Confirmé
-                  </Typography>
-                )}
+                      Statut de confirmation :{" "}
+                      {e.isConfirmed ? "Confirmé" : "En attente"}
+                    </Typography>
+                  </div>  
+                </div>
+           
               </CardContent>
               <CardActions>
-                <Button href={`/Inter/modifier/${e.id_interlocuteur}`} size="small">
-                  Modifier
-                </Button>
+                {/* Modifier Button */}
+                <button className="modify-btn" onClick={() => { window.location.href = `/Inter/modifier/${e.id_interlocuteur}`; }}>
+                  <i className='bx bx-edit-alt bx-flashing'></i>
+                </button>
               </CardActions>
             </Card>
           ))}
@@ -191,6 +194,8 @@ function InterlocuteurDetails() {
       </div>
     </div>
   );
+
+  
 }
 
 export default InterlocuteurDetails;

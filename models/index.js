@@ -63,6 +63,9 @@ db.societe.hasMany(db.police, {foreignKey: 'id_soc', sourceKey: 'siret'});
 //societe plusieurs contrat
 db.societe.hasMany(db.contrat, {foreignKey: 'id_soc', sourceKey: 'siret'});
 
+
+db.interlocuteur.belongsTo(db.user, { foreignKey: 'id_utili', as: 'user' });
+
 db.archivInterlocuteur.belongsTo(db.user, {
   foreignKey: 'userId', // Assurez-vous que cela correspond au champ de clé étrangère dans ArchivInterlocuteur
   targetKey: 'id' // Clé primaire de User

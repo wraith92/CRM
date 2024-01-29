@@ -25,7 +25,13 @@ module.exports =(sequelize,Sequelize)=>{
     },
     fonction_inter: {
       type: Sequelize.STRING
-    }
+    },
+    isConfirmed: {
+      type: Sequelize.INTEGER,
+    },
+    reminderSent: {
+      type: Sequelize.INTEGER,
+    },
   });
   return Interlocuteur;
 };

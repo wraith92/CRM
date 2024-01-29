@@ -1,0 +1,89 @@
+/* Style for the Card */
+.card-container {
+    margin: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s;
+    position: relative;
+  }
+  
+  .card-container:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+
+/* Style the title to be above the card */
+.name-tag {
+  position: absolute;
+  top: 5px; /* Adjust this value if the title is not fully visible */
+  left: 10px; /* Adjust horizontal position as needed */
+  z-index: 9999; /* Ensure the title is above other content */
+  background-color: #3166be;
+  color: white;
+  padding: 4px 16px;
+  border-bottom-right-radius: 8px;
+  white-space: nowrap;
+}
+
+/* Style for confirmed status */
+.status-confirmed {
+  background-color: green; /* Or any color you prefer for confirmed status */
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Style for awaiting confirmation */
+.status-awaiting {
+  background-color: orange; /* Or any color you prefer for awaiting confirmation */
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Style for the modifier button */
+.modify-btn {
+  align-items: center;
+  background-color: #3166be;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  outline: none;
+  position: absolute;
+  right: 10px;
+  top: calc(85% - 20px);
+  width: 40px;
+}
+
+/* Icon inside the button for better alignment */
+.modify-btn i {
+  /* Align icon to center if it is not perfectly centered */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  
+}
+
+/* Styles for flex containers */
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px; /* Adjust as needed */
+}
+
+/* Styles specific to the confirmation status */
+.confirmation-status {
+  background-color: #e8e8e8; /* Light gray background, adjust as needed */
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold; /* Optional: if you want the text to be bold */
+}
+.card-body {
+  padding: 0;
+  position: relative;
+  top: 20px;
+}

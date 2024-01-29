@@ -1,10 +1,11 @@
 
 const db = require("../models");
 const Interlocuteur = db.interlocuteur;
+const User = db.user;
 const ArchivInterlocuteur = db.archivInterlocuteur;
 const Op = db.Sequelize.Op;
 const nodemailer = require("nodemailer");
-const sendConfirmationEmail = (recipientEmail, confirmationLink, nom,prenom) => {
+const sendConfirmationEmail = (recipientEmail, confirmationLink, nom, prenom) => {
   const transporter = nodemailer.createTransport({
     host: "mail.exchangeincloud.ch",
     port: 587,
@@ -85,7 +86,7 @@ exports.send_mail_confirmation = async (req, res) => {
     }
 
     const confirmationLink = `https://sofcem.mtech.dev/confirmation/${id}`;
-    sendConfirmationEmail(interlocuteur.email, confirmationLink, interlocuteur.nom,interlocuteur.prenom);
+    sendConfirmationEmail(interlocuteur.email, confirmationLink, interlocuteur.nom, interlocuteur.prenom);
 
     res.send({ message: "interlocuteur send succefuly " });
   } catch (err) {
@@ -96,22 +97,22 @@ exports.send_mail_confirmation = async (req, res) => {
 
 exports.create_action = (req, res) => {
   const insert = {
-    nom:req.body.nom,
-    prenom:req.body.prenom,
-    email:req.body.email,
-    adresse:req.body.adresse,
-    code_postale:req.body.code_postale,
-    tel:req.body.tel,
-    fonction_inter:req.body.fonction_inter,
+    nom: req.body.nom,
+    prenom: req.body.prenom,
+    email: req.body.email,
+    adresse: req.body.adresse,
+    code_postale: req.body.code_postale,
+    tel: req.body.tel,
+    fonction_inter: req.body.fonction_inter,
     id_utili: req.body.id_utili,
-    id_soc:req.body.id_soc,
+    id_soc: req.body.id_soc,
     isConfirmed: req.body.isConfirmed || 0,
   };
 
   Interlocuteur.create(insert)
     .then(data => {
       const confirmationLink = `https://sofcem.mtech.dev/confirmation/${data.id_interlocuteur}`;
-      sendConfirmationEmail(data.email, confirmationLink,data.nom,data.prenom);
+      sendConfirmationEmail(data.email, confirmationLink, data.nom, data.prenom);
       res.send({ message: 'Interlocuteur ajouté avec succès', data });
     })
     .catch(err => {
@@ -190,41 +191,118 @@ exports.update = (req, res) => {
 };
 
 
+
 exports.archiveInterlocuteur = async (req, res) => {
-  const troisJoursAuparavant = new Date(new Date() - 3 * 24 * 60 * 60 * 1000); // Heure actuelle moins 3 jours
+  const today = new Date();
+  const tenDaysAgo = new Date(today);
+  tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+  const thirtyDaysAgo = new Date(today);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const transporter = nodemailer.createTransport({
+    host: "mail.exchangeincloud.ch",
+    port: 587,
+    auth: {
+      user: "sofitech_mails@sofitech.pro",
+      pass: "Gd2Bc19*",
+    },
+  });
 
   try {
-    // Récupérer les interlocuteurs non confirmés dont la date d'expiration est passée
-    const interlocuteursAExpirer = await Interlocuteur.findAll({
+    // Fetch interlocutors for reminder after 10 days
+    const interlocuteursForReminder = await Interlocuteur.findAll({
+      include: [{ model: db.user, as: 'user', attributes: ['email'] }],
       where: {
-        date_ajout: {
-          [Op.lt]: troisJoursAuparavant, // date_ajout est antérieure à trois jours auparavant
+        createdAt: {
+          [Op.gte]: tenDaysAgo,
+          [Op.lt]: today,
         },
-        isConfirmed: 0, // isConfirmed est égal à 0
+        isConfirmed: 0,
+        reminderSent: 0, // Check that the reminder hasn't been sent yet
       },
     });
 
-    if (interlocuteursAExpirer.length === 0) {
-      res.status(404).send({ message: "Aucun interlocuteur à archiver." });
-      return;
+    // Send reminder email
+    for (const interlocuteur of interlocuteursForReminder) {
+      const reminderMailOptions = {
+        from: 'sofitech_mails@sofitech.pro',
+        to: interlocuteur.email,
+        subject: 'Rappel de confirmation',
+        text: `Bonjour ${interlocuteur.nom}, vous avez initié une procédure il y a 10 jours. Veuillez confirmer vos informations.`,
+      };
+
+      try {
+        await transporter.sendMail(reminderMailOptions);
+        console.log(`Rappel envoyé à l'interlocuteur: ${interlocuteur.email}`);
+        // Update the reminderSent flag
+        await Interlocuteur.update({ reminderSent: 1 }, {
+          where: { id_interlocuteur: interlocuteur.id_interlocuteur },
+        });
+      } catch (emailError) {
+        console.error("Erreur lors de l'envoi du rappel: ", emailError);
+      }
     }
 
-    // Archiver ou supprimer chaque interlocuteur expiré
-    for (const interlocuteur of interlocuteursAExpirer) {
-      // Si vous souhaitez archiver l'interlocuteur expiré dans la table d'archive
-      await ArchivInterlocuteur.create(interlocuteur.dataValues);
+    // Fetch interlocutors for archiving/deleting after 30 days
+    const interlocuteursAExpirer = await Interlocuteur.findAll({
+      include: [{ model: db.user, as: 'user', attributes: ['email'] }],
+      where: {
+        createdAt: {
+          [Op.lt]: thirtyDaysAgo,
+        },
+        isConfirmed: 0,
+      },
+    });
 
-      // Supprimer l'interlocuteur de la table principale
-      await Interlocuteur.destroy({
-        where: { id_interlocuteur: interlocuteur.id_interlocuteur },
-      });
+    for (const interlocuteur of interlocuteursAExpirer) {
+      console.log(`Traitement de l'interlocuteur ID: ${interlocuteur.id_interlocuteur}`);
+
+      await ArchivInterlocuteur.create(interlocuteur.dataValues);
+      console.log(`Interlocuteur archivé: ${interlocuteur.id_interlocuteur}`);
+
+      try {
+        await Interlocuteur.destroy({
+          where: { id_interlocuteur: interlocuteur.id_interlocuteur },
+        });
+        console.log(`Interlocuteur supprimé: ${interlocuteur.id_interlocuteur}`);
+      } catch (deleteError) {
+        console.error(`Erreur lors de la suppression de l'interlocuteur ID: ${interlocuteur.id_interlocuteur}`, deleteError);
+      }
+
+      // Envoyer des e-mails de notification de suppression
+      const mailOptionsInterlocuteur = {
+        from: 'sofitech_mails@sofitech.pro',
+        to: interlocuteur.email,
+        subject: 'Notification de suppression',
+        text: 'Votre compte a été supprimé en raison de non confirmation dans les 30 jours suivant votre inscription.'
+      };
+
+      const mailOptionsUser = {
+        from: 'sofitech_mails@sofitech.pro',
+        to: interlocuteur.user.email,
+        subject: 'Notification de suppression d\'interlocuteur',
+        text: `L'interlocuteur ${interlocuteur.nom} ${interlocuteur.prenom} a été supprimé après 30 jours sans confirmation.`
+      };
+
+      try {
+        await transporter.sendMail(mailOptionsInterlocuteur);
+        console.log(`E-mail de suppression envoyé à l'interlocuteur: ${interlocuteur.email}`);
+        await transporter.sendMail(mailOptionsUser);
+        console.log(`E-mail de suppression envoyé à l'utilisateur associé: ${interlocuteur.user.email}`);
+      } catch (emailError) {
+        console.error("Erreur d'envoi d'e-mail de suppression: ", emailError);
+      }
     }
 
     res.send({
-      message: `${interlocuteursAExpirer.length} interlocuteur(s) archivé(s) avec succès.`,
+      reminderCount: interlocuteursForReminder.length,
+      archivedCount: interlocuteursAExpirer.length,
+      message: `Rappels envoyés: ${interlocuteursForReminder.length}, interlocuteurs archivés/supprimés: ${interlocuteursAExpirer.length}`,
     });
   } catch (err) {
-    res.status(500).send({ message: err.message || "Erreur lors de l'archivage des interlocuteurs." });
+    console.error("Erreur lors de l'opération: ", err);
+    res.status(500).send({ message: err.message || "Erreur lors du processus de rappel/archivage." });
   }
 };
+
 

@@ -1,10 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
     const ArchivInterlocuteur = sequelize.define("archiv_interlocuteur", {
-      // Reprenez ici les champs de votre modèle Interlocuteur
       id_interlocuteur: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
-        primaryKey: true,
+        primaryKey: true
       },
       nom: {
         type: Sequelize.STRING
@@ -18,16 +17,20 @@ module.exports = (sequelize, Sequelize) => {
       adresse: {
         type: Sequelize.STRING
       },
-      code_postale:{
-        type:Sequelize.STRING
+      code_postale: {
+        type: Sequelize.STRING
       },
       tel: {
         type: Sequelize.STRING
       },
       fonction_inter: {
         type: Sequelize.STRING
+      },
+      userId: { // Ajout d'un champ pour la clé étrangère
+        type: Sequelize.INTEGER,
+        allowNull: true
       }
-    
+      // Vous pouvez ajouter d'autres champs ici
     });
   
     return ArchivInterlocuteur;

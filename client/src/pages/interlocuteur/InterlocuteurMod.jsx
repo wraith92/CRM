@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import Form from "react-validation/build/form";
 import CheckButton from "react-validation/build/button";
-import AuthInterlocuteur from "../services/Interlocuteur";
+import AuthInterlocuteur from "../../services/Interlocuteur";
 import "react-datepicker/dist/react-datepicker.css";
-import checkForm from '../common/Ajouter/checkedForm'
-import './../assets/css/picklist.css'
-import AuthService from "../services/auth.service";
+import checkForm from '../../common/Ajouter/checkedForm'
+import '../../assets/css/picklist.css'
+import AuthService from "../../services/auth.service";
 import { useParams } from "react-router-dom";
 const AddTutorial = () => {
 

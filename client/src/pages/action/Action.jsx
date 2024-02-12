@@ -1,6 +1,6 @@
 
 //sidebar data json
-import sidebar_items from '../assets/JsonData/sidebar_routes.json'
+import sidebar_items from '../../assets/JsonData/sidebar_routes.json'
 import Grid from '@mui/material/Grid';
 //require React
 import React, { useState, useRef, useEffect } from "react";
@@ -10,12 +10,12 @@ import Button from '@mui/material/Button';
 import Form from "react-validation/build/form";
 import CheckButton from "react-validation/build/button";
 //require page Action
-import AuthAction from "../services/Action";
+import AuthAction from "../../services/Action";
 //require page Interlocuteur
-import AuthInter from "../services/Interlocuteur";
+import AuthInter from "../../services/Interlocuteur";
 import { useHistory } from 'react-router-dom';
 //controlleur service
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 //import mui
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -25,11 +25,11 @@ import Select from '@mui/material/Select';
 //import checkbox from multiselect-react-dropdown'
 import Multiselect from 'multiselect-react-dropdown';
 // centre d'affaire json data
-import liste from "../assets/JsonData/centre-affaire.json";
-import besoinliste from "../assets/JsonData/besoin.json";
-import RoleUser from "../controllers/Role";
-import Societe from '../controllers/Societe';
-import Evolis from '../assets/JsonData/Evolis.json';
+import liste from "../../assets/JsonData/centre-affaire.json";
+import besoinliste from "../../assets/JsonData/besoin.json";
+import RoleUser from "../../controllers/Role";
+import Societe from '../../controllers/Societe';
+import Evolis from '../../assets/JsonData/Evolis.json';
 import Modal from 'react-modal';
 
 const Action = (props) => {

@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import Form from "react-validation/build/form";
 import CheckButton from "react-validation/build/button";
-import AuthInter from "../services/Interlocuteur"
-import AuthAction from "../services/Action";
+import AuthInter from "../../services/Interlocuteur"
+import AuthAction from "../../services/Action";
 import "react-datepicker/dist/react-datepicker.css";
-import checkForm from '../common/Ajouter/checkedForm'
-import './../assets/css/picklist.css'
+import checkForm from '../../common/Ajouter/checkedForm'
+import '../../assets/css/picklist.css'
 import Multiselect from 'multiselect-react-dropdown';
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 import { useParams } from "react-router-dom";
-import besoinliste from "../assets/JsonData/besoin.json";
-import RoleUser from "../controllers/Role";
-import Societe from '../controllers/Societe';
+import besoinliste from "../../assets/JsonData/besoin.json";
+import RoleUser from "../../controllers/Role";
+import Societe from '../../controllers/Societe';
 const ActionMod = () => {
     //variable checked from
     const required = checkForm.required;

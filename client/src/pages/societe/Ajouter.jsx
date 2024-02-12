@@ -3,20 +3,20 @@ import React, { useState, useRef, useEffect } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import AuthSociete from "../services/societe";
+import AuthSociete from "../../services/societe";
 import "react-datepicker/dist/react-datepicker.css";
-import checkForm from '../common/Ajouter/checkedForm'
+import checkForm from '../../common/Ajouter/checkedForm'
 import { useHistory } from 'react-router-dom';
-import './../assets/css/picklist.css'
+import '../../assets/css/picklist.css'
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
-import liste from "../assets/JsonData/liste_syndicat.json"
-import origine_prospect from "../assets/JsonData/origine_prospect.json"
+import liste from "../../assets/JsonData/liste_syndicat.json"
+import origine_prospect from "../../assets/JsonData/origine_prospect.json"
 import Button from '@mui/material/Button';
-import UserService from "../services/user.service";
-import AuthService from "../services/auth.service";
-import Soc from '../controllers/Societe';
-import RoleUser from "../controllers/Role";
+import UserService from "../../services/user.service";
+import AuthService from "../../services/auth.service";
+import Soc from '../../controllers/Societe';
+import RoleUser from "../../controllers/Role";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';

@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import AuthInterlocuteur from "../services/Interlocuteur";
-import AuthService from "../services/auth.service";
+import AuthInterlocuteur from "../../services/Interlocuteur";
+import AuthService from "../../services/auth.service";
 import { useParams } from "react-router-dom";
-import UserService from "../services/user.service";
+import UserService from "../../services/user.service";
 import axios from 'axios';
-import fonction_inter from "../assets/JsonData/fonction_interlocuteur.json"
+import fonction_inter from "../../assets/JsonData/fonction_interlocuteur.json"
 //table class
 import Typography from '@mui/material/Typography';
 import Table from '@mui/material/Table';
@@ -18,9 +18,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import listsociete from "../controllers/Societe"
-import RoleUser from "../controllers/Role";
-import Societe from '../controllers/Societe';
+import listsociete from "../../controllers/Societe"
+import RoleUser from "../../controllers/Role";
+import Societe from '../../controllers/Societe';
 const Action = (props) => {
 
   //filter societe nom

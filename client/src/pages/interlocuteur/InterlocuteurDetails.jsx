@@ -5,27 +5,36 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import UserService from "../services/user.service";
-import AuthInterlocuteur from "../services/Interlocuteur";
+import UserService from "../../services/user.service";
+import AuthInterlocuteur from "../../services/Interlocuteur";
 import "moment/locale/fr";
-import Societe from "../controllers/Societe";
+import Societe from "../../controllers/Societe";
 import axios from "axios";
 import moment from "moment";
 import "moment/locale/fr";
 import "./InterlocuteurDetails.css";
+import * as XLSX from 'xlsx';
 
 function InterlocuteurDetails() {
   // Fonction pour calculer le temps restant avant l'expiration
-  const calculateTimeRemaining = (expirationDate) => {
-    const now = moment(); // Date actuelle
-    const expiration = moment(expirationDate); // Date d'expiration
-    const duration = moment.duration(expiration.diff(now)); // Différence entre la date d'expiration et la date actuelle
 
+
+  // GET interlocuteur
+  const [Inter, SetInter] = useState([]);
+  const [search, setSearch] = useState("");
+  const [listuser, setListeUser] = useState([]);
+  const [listSoc, setSoc] = useState([]);
+  const calculateTimeRemaining = (createdAt) => {
+    const creationDate = moment(createdAt); // Date de création
+    const expirationDate = creationDate.add(30, 'days'); // 30 jours après la date de création
+    const now = moment(); // Date actuelle
+    const duration = moment.duration(expirationDate.diff(now)); // Différence entre 30 jours après la date de création et la date actuelle
+  
     // Obtenez le nombre de jours, heures et minutes restants
     const daysRemaining = duration.days();
     const hoursRemaining = duration.hours();
     const minutesRemaining = duration.minutes();
-
+  
     // Construisez la chaîne de temps restant
     let timeRemaining = "";
     if (daysRemaining > 0) {
@@ -37,15 +46,9 @@ function InterlocuteurDetails() {
     if (minutesRemaining > 0) {
       timeRemaining += `${minutesRemaining} minute(s) `;
     }
-
+  
     return timeRemaining.trim(); // Supprimez les espaces inutiles
   };
-
-  // GET interlocuteur
-  const [Inter, SetInter] = useState([]);
-  const [search, setSearch] = useState("");
-  const [listuser, setListeUser] = useState([]);
-  const [listSoc, setSoc] = useState([]);
 
   const handleEmailConfirmation = async (interlocuteurId) => {
     try {
@@ -86,6 +89,46 @@ function InterlocuteurDetails() {
       });
   };
 
+  const exportToExcel = (data, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Interlocuteurs");
+    XLSX.writeFile(wb, `${fileName}.xlsx`);
+  };
+  const handleExport = () => {
+    const dataExport = Inter.map((interlocuteur) => {
+      // Trouver le nom commercial associé
+      const user = listuser.find((user) => user.id === interlocuteur.id_utili);
+      const userName = user ? user.username : 'Non trouvé';
+  
+      // Trouver la société associée
+      const soc = listSoc.find((societe) => societe.siret === interlocuteur.id_soc);
+      const socName = soc ? soc.nom_soc : 'Non trouvée';
+  
+      // Calculer la date d'expiration (30 jours après la date de création)
+       // Calculer la date d'expiration seulement si l'interlocuteur est en attente
+    let expirationDate = '';
+    if (!interlocuteur.isConfirmed) {
+      expirationDate = moment(interlocuteur.createdAt).add(30, 'days').format('YYYY-MM-DD');
+    }
+  
+      // Retourner un objet avec toutes les informations pour l'exportation
+      return {
+        'Nom': interlocuteur.nom,
+        'Fonction': interlocuteur.fonction_inter,
+        'Commercial': userName,
+        'Société': socName,
+        'Email': interlocuteur.email,
+        'Téléphone': interlocuteur.tel,
+        'Statut de Confirmation': interlocuteur.isConfirmed ? 'Confirmé' : 'En Attente',
+        "Date d'Expiration": expirationDate,  // Ajoutez cette ligne pour l'expiration
+        // ... Ajoutez d'autres propriétés si nécessaire
+      };
+    });
+    exportToExcel(dataExport, "Liste_Interlocuteurs");
+  };
+  
+  
   useEffect(() => {
     retrieveInterlocuteur();
     retrieveUsers();
@@ -104,8 +147,22 @@ function InterlocuteurDetails() {
 
   return (
     <div className="row">
-      <div className="col-12 list">
-        <div className="topnav">
+        <div className="d-flex justify-content-between mb-3">
+          {/* Titre */}
+          
+            <h2 className="col-md-6page-`header">Liste des interlocuteurs</h2>
+          
+
+          {/* Bouton d'exportation Excel */}
+          <div className="col-md-3">
+            <Button variant="contained" color="primary" onClick={handleExport}>
+              Exporter en Excel
+            </Button>
+          </div>
+
+          {/* Barre de recherche */}
+          <div className="col-md-3">
+     
           <div className="topnav__search">
             <input
               type="text"
@@ -115,8 +172,8 @@ function InterlocuteurDetails() {
             />
             <i className="bx bx-search"></i>
           </div>
+          </div>
         </div>
-      </div>
       <div>
         <Box sx={{ minWidth: 260 }}>
           {Inter.filter((e) => {
@@ -131,9 +188,17 @@ function InterlocuteurDetails() {
             >
               <CardContent>
                 {/* Title */}
+                
                 <Typography variant="h5" component="div" className="name-tag">
                   {e.nom}
                 </Typography>
+                <div className="time">
+                {!e.isConfirmed && (
+               <Typography color="text.secondary" style={{ fontWeight: "bold", color: 'orange' }}>
+               <i className='bx bxs-timer'></i> : {calculateTimeRemaining(e.createdAt)}
+             </Typography>
+                )}
+                </div>
 
                 <div className="card-body">
                         {/* Flex container for "nom commercial" and "Societe" */}
@@ -178,6 +243,8 @@ function InterlocuteurDetails() {
                       Statut de confirmation :{" "}
                       {e.isConfirmed ? "Confirmé" : "En attente"}
                     </Typography>
+                      {/* Afficher le chronomètre pour les interlocuteurs en attente de confirmation */}
+     
                   </div>  
                 </div>
            
@@ -191,6 +258,7 @@ function InterlocuteurDetails() {
             </Card>
           ))}
         </Box>
+        
       </div>
     </div>
   );

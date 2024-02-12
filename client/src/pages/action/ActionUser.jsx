@@ -5,11 +5,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
 import CheckButton from "react-validation/build/button";
 import Button from '@mui/material/Button';
-import AuthAction from '../services/Action';
-import AuthService from "../services/auth.service";
-import RoleUser from "../controllers/Role";
+import AuthAction from '../../services/Action';
+import AuthService from "../../services/auth.service";
+import RoleUser from "../../controllers/Role";
 import moment from "moment";
-import Societe from '../controllers/Societe';
+import Societe from '../../controllers/Societe';
 import 'moment/locale/fr';
 import Switch from '@mui/material/Switch';
 import {
@@ -23,7 +23,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import UserService from '../services/user.service';
+import UserService from '../../services/user.service';
 import { accordionActionsClasses } from '@mui/material';
 
 const ActionDetails = () => {

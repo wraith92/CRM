@@ -2,19 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import AuthSociete from "../services/societe";
+import AuthSociete from "../../services/societe";
 import "react-datepicker/dist/react-datepicker.css";
-import checkForm from '../common/Ajouter/checkedForm'
-import './../assets/css/picklist.css'
+import checkForm from '../../common/Ajouter/checkedForm'
+import '../../assets/css/picklist.css'
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
-import AuthService from "../services/auth.service";
-import UserService from "../services/user.service";
-import liste from "../assets/JsonData/liste_syndicat.json"
-import origine_prospect from "../assets/JsonData/origine_prospect.json"
+import AuthService from "../../services/auth.service";
+import UserService from "../../services/user.service";
+import liste from "../../assets/JsonData/liste_syndicat.json"
+import origine_prospect from "../../assets/JsonData/origine_prospect.json"
 import { useParams } from "react-router-dom";
-import RoleUser from "../controllers/Role";
-import Societe from '../controllers/Societe';
+import RoleUser from "../../controllers/Role";
+import Societe from '../../controllers/Societe';
 const AddTutorial = () => {
 
 

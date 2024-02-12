@@ -87,3 +87,9 @@
   position: relative;
   top: 20px;
 }
+.time {
+  display: flex;
+  justify-content: flex-end; /* Aligner les éléments à droite */
+  align-items: center; /* Centrer les éléments verticalement */
+  /* Ajoutez d'autres styles si nécessaire */
+}

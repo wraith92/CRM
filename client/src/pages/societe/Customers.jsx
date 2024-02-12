@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
 import { faFile } from '@fortawesome/free-solid-svg-icons/faFile';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Stack from '@mui/material/Stack';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '../components/topnav/topnav.css'
+import '../../components/topnav/topnav.css'
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 //material ui table
@@ -26,8 +26,8 @@ import {
   Typography,
   TablePagination,
 } from '@material-ui/core';
-import RoleUser from "../controllers/Role";
-import Societe from '../controllers/Societe';
+import RoleUser from "../../controllers/Role";
+import Societe from '../../controllers/Societe';
 //css
 const useStyles = makeStyles((theme) => ({
   table: {

@@ -6,15 +6,15 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import AuthInterlocuteur from "../services/Interlocuteur"
-import AuthAction from "../services/Action"
-import AuthService from "../services/auth.service";
+import AuthInterlocuteur from "../../services/Interlocuteur"
+import AuthAction from "../../services/Action"
+import AuthService from "../../services/auth.service";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import 'moment/locale/fr';
-import RoleUser from "../controllers/Role";
-import Societe from '../controllers/Societe';
-import UserService from "../services/user.service";
+import RoleUser from "../../controllers/Role";
+import Societe from '../../controllers/Societe';
+import UserService from "../../services/user.service";
 
 function Customersinfo() {
   //GET role admin

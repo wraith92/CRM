@@ -1,64 +1,50 @@
 
 const db = require("../models");
 const Interlocuteur = db.interlocuteur;
-const User = db.user;
-const ArchivInterlocuteur = db.archivInterlocuteur;
 const Op = db.Sequelize.Op;
-const nodemailer = require("nodemailer");
+const { transporter, logoUrl, createMailOptions } = require("../middleware/mailerConfig");
 const sendConfirmationEmail = (recipientEmail, confirmationLink, nom,prenom) => {
-  const transporter = nodemailer.createTransport({
-    host: "mail.exchangeincloud.ch",
-    port: 587,
-    auth: {
-      user: "sofitech_mails@sofitech.pro",
-      pass: "Gd2Bc19*",
-    },
-  });
-  const logoUrl = "https://sofitech.pro/wp-content/uploads/2018/12/Groupe-1.png";
-  const mailOptions = {
-    from: "sofitech_mail_automatique@sofitech.pro",
-    to: recipientEmail,
-    subject: "Confirmation Sofitech",
-    html: `
-    <p><img src="${logoUrl}" alt="Sofitech Logo" style="max-width: 100%; height: auto;"></p>
-      <p>Bienvenue chez Sofitech !</p>
-      <p>Madame, Monsieur ${nom} ${prenom},</p>
-      <p>Dans le cadre de nos derniers échanges, vous nous avez communiqué vos coordonnées, ainsi que vos données.</p>
-      <p>
-  En cliquant sur « j’accepte », vous acceptez que vos données personnelles recueillies par
-  CMGM Sofitech soient conservées en conformité avec la note d’information sur le traitement
-  des données personnelles de la CMGM SOFITECH disponible sur notre site internet
-  (https://sofitech.pro/mentions-legales).
+  const subject = "Confirmation Sofitech";
+  const htmlContent = `
+  <p><img src="${logoUrl}" alt="Sofitech Logo" style="max-width: 100%; height: auto;"></p>
+    <p>Bienvenue chez Sofitech !</p>
+    <p>Madame, Monsieur ${nom} ${prenom},</p>
+    <p>Dans le cadre de nos derniers échanges, vous nous avez communiqué vos coordonnées, ainsi que vos données.</p>
+    <p>
+En cliquant sur « j’accepte », vous acceptez que vos données personnelles recueillies par
+CMGM Sofitech soient conservées en conformité avec la note d’information sur le traitement
+des données personnelles de la CMGM SOFITECH disponible sur notre site internet
+(https://sofitech.pro/mentions-legales).
 </p>
-      <a href="${confirmationLink}"><button>Confirmer</button></a>
-      <p>
-  Espérant vous accompagner dans vos divers projets.
+    <a href="${confirmationLink}"><button>Confirmer</button></a>
+    <p>
+Espérant vous accompagner dans vos divers projets.
 </p>
 <p>
-  Au plaisir de poursuivre nos échanges.
+Au plaisir de poursuivre nos échanges.
 </p>
 <p>
-  Bien cordialement,
+Bien cordialement,
 </p>
 <p>
-  L’équipe SOFITECH
+L’équipe SOFITECH
 </p>
 <p style="color:blue;">
-  En application de la loi « informatique et libertés » du 6 janvier 1978 modifiée, et du Règlement
-  Général sur la Protection des Données (RGPD 2016/679 (UE), vous disposez à tout moment d’un
-  droit d’accès, de rectification, de portabilité et d’effacement de vos données ou encore de limitation de
-  traitement. Vos données sont utilisées uniquement dans le cadre de notre activité de caution mutuelle
-  et ne font l’objet d’aucune vente à un tiers. Vous pouvez également, pour des motifs légitimes, vous
-  opposer au traitement des données vous concernant. Pour exercer l’un de ces droits ou obtenir des
-  informations supplémentaires, adressez-nous un courrier électronique à l’adresse suivante :
-  accueil@sofitech.pro
+En application de la loi « informatique et libertés » du 6 janvier 1978 modifiée, et du Règlement
+Général sur la Protection des Données (RGPD 2016/679 (UE), vous disposez à tout moment d’un
+droit d’accès, de rectification, de portabilité et d’effacement de vos données ou encore de limitation de
+traitement. Vos données sont utilisées uniquement dans le cadre de notre activité de caution mutuelle
+et ne font l’objet d’aucune vente à un tiers. Vous pouvez également, pour des motifs légitimes, vous
+opposer au traitement des données vous concernant. Pour exercer l’un de ces droits ou obtenir des
+informations supplémentaires, adressez-nous un courrier électronique à l’adresse suivante :
+accueil@sofitech.pro
 </p>
 <p>
-  Dans le respect de la réglementation et le cadre uniquement de notre activité de cautionnement, vos
-  données sont susceptibles d’être partagées avec nos partenaires.
+Dans le respect de la réglementation et le cadre uniquement de notre activité de cautionnement, vos
+données sont susceptibles d’être partagées avec nos partenaires.
 </p>
-    `,
-  };
+  `;
+  const mailOptions = createMailOptions(recipientEmail, subject, htmlContent);
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -193,88 +179,105 @@ exports.update = (req, res) => {
 
 
 exports.archiveInterlocuteur = async (req, res) => {
-  // Calcul de la date qui remonte à 3 jours
-  const troisJoursAuparavant = new Date();
-  troisJoursAuparavant.setDate(troisJoursAuparavant.getDate() - 3);
-  console.log("Date limite pour l'archivage: ", troisJoursAuparavant);
-
-  const transporter = nodemailer.createTransport({
-    host: "mail.exchangeincloud.ch",
-    port: 587,
-    auth: {
-      user: "sofitech_mails@sofitech.pro",
-      pass: "Gd2Bc19*",
-    },
-  });
+  const dateActuelle = new Date();
+  const dixJoursAuparavant = new Date(dateActuelle.setDate(dateActuelle.getDate() - 10));
+  const trenteJoursAuparavant = new Date(dateActuelle.setDate(dateActuelle.getDate() - 30));
 
   try {
-    console.log("Recherche d'interlocuteurs à archiver...");
-    const interlocuteursAExpirer = await Interlocuteur.findAll({
-      include: [{
-        model: db.user,
-        as: 'user',
-        attributes: ['email'] // Spécifiez les attributs que vous souhaitez inclure de l'utilisateur
-      }],
+    // Recherche d'interlocuteurs à relancer
+    const interlocuteursARelancer = await Interlocuteur.findAll({
       where: {
         createdAt: {
-          [Op.lt]: troisJoursAuparavant,
+          [Op.gt]: trenteJoursAuparavant,
+          [Op.lt]: dixJoursAuparavant,
         },
         isConfirmed: 0,
       },
     });
 
-    console.log(`Nombre d'interlocuteurs trouvés: ${interlocuteursAExpirer.length}`);
+    // Recherche d'interlocuteurs à supprimer
+    const interlocuteursASupprimer = await Interlocuteur.findAll({
+      where: {
+        createdAt: {
+          [Op.lt]: trenteJoursAuparavant,
+        },
+        isConfirmed: 0,
+      },
+    });
 
-    if (interlocuteursAExpirer.length === 0) {
-      res.status(404).send({ message: "Aucun interlocuteur à archiver." });
-      return;
+    // Envoi d'e-mails de relance
+    for (const interlocuteur of interlocuteursARelancer) {
+      const confirmationLink = `https://sofcem.mtech.dev/confirmation/${interlocuteur.id}`;
+      const htmlContentRelance = `
+      <p><img src="${logoUrl}" alt="Sofitech Logo" style="max-width: 100%; height: auto;"></p>
+        <p>Bienvenue chez Sofitech !</p>
+        <p>Madame, Monsieur ${interlocuteur.nom} ${interlocuteur.prenom},</p>
+        <p>Dans le cadre de nos derniers échanges, vous nous avez communiqué vos coordonnées, ainsi que vos données.</p>
+        <p>
+    En cliquant sur « j’accepte », vous acceptez que vos données personnelles recueillies par
+    CMGM Sofitech soient conservées en conformité avec la note d’information sur le traitement
+    des données personnelles de la CMGM SOFITECH disponible sur notre site internet
+    (https://sofitech.pro/mentions-legales).
+    </p>
+        <a href="${confirmationLink}"><button>Confirmer</button></a>
+        <p>
+    Espérant vous accompagner dans vos divers projets.
+    </p>
+    <p>
+    Au plaisir de poursuivre nos échanges.
+    </p>
+    <p>
+    Bien cordialement,
+    </p>
+    <p>
+    L’équipe SOFITECH
+    </p>
+    <p style="color:blue;">
+    En application de la loi « informatique et libertés » du 6 janvier 1978 modifiée, et du Règlement
+    Général sur la Protection des Données (RGPD 2016/679 (UE), vous disposez à tout moment d’un
+    droit d’accès, de rectification, de portabilité et d’effacement de vos données ou encore de limitation de
+    traitement. Vos données sont utilisées uniquement dans le cadre de notre activité de caution mutuelle
+    et ne font l’objet d’aucune vente à un tiers. Vous pouvez également, pour des motifs légitimes, vous
+    opposer au traitement des données vous concernant. Pour exercer l’un de ces droits ou obtenir des
+    informations supplémentaires, adressez-nous un courrier électronique à l’adresse suivante :
+    accueil@sofitech.pro
+    </p>
+    <p>
+    Dans le respect de la réglementation et le cadre uniquement de notre activité de cautionnement, vos
+    données sont susceptibles d’être partagées avec nos partenaires.
+    </p>
+      `; // Incluez votre contenu HTML pour la relance ici
+      const mailOptions = createMailOptions(interlocuteur.email, 'Rappel de confirmation de compte', htmlContentRelance);
+      await transporter.sendMail(mailOptions);
     }
 
-    for (const interlocuteur of interlocuteursAExpirer) {
-      console.log(`Traitement de l'interlocuteur ID: ${interlocuteur.id_interlocuteur}`);
-
-      await ArchivInterlocuteur.create(interlocuteur.dataValues);
-      console.log(`Interlocuteur archivé: ${interlocuteur.id_interlocuteur}`);
-
-      try {
-        await Interlocuteur.destroy({
-          where: { id_interlocuteur: interlocuteur.id_interlocuteur },
-        });
-        console.log(`Interlocuteur supprimé: ${interlocuteur.id_interlocuteur}`);
-      } catch (deleteError) {
-        console.error(`Erreur lors de la suppression de l'interlocuteur ID: ${interlocuteur.id_interlocuteur}`, deleteError);
-      }
-      // Envoyer des e-mails
-      const mailOptionsInterlocuteur = {
-        from: 'sofitech_mails@sofitech.pro',
-        to: interlocuteur.email,
-        subject: 'Notification de suppression',
-        text: 'Votre compte a été supprimé.'
-      };
-
-      const mailOptionsUser = {
-        from: 'sofitech_mails@sofitech.pro',
-        to: interlocuteur.user.email,
-        subject: 'Notification de suppression d\'interlocuteur',
-        text: `L'interlocuteur ${interlocuteur.nom} a été supprimé.`
-      };
-
-      try {
-        await transporter.sendMail(mailOptionsInterlocuteur);
-        console.log(`E-mail envoyé à l'interlocuteur: ${interlocuteur.email}`);
-        await transporter.sendMail(mailOptionsUser);
-        console.log(`E-mail envoyé à l'utilisateur associé: ${interlocuteur.user.email}`);
-      } catch (emailError) {
-        console.error("Erreur d'envoi d'e-mail: ", emailError);
-      }
+    // Suppression des interlocuteurs et envoi d'e-mails de notification
+    for (const interlocuteur of interlocuteursASupprimer) {
+      const htmlContentSuppression = `
+        <p><img src="${logoUrl}" alt="Sofitech Logo" style="max-width: 100%; height: auto;"></p>
+        <p>Bonjour,</p>
+        <p>Nous vous informons que votre compte au sein de notre système CRM Sofitech n'a pas été confirmé dans les délais impartis. En conséquence, et conformément à nos politiques de protection des données et de respect de la vie privée, nous avons procédé à la suppression de toutes les informations vous concernant de notre base de données.</p>
+        <p>Cette mesure garantit la sécurité et la confidentialité de vos données personnelles, conformément au Règlement Général sur la Protection des Données (RGPD) et à notre engagement envers la protection de la vie privée de nos utilisateurs.</p>
+        <p>Si la suppression de votre compte a été effectuée par erreur ou si vous souhaitez réactiver votre compte et accepter l'utilisation de vos données, nous vous invitons à nous contacter directement à l'adresse <a href="mailto:accueil@sofitech.pro">accueil@sofitech.pro</a> ou à créer un nouveau compte sur notre plateforme.</p>
+        <p>Nous vous remercions pour votre compréhension et restons à votre disposition pour toute question ou information supplémentaire.</p>
+        <p>Bien cordialement,</p>
+        <p>L’équipe SOFITECH</p>
+        <p style="color:blue;">
+        En application de la loi « informatique et libertés » du 6 janvier 1978 modifiée, et du Règlement Général sur la Protection des Données (RGPD 2016/679 (UE), vous disposez à tout moment d’un droit d’accès, de rectification, de portabilité et d’effacement de vos données ou encore de limitation du traitement. Pour exercer l’un de ces droits ou obtenir des informations supplémentaires, veuillez nous contacter.
+        </p>
+        `; // Incluez votre contenu HTML pour la notification de suppression ici
+      const mailOptions = createMailOptions(interlocuteur.email, 'Suppression de compte', htmlContentSuppression);
+      await Interlocuteur.destroy({ where: { id_interlocuteur: interlocuteur.id_interlocuteur } });
+      await transporter.sendMail(mailOptions);
     }
 
     res.send({
-      message: `${interlocuteursAExpirer.length} interlocuteur(s) archivé(s) avec succès.`,
+      message: `Relance effectuée pour ${interlocuteursARelancer.length} interlocuteur(s). ${interlocuteursASupprimer.length} interlocuteur(s) supprimé(s) avec succès.`,
     });
   } catch (err) {
     console.error("Erreur lors de l'archivage: ", err);
     res.status(500).send({ message: err.message || "Erreur lors de l'archivage des interlocuteurs." });
   }
 };
+
 

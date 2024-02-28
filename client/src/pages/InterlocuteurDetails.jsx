@@ -57,17 +57,6 @@ function InterlocuteurDetails() {
     }
   };
 
-  // Fonction pour archiver un interlocuteur expiré
-  const archiveInterlocuteur = async (interlocuteurId) => {
-    try {
-      await AuthInterlocuteur.archiveExpired();
-      console.log('Interlocuteur archivé avec succès');
-      // Vous pouvez ajouter ici une logique pour gérer la réponse si nécessaire
-    } catch (error) {
-      console.error('Erreur lors de l\'archivage de l\'interlocuteur:', error);
-      // Vous pouvez ajouter ici une logique pour gérer les erreurs si nécessaire
-    }
-  };
 
   // Select all interlocuteur
   const retrieveInterlocuteur = () => {

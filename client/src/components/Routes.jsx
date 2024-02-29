@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 import Dashboard from '../pages/Dashboard';
 import axios from "axios";
 import Customers from '../pages/societe/Customers';
@@ -23,11 +23,13 @@ import Evolis from '../pages/Evolis';
 import PasswordChangeCountdown from '../pages/PasswordChange';
 import PasswordForget from '../pages/sendMail';
 import Resetpassword from '../pages/resetPassword';
+import { MailReturn } from "../pages/MailReturn";
 
 
 const CRMRoutes = () => {
   const user = AuthService.getCurrentUser();
   const mysofitech = RoleUser.SofitechRole();
+  const location = useLocation();
   const [daysSinceLastChange, setDaysSinceLastChange] = useState(null);
   useEffect(() => {
     // Fetch the number of days since the last password change from the backend API
@@ -46,8 +48,13 @@ const CRMRoutes = () => {
     fetchDaysSinceLastChange();
   }, []);
 console.log(daysSinceLastChange);
+const isConfirmationRoute = location.pathname.startsWith('/confirmation/');
   return (
     <Switch>
+       <>
+          {isConfirmationRoute && <Route path='/confirmation/:id' exact component={MailReturn} />}
+          {!isConfirmationRoute && (
+       <>
       {user && mysofitech ? (
         <>
           <Route path='/' exact component={Dashboard} />
@@ -75,12 +82,16 @@ console.log(daysSinceLastChange);
         </>
       ) : (
         <div>
+          <Route path='/confirmation/:id' exact component={MailReturn} />
           <Route path='*' exact component={PageError} />
           <Route path='/Login' component={Login} />
           <Route path='/forget-password' component={PasswordForget} />
           <Route path='/reset-password/:id' component={Resetpassword} /> {/* Nouvelle route pour l'oubli de mot de passe */}
         </div>
       )}
+      </>
+      )}
+      </>
     </Switch>
   );
 };

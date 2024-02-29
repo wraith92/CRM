@@ -136,8 +136,9 @@ function Usersinfo({ location }) {
             <TableRow>
               <TableCell align="center">Nom société</TableCell>
               <TableCell align="center">Date du RDV</TableCell>
-              <TableCell align="center">Nom interlocuteur</TableCell>
+              <TableCell align="center">Origine du prospect</TableCell>
               <TableCell align="center">Crédit_cop</TableCell>
+              <TableCell align="center">Syndicat</TableCell>
               <TableCell align="center">compte rendu </TableCell>
               <TableCell align="center">besoin</TableCell>
               <TableCell align="center">Etat</TableCell>
@@ -156,9 +157,24 @@ function Usersinfo({ location }) {
                       {moment(row.date_rdv).format("DD  MMMM YYYY HH:mm")}
                     </TableCell>
                     <TableCell align="center">
-                      {row.nom_interlocuteur}
+                    {Listsociete.filter(
+                        (task) => task.nom_soc === row.nom_societe
+                      ).map((e, index2) => (
+                        <a key={index2} href={`/Societe/${e.siret}`}>
+                          {e.origineprospect}
+                        </a>
+                      ))}
                     </TableCell>
                     <TableCell align="center"> {row.credit_cop}</TableCell>
+                    <TableCell align="center">
+                       {Listsociete.filter(
+                        (task) => task.nom_soc === row.nom_societe
+                      ).map((e, index2) => (
+                        <a key={index2} href={`/Societe/${e.siret}`}>
+                          {e.syndicat}
+                        </a>
+                      ))}</TableCell>
+                    
                     <TableCell align="center"> {row.description}</TableCell>
                     <TableCell align="center"> {row.besoin}</TableCell>
                     {row.validation === "realiser" && (
@@ -183,7 +199,7 @@ function Usersinfo({ location }) {
                         (task) => task.nom_soc === row.nom_societe
                       ).map((e, index2) => (
                         <a key={index2} href={`/Societe/${e.siret}`}>
-                          {row.nom_societe}
+                          {e.nom_societe}
                         </a>
                       ))}
                     </TableCell>

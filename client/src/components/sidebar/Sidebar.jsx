@@ -4,10 +4,12 @@ import AuthService from "../../services/auth.service";
 import * as sidebareRoute from '../../assets/JsonData/sidebareRoute';
 import Role from '../../controllers/Role';
 import {SidbarTableActive,SidbarTableDeconnexion,SidbarImage} from './SidebarTableau';
+import { useLocation } from 'react-router-dom';
 
 
 const Sidebar = props => {
-
+    const location = useLocation();
+    const isConfirmationRoute = location.pathname.startsWith('/confirmation/');
     const user = AuthService.getCurrentUser()
     const [new_sidbar, setSidbar] = useState([]);
     const myadmin = Role.AdminRole();
@@ -43,20 +45,27 @@ const Sidebar = props => {
             setSidbar(nouveaustate)
         }
     };
+    
 
     return (
         <div className='sidebar'>
             <div className="sidebar__logo">
                 <SidbarImage mysofitech={mysofitech} />
             </div>
-            <SidbarTableActive
-                actItem={actItem}
-                activeItem2={activeItem2}
-                activeItem={activeItem}
-            />
-            <SidbarTableDeconnexion
-            user={user}
-            />
+            {!isConfirmationRoute && (
+                <>
+                  <SidbarTableActive
+                 actItem={actItem}
+                 activeItem2={activeItem2}
+                 activeItem={activeItem}
+             />
+             <SidbarTableDeconnexion
+             user={user}
+             />
+                </>
+               
+            )}
+           
 
         </div>
     )

@@ -18,20 +18,9 @@ export const SidbarTableActive = (props) => {
         </>
      );
 }
-export const SidbarImage =(props) =>{
-
-    const renderImage = () => {
-        if (props.mysofitech === true) {
-            return <img src={logo} alt="company logo" />
-        }
-    }
-
-    return (
-    <>
-    {renderImage()}
-    </>
-    );
-}
+export const SidbarImage = () => {
+    return <img src={logo} alt="Logo Sofitech" className="sidebar__logo-img" />;
+};
 export const SidbarTableDeconnexion = (props) =>{
     // DECONNECTION
     const logOut = () => { AuthService.logout() };
